@@ -10,19 +10,31 @@ class Spaceship {
         int getx() {return x;};
         int gety() {return y;};
         char draw_spaceship(int signal); // отрисовка корабля
+        char gun(int x, int y) {return '@';};
 };
 
 class Asteroid {
     int x;
     int y;
+    int speed;
     public:
-        Asteroid(int _x, int _y): x(_x), y(_y) {};
+        Asteroid(int _x, int _y, int s): x(_x), y(_y), speed(s) {};
+        void draw_asteroid();
+};
+
+class Field {
+    int width;
+    int length;
+    public:
+        Field(int w, int l): width(w), length(l) {};
+        void draw_field();
 };
 
 int main (void) {
     int x = 0;
     int y = 2;
     int quit = 0;
+    int signal = 0;
     Spaceship s(x, y);
     initscr();
     noecho();
@@ -39,29 +51,40 @@ int main (void) {
             }
             case 'd': {
                 x++;
-                printw("%c", s.draw_spaceship(1));
+                signal = 1;
                 break;
             }
             case 'a': {
                 x--;
-                printw("%c", s.draw_spaceship(2));
+                signal = 2;
                 break;
             }
             case 'w': {
                 y++;
-                printw("%c", s.draw_spaceship(3));
+                signal = 3;
                 break;
             }
             case 's': {
                 y--;
-                printw("%c", s.draw_spaceship(4));
+                signal = 4;
+                break;
+            }
+            case 'r': {
+                if (signal == 1)
+                    s.gun(x+1, y);
+                else if (signal == 2)
+                    s.gun(x-1, y);
+                else if (signal == 3)
+                    s.gun(x, y+1);
+                else if (signal == 4)
+                    s.gun(x, y-1);
                 break;
             }
         }
         if (quit) break;
     }
-        nocbreak();
-        endwin();
+    nocbreak();
+    endwin();
     return 0;
 }
 
