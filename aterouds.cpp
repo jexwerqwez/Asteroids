@@ -1,42 +1,19 @@
 #include <iostream>
 #include <ncurses.h>
+#include "asteroids.h"
 using namespace std;
-
-class Spaceship {
-    int x;  // координаты на плоскости
-    int y;
-    public:
-        Spaceship(int _x, int _y): x(_x), y(_y) {};  // конструктор
-        int getx() {return x;};
-        int gety() {return y;};
-        char draw_spaceship(int signal); // отрисовка корабля
-        char gun(int x, int y) {return '@';};
-};
-
-class Asteroid {
-    int x;
-    int y;
-    int speed;
-    public:
-        Asteroid(int _x, int _y, int s): x(_x), y(_y), speed(s) {};
-        void draw_asteroid();
-};
-
-class Field {
-    int width;
-    int length;
-    public:
-        Field(int w, int l): width(w), length(l) {};
-        void draw_field();
-};
 
 int main (void) {
     int x = 0;
     int y = 2;
+    int x_gun = x;
+    int y_gun = y;
     int quit = 0;
     int signal = 0;
+    int gun_signal = 0;
     Spaceship s(x, y);
     initscr();
+    curs_set(0);
     noecho();
     cbreak();
     timeout(40);
@@ -60,29 +37,47 @@ int main (void) {
                 break;
             }
             case 'w': {
-                y++;
+                y--;
                 signal = 3;
                 break;
             }
             case 's': {
-                y--;
+                y++;
                 signal = 4;
                 break;
             }
             case 'r': {
-                if (signal == 1)
-                    s.gun(x+1, y);
-                else if (signal == 2)
-                    s.gun(x-1, y);
-                else if (signal == 3)
-                    s.gun(x, y+1);
-                else if (signal == 4)
-                    s.gun(x, y-1);
+                gun_signal = 1;
+                if (signal == 1) {
+                    x_gun = x+1;
+                    y_gun = y;
+                } else if (signal == 2) {
+                    x_gun = x-1;
+                    y_gun = y;
+                } else if (signal == 3) {
+                    x_gun = x;
+                    y_gun = y-1;
+                } else if (signal == 4) {
+                    x_gun = x;
+                    y_gun = y+1;
+                }
                 break;
             }
         }
         if (quit) break;
+        clear();
+        if (gun_signal == 1) {
+            while(y_gun != y+3) {
+                move(y_gun, x_gun);
+                timeout(700);
+                printw("%c", s.gun());
+                y_gun++;
+            }
+        }
+        move(y,x);
+        printw("%c", s.draw_spaceship(signal));
     }
+    curs_set(1);
     nocbreak();
     endwin();
     return 0;
@@ -96,7 +91,10 @@ char Spaceship::draw_spaceship(int signal) {
         return '<';
     } else if (signal == 3) {
         return '^';
-    } else {
+    } else if (signal == 4) {
         return 'v';
+    } else {
+        return '>';
     }
 }
+
