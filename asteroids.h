@@ -2,6 +2,8 @@
 #define ASTEROIDS
 
 #include <iostream>
+#include <ncurses.h>
+
 using namespace std;
 
 class Spaceship {
@@ -31,7 +33,9 @@ class Field {
         Field(int w, int l): width(w), height(l) {};
         int getwidth() {return width;};
         int getheight() {return height;};
-        void draw_field(int width, int height, int **matrix);
+        void draw_field(int width, int height, int **matrix, char ship, 
+                        int ship_signal, char gun, char gun_signal);
+        void init_field(int **matrix, int object);
 };
 
 #endif

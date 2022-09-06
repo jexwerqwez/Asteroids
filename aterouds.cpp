@@ -14,8 +14,15 @@ int main (void) {
     cbreak();
     int width = getmaxy(stdscr);
     int height = getmaxx(stdscr);
-    int previous[height][width], next[height][width];
+    int **previous = new int*[height];
+    for (int i = 0; i < height; i++)
+        previous[i] = new int[width];
+    int **next = new int*[height];
+    for (int i = 0; i < height; i++)
+        next[i] = new int[width];
     Field field(width, height);
+    field.init_field(previous, 0);
+    field.init_field(next, 0);
     timeout(40);
     while (1) {
         int command;
@@ -73,6 +80,16 @@ int main (void) {
         move(y,x);
         printw("%c", spaceship.draw_spaceship(signal));
     }
+
+    for (int i = 0; i < height; i++) {
+        delete []previous[i];
+    }
+    for (int i = 0; i < height; i++) {
+        delete []next[i];
+    }
+    delete []previous;
+    delete []next;
+
     curs_set(1);
     nocbreak();
     endwin();
