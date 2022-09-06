@@ -26,10 +26,12 @@ class Asteroid {
 
 class Field {
     int width;
-    int length;
+    int height;
     public:
-        Field(int w, int l): width(w), length(l) {};
-        void draw_field();
+        Field(int w, int l): width(w), height(l) {};
+        int getwidth() {return width;};
+        int getheight() {return height;};
+        void draw_field(int width, int height, int **matrix);
 };
 
 #endif

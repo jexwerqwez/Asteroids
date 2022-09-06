@@ -4,18 +4,18 @@
 using namespace std;
 
 int main (void) {
-    int x = 0;
-    int y = 2;
-    int x_gun = x;
-    int y_gun = y;
-    int quit = 0;
-    int signal = 0;
-    int gun_signal = 0;
-    Spaceship s(x, y);
+    int x = 0, y = 2;
+    int x_gun = x, y_gun = y;
+    int quit = 0, signal = 0, gun_signal = 0;
+    Spaceship spaceship(x, y);
     initscr();
     curs_set(0);
     noecho();
     cbreak();
+    int width = getmaxy(stdscr);
+    int height = getmaxx(stdscr);
+    int previous[height][width], next[height][width];
+    Field field(width, height);
     timeout(40);
     while (1) {
         int command;
@@ -67,34 +67,14 @@ int main (void) {
         if (quit) break;
         clear();
         if (gun_signal == 1) {
-            while(y_gun != y+3) {
-                move(y_gun, x_gun);
-                timeout(700);
-                printw("%c", s.gun());
-                y_gun++;
-            }
+            move(y_gun, x_gun);
+            printw("%c", spaceship.gun());
         }
         move(y,x);
-        printw("%c", s.draw_spaceship(signal));
+        printw("%c", spaceship.draw_spaceship(signal));
     }
     curs_set(1);
     nocbreak();
     endwin();
     return 0;
 }
-
-
-char Spaceship::draw_spaceship(int signal) {
-    if (signal == 1) {
-        return '>';
-    } else if (signal == 2) {
-        return '<';
-    } else if (signal == 3) {
-        return '^';
-    } else if (signal == 4) {
-        return 'v';
-    } else {
-        return '>';
-    }
-}
-
