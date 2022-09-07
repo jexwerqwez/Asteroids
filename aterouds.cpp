@@ -72,13 +72,15 @@ int main (void) {
             }
         }
         if (quit) break;
+        field.next_position(previous, next, signal);
         clear();
-        if (gun_signal == 1) {
-            move(y_gun, x_gun);
-            printw("%c", spaceship.gun());
-        }
+        field.draw_field(next, signal);
+        // if (gun_signal == 1) {
+        //     move(y_gun, x_gun);
+        //     printw("%c", spaceship.gun());
+        // }
         move(y,x);
-        printw("%c", spaceship.draw_spaceship(signal));
+        // printw("%c", spaceship.draw_spaceship(signal));
     }
 
     for (int i = 0; i < height; i++) {

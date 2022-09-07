@@ -33,9 +33,9 @@ class Field {
         Field(int w, int l): width(w), height(l) {};
         int getwidth() {return width;};
         int getheight() {return height;};
-        void draw_field(int width, int height, int **matrix, char ship, 
-                        int ship_signal, char gun, char gun_signal);
+        void draw_field(int **matrix, int ship_signal);
         void init_field(int **matrix, int object);
+        void next_position(int **prev_matrix, int **next_matrix, int ship_status);
 };
 
 #endif

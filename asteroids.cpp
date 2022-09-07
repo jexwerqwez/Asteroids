@@ -20,10 +20,8 @@ char Spaceship::draw_spaceship(int signal) {
  * @param matrix матрица ..
  * @param ship значок корабля
 */
-void Field::draw_field(int width, int height, int **matrix, char ship, 
-                        int ship_signal, char gun, char gun_signal) {
+void Field::draw_field(int **matrix, int ship_signal) {
     Spaceship s(0, 0);
-
     for (int i = 0; i < getmaxx(stdscr); i++) {
         for (int j = 0; j < getmaxy(stdscr); j++) {
             if (matrix[i][j] == 1) {printw("%c", s.draw_spaceship(ship_signal));
@@ -44,6 +42,10 @@ void Field::init_field(int **matrix, int object) {
     }
 }
 
-void Field::next_position(int **matrix) {
-    
+void Field::next_position(int **prev_matrix, int **next_matrix, int ship_status) {
+    for (int i = 0; i < getmaxx(stdscr); i++) {
+        for (int j = 0; j < getmaxy(stdscr); j++) {
+            next_matrix[i][j] = ship_status;
+        }
+    } 
 }
