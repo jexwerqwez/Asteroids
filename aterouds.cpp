@@ -14,15 +14,6 @@ int main (void) {
     cbreak();
     int width = getmaxy(stdscr);
     int height = getmaxx(stdscr);
-    int **previous = new int*[height];
-    for (int i = 0; i < height; i++)
-        previous[i] = new int[width];
-    int **next = new int*[height];
-    for (int i = 0; i < height; i++)
-        next[i] = new int[width];
-    Field field(width, height);
-    field.init_field(previous, 0);
-    field.init_field(next, 0);
     timeout(40);
     while (1) {
         int command;
@@ -56,7 +47,7 @@ int main (void) {
             case 'r': {
                 gun_signal = 1;
                 if (signal == 1) {
-                    x_gun = x+1;
+                    x_gun = x + 1;
                     y_gun = y;
                 } else if (signal == 2) {
                     x_gun = x-1;
@@ -72,26 +63,32 @@ int main (void) {
             }
         }
         if (quit) break;
-        field.next_position(previous, next, signal);
         clear();
-        field.draw_field(next, signal);
-        // if (gun_signal == 1) {
-        //     move(y_gun, x_gun);
-        //     printw("%c", spaceship.gun());
-        // }
+        if (gun_signal == 1) {
+            move(y_gun, x_gun);
+            switch (signal)
+            {
+            case (1):
+                x_gun++;
+                break;
+            case (2):
+                x_gun--;
+                break;
+            case (3):
+                y_gun--;
+                break;
+            case (4):
+                y_gun++;
+                break;
+            }
+            if (x_gun == getmaxx(stdscr) || y_gun == getmaxy(stdscr) ||
+                    x_gun == -1 || y_gun == -1)
+                gun_signal = 0;
+            printw("%c", spaceship.gun());
+        }
         move(y,x);
-        // printw("%c", spaceship.draw_spaceship(signal));
+        printw("%c", spaceship.draw_spaceship(signal));
     }
-
-    for (int i = 0; i < height; i++) {
-        delete []previous[i];
-    }
-    for (int i = 0; i < height; i++) {
-        delete []next[i];
-    }
-    delete []previous;
-    delete []next;
-
     curs_set(1);
     nocbreak();
     endwin();
