@@ -1,6 +1,27 @@
 #include "asteroids.h"
 
-char Spaceship::draw_spaceship(int signal) {
+
+Field::Field() {
+    // printf("construct\n");
+    height = width = 1; 
+    field = new int*[height]; 
+    for(int i = 0; i < 1; i++) {
+        field[i] = new int[width];
+    }
+};
+
+Field::Field(int h, int w) { 
+    // printf("construct\n");
+    height = h; 
+    width = w; 
+    field = new int*[height]; 
+    for(int i = 0; i < height; i++) {
+        field[i] = new int[width];
+    }
+};
+
+
+char Spaceship::ship_direction(int signal) {
     if (signal == 1) {
         return '>';
     } else if (signal == 2) {
@@ -20,32 +41,36 @@ char Spaceship::draw_spaceship(int signal) {
  * @param matrix матрица ..
  * @param ship значок корабля
 */
-void Field::draw_field(int **matrix, int ship_signal) {
-    Spaceship s(0, 0);
-    for (int i = 0; i < getmaxx(stdscr); i++) {
-        for (int j = 0; j < getmaxy(stdscr); j++) {
-            if (matrix[i][j] == 1) {printw("%c", s.draw_spaceship(ship_signal));
-            } else if (matrix[i][j] == 2) {printw("%c", s.gun());
+void Field::draw_field(char asteroid, char spaceship, char shot) {
+    //printf("draw?\n");
+    printw("----------------------------\n");
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            if (field[i][j] == 1) {printw("%c", spaceship);
+            } else if (field[i][j] == 2) {printw("%c", shot);
             } else {
                 printw("%c", ' ');
             }
         }
-        if (i != getmaxx(stdscr) - 1) printw("\n");
-    } 
+        printw("\n");
+    }
+    printw("----------------------------\n");
 }
 
-void Field::init_field(int **matrix, int object) {
-    for (int i = 0; i < getmaxx(stdscr); i++) {
-        for (int j = 0; j < getmaxy(stdscr); j++) {
-            matrix[i][j] = object != 0;
+void Field::init_field(int object, int x, int y) {
+    // printf("initialization\n"); 
+    for (int i = 0; i < height; i++) {
+        for (int j = 0; j < width; j++) {
+            field[i][j] = 0;
+            field[x][y] = object;
         }
     }
 }
 
-void Field::next_position(int **prev_matrix, int **next_matrix, int ship_status) {
-    for (int i = 0; i < getmaxx(stdscr); i++) {
-        for (int j = 0; j < getmaxy(stdscr); j++) {
-            next_matrix[i][j] = ship_status;
-        }
-    } 
-}
+// void Field::next_position(int **prev_matrix, int **next_matrix, int ship_status) {
+//     for (int i = 0; i < getmaxx(stdscr); i++) {
+//         for (int j = 0; j < getmaxy(stdscr); j++) {
+//             next_matrix[i][j] = ship_status;
+//         }
+//     } 
+// }
