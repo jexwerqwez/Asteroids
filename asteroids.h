@@ -33,9 +33,19 @@ class Spaceship {
         void setX(int xx) {x = xx;};
         void setY(int yy) {y = yy;};
         char ship_direction(int signal);
-        int gun(int signal);
 };
 
+class Gun {
+    int gun_x;
+    int gun_y;
+    public:
+    Gun(int gx = 0, int gy = 0): gun_x(gx), gun_y(gy) {};
+    int getX() {return gun_x;};
+    int getY() {return gun_y;};
+    void setX(int gxx) {gun_x = gxx;};
+    void setY(int gyy) {gun_y = gyy;};
+    int shot(int signal, int x, int y);
+};
 // class Asteroid: public Space_Object {
 //     int** size;
 //     int velocity;
@@ -51,11 +61,7 @@ class Field {
     public:
         Field();
         Field(int h, int w);
-        // int getwidth() {return width;};
-        // int getheight() {return height;};
-        // void setwidth(int w) { width = w; };
-        // void setheight(int h) { height = h; };
-        void init_field(int object, int x, int y);
+        void init_field(int s, int s_x, int s_y, int gm, int g, int g_x, int g_y);
         void next_position(int **prev_matrix, int **next_matrix);
         void draw_field(char asteroid, char spaceship, char shot);
         ~Field() { for(int i = 0; i < height; i++) delete field[i]; delete[]field; };

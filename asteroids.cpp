@@ -43,7 +43,7 @@ char Spaceship::ship_direction(int signal) {
 */
 void Field::draw_field(char asteroid, char spaceship, char shot) {
     //printf("draw?\n");
-    printw("----------------------------\n");
+    printw("==============\n");
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             if (field[i][j] == 1) {printw("%c", spaceship);
@@ -54,19 +54,27 @@ void Field::draw_field(char asteroid, char spaceship, char shot) {
         }
         printw("\n");
     }
-    printw("----------------------------\n");
+    printw("==============\n");
 }
 
-void Field::init_field(int object, int x, int y) {
+void Field::init_field(int s, int s_x, int s_y, int gm, int g, int g_x, int g_y) {
     // printf("initialization\n"); 
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
             field[i][j] = 0;
-            field[x][y] = object;
+            if (gm == 1)
+                field[g_x][g_y] = g;
+            field[s_x][s_y] = s;
         }
     }
 }
 
+int Gun::shot(int signal, int x, int y) {
+    if (signal == 1) {
+        return 0;
+    }
+    return 1;
+}
 // void Field::next_position(int **prev_matrix, int **next_matrix, int ship_status) {
 //     for (int i = 0; i < getmaxx(stdscr); i++) {
 //         for (int j = 0; j < getmaxy(stdscr); j++) {
