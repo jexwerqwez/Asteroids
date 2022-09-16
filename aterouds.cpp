@@ -4,19 +4,21 @@
 using namespace std;
 
 int main (void) {
+    Game game;
     int quit = 0, signal = 0, gun_mode = 0;
     int x = 1, y = 5, x_gun = 0, y_gun = 0;
     int height = 10, width = 14;
-    Field f(height, width);
+    char spaceship = '>', asteroid = '@', shot = '-';
+    Field previous(height, width);
+    Field next(height, width);
     Spaceship s(x, y);
     Gun g(x_gun, y_gun);
-    initscr();
-    curs_set(0);
-    noecho();
-    cbreak();
-    timeout(40);
-    f.init_field(1, s.getX(), s.getY(), gun_mode, 2, g.getX(), g.getY());
-    f.draw_field('*', '>', '-');
+    Asteroid ast(4, 4);
+    int** aster = ast.construct_asteroid(width, height);
+    game.run();
+    next.init_field(2, s.getX(), s.getY(), gun_mode, 3, g.getX(), g.getY(), aster, 4, 4);
+    previous.init_field(2, s.getX(), s.getY(), gun_mode, 3, g.getX(), g.getY(), aster, 4, 4);
+    next.draw_field(asteroid, spaceship, shot);
     while (1) {
         int command;
         command = getch();
@@ -29,25 +31,21 @@ int main (void) {
             case 'd': {
                 y = ( y == width - 1 ) ? 0 : y + 1;
                 s.setY(y);
-                signal = 1;
                 break;
             }
             case 'a': {
-                y = ( y == 0) ? width - 1 : y - 1;
+                y = ( y == 0) ? 0 : y - 1;
                 s.setY(y);
-                // signal = 2;
                 break;
             }
             case 'w': {
                 x = ( x == 0) ? height - 1 : x - 1;
                 s.setX(x);
-                // signal = 3;
                 break;
             }
             case 's': {
                 x = ( x == height - 1 ) ? 0 : x + 1; 
                 s.setX(x);
-                // signal = 4;
                 break;
             }
             case 'r': {
@@ -58,18 +56,17 @@ int main (void) {
                 g.setY(y_gun);
             }
         }
-        if (quit) break;
+        if (quit) {
+            game.stop();
+            break;
+        }
         clear();
         if (gun_mode) {
             y_gun = (y_gun >= width - 1) ? gun_mode = 0 : y_gun + 1;
             g.setY(y_gun);
         }
-        f.init_field(1, s.getX(), s.getY(), gun_mode, 2, g.getX(), g.getY());
-        f.draw_field('*', '>', '-');
-        printw("g(%d;%d)", g.getX(), g.getY());
+        gun_mode = next.init_field(2, s.getX(), s.getY(), gun_mode, 3, g.getX(), g.getY(), aster, 4, 4);
+        next.draw_field(asteroid, spaceship, shot);
     }
-    curs_set(1);
-    nocbreak();
-    endwin();
     return 0;
 }

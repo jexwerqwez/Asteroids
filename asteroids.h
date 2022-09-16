@@ -3,7 +3,8 @@
 
 #include <iostream>
 #include <ncurses.h>
-
+#include <ctime>
+#include <time.h>
 using namespace std;
 
 class Game {
@@ -46,14 +47,21 @@ class Gun {
     void setY(int gyy) {gun_y = gyy;};
     int shot(int signal, int x, int y);
 };
-// class Asteroid: public Space_Object {
-//     int** size;
-//     int velocity;
-//     public:
-//         void construct_asteroid(int x, int y, int **size);
-//         int asteroid_status(int x, int y);
-//         int destroy_asteroid();
-// };
+
+class Asteroid {
+    int a_x;
+    int a_y;
+    int velocity;
+    public:
+        Asteroid(int ax = 0, int ay = 0): a_x(ax), a_y(ay) {};
+        int getX() {return a_x;};
+        int getY() {return a_y;};
+        void setX(int axx) {a_x = axx;};
+        void setY(int ayy) {a_y = ayy;};
+        int** construct_asteroid(int width, int height);
+        int asteroid_status(int x, int y);
+        int destroy_asteroid();
+};
 
 class Field {
     int height, width;
@@ -61,8 +69,9 @@ class Field {
     public:
         Field();
         Field(int h, int w);
-        void init_field(int s, int s_x, int s_y, int gm, int g, int g_x, int g_y);
-        void next_position(int **prev_matrix, int **next_matrix);
+        int init_field(int s, int s_x, int s_y, int gm, int g, int g_x, int g_y,
+                        int** asteroid, int a_x, int a_y);
+        void compare_position(int **prev_matrix, int **next_matrix);
         void draw_field(char asteroid, char spaceship, char shot);
         ~Field() { for(int i = 0; i < height; i++) delete field[i]; delete[]field; };
 };
