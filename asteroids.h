@@ -68,7 +68,7 @@ class Field {
         Field();
         Field(int h, int w);
         int init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap);
-        void compare_position(int **prev_matrix, int **next_matrix);
+        void set_asteroid(int start_x, int start_y, struct asteroidpos ap);
         void draw_field(char asteroid, char spaceship, char shot);
         void draw_board();
         ~Field() { for(int i = 0; i < height; i++) delete field[i]; delete[]field; };

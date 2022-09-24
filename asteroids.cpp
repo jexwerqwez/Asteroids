@@ -60,31 +60,33 @@ int Field::init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidp
             if (gp.gun_mode == 1)
                 field[gp.g_x][gp.g_y] = gp.g;
             field[sp.s_x][sp.s_y] = sp.s;
+            field[i][j] = 0;
             if(j == ap.a_y && i == ap.a_x) {  // если при отрисовке наткнулись на астероид
-                    for(int l = 0; l < height/3 && i < height; l++) {  // отрисовка астероида по х
-                        for(int k = 0; k < width/3 && j < width; k++) {  // по у
-                            field[i][j++] = ap.asteroid[l][k];  // сначала заполним столбцами астероида
-                            //printw("axy(%d;%d) ij (%d;%d) kl(%d;%d)|", ap.a_x, ap.a_y, 
-                            //        i, j, k, l);
-                        }
-                        j = ap.a_y;  // переход на следующую строку
-                        i++;
-                    }
-                j++;
-            } else {
-                field[i][j] = 0;
+                set_asteroid(ap.a_x, ap.a_y, ap);
+                i += height/3;
             }
+            // } else {
+            //     field[i][j] = 0;
+            // }
         }
     }
     return gp.gun_mode;
 }
 
-void Field::compare_position(int **prev_matrix, int **next_matrix) {
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            
+void Field::set_asteroid(int start_x, int start_y, struct asteroidpos ap) {
+    int x = start_x;
+    int y = start_y;
+    for(int l = 0; l < height/3 && x < height; l++) {  // отрисовка астероида по х
+        for(int k = 0; k < width/3 && y < width; k++) {  // по у
+            field[x][y++] = ap.asteroid[l][k];  // сначала заполним столбцами астероида
+            }
+        for(int n = 0; n < width && y < width; n++) {
+            field[x][y++] = 0;
         }
-    } 
+        y = start_y;
+        x++;
+    }
+
 }
 
 //////////// GUN CLASS ////////////
@@ -103,7 +105,7 @@ void Game::run() {
     curs_set(0);
     noecho();
     cbreak();
-    timeout(1740);
+    timeout(440);
 }
 
 void Game::stop() {

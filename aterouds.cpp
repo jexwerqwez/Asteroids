@@ -8,7 +8,7 @@ int main (void) {
     Game game;
     int quit = 0, signal = 0, gun_mode = 0;
     int x = 1, y = 5, x_gun = 0, y_gun = 0;
-    int height = 20, width = 20;
+    int height = 10, width = 10;
     int x_ast = rand() % height, y_ast = width - 1;
     char spaceship = '>', asteroid = '@', shot = '-';
     Field f(height, width);
