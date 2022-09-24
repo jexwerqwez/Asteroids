@@ -7,6 +7,19 @@
 #include <time.h>
 using namespace std;
 
+struct spaceshippos {
+    int s, s_x, s_y;
+};
+
+struct gunpos {
+    int gun_mode, g, g_x, g_y;
+};
+
+struct asteroidpos {
+    int **asteroid;
+    int a_x, a_y;
+};
+
 class Game {
     int status;
     public:
@@ -15,52 +28,37 @@ class Game {
         void stop();
 };
 
-// class Space_Object {
-//     int x;
-//     int y;
-//     public:
-//         Space_Object(int x_ = 0, int y_ = 0): x(x_), y(y_) {};
-//         int getX() {return x;};
-//         int getY() {return y;};
-// };
-
-class Spaceship {
+class Space_Object {
     int x;
     int y;
+    float velocity;
     public:
-        Spaceship(int x_ = 0, int y_ = 0): x(x_), y(y_) {};
+        Space_Object(int x_ = 0, int y_ = 0, float vc = 0): x(x_), y(y_), velocity(vc) {};
         int getX() {return x;};
         int getY() {return y;};
         void setX(int xx) {x = xx;};
         void setY(int yy) {y = yy;};
+};
+
+class Spaceship: public Space_Object {
+    public:
+        Spaceship(int sx = 0, int sy = 0): Space_Object(sx, sy) {};
         char ship_direction(int signal);
 };
-
-class Gun {
-    int gun_x;
-    int gun_y;
+ 
+class Gun: public Space_Object {
     public:
-    Gun(int gx = 0, int gy = 0): gun_x(gx), gun_y(gy) {};
-    int getX() {return gun_x;};
-    int getY() {return gun_y;};
-    void setX(int gxx) {gun_x = gxx;};
-    void setY(int gyy) {gun_y = gyy;};
-    int shot(int signal, int x, int y);
+        Gun(int gx = 0, int gy = 0, float gv = 0): Space_Object(gx, gy, gv) {};
+        int shot(int signal, int x, int y);
 };
 
-class Asteroid {
-    int a_x;
-    int a_y;
-    int velocity;
+class Asteroid: public Space_Object {
     public:
-        Asteroid(int ax = 0, int ay = 0): a_x(ax), a_y(ay) {};
-        int getX() {return a_x;};
-        int getY() {return a_y;};
-        void setX(int axx) {a_x = axx;};
-        void setY(int ayy) {a_y = ayy;};
+        Asteroid(int ax = 0, int ay = 0, float av = 0): Space_Object(ax, ay, av) {};
         int** construct_asteroid(int width, int height);
+        int move_asteroid(struct asteroidpos ap);
         int asteroid_status(int x, int y);
-        int destroy_asteroid();
+        int destruct_asteroid(int **asteroid, int width, int height);
 };
 
 class Field {
@@ -69,10 +67,10 @@ class Field {
     public:
         Field();
         Field(int h, int w);
-        int init_field(int s, int s_x, int s_y, int gm, int g, int g_x, int g_y,
-                        int** asteroid, int a_x, int a_y);
+        int init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap);
         void compare_position(int **prev_matrix, int **next_matrix);
         void draw_field(char asteroid, char spaceship, char shot);
+        void draw_board();
         ~Field() { for(int i = 0; i < height; i++) delete field[i]; delete[]field; };
 };
 
