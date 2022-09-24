@@ -9,6 +9,7 @@ int main (void) {
     int quit = 0, signal = 0, gun_mode = 0;
     int x = 1, y = 5, x_gun = 0, y_gun = 0;
     int height = 10, width = 10;
+    //int x_ast = rand() % (height-height/3+1), 
     int x_ast = rand() % height, y_ast = width - 1;
     char spaceship = '>', asteroid = '@', shot = '-';
     Field f(height, width);
@@ -74,6 +75,7 @@ int main (void) {
         }
         sp = {2, s.getX(), s.getY()};
         gp = {gun_mode, 3, g.getX(), g.getY()};
+        y_ast = (y_ast < 0) ? y_ast = 0: y_ast;
         ap = {aster, x_ast, y_ast--};
         gun_mode = f.init_field(sp, gp, ap);
         f.draw_field(asteroid, spaceship, shot);

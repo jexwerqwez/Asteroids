@@ -62,8 +62,7 @@ int Field::init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidp
             field[sp.s_x][sp.s_y] = sp.s;
             field[i][j] = 0;
             if(j == ap.a_y && i == ap.a_x) {  // если при отрисовке наткнулись на астероид
-                set_asteroid(ap.a_x, ap.a_y, ap);
-                i += height/3;
+                i = set_asteroid(ap.a_x, ap.a_y, ap);
             }
             // } else {
             //     field[i][j] = 0;
@@ -73,20 +72,24 @@ int Field::init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidp
     return gp.gun_mode;
 }
 
-void Field::set_asteroid(int start_x, int start_y, struct asteroidpos ap) {
+int Field::set_asteroid(int start_x, int start_y, struct asteroidpos ap) {
     int x = start_x;
     int y = start_y;
+    static int start = 0;
+    if (start_y == 0) {
+        start++;
+    }
     for(int l = 0; l < height/3 && x < height; l++) {  // отрисовка астероида по х
-        for(int k = 0; k < width/3 && y < width; k++) {  // по у
+        for(int k = start; k < width/3 && y < width; k++) {  // по у
             field[x][y++] = ap.asteroid[l][k];  // сначала заполним столбцами астероида
-            }
-        for(int n = 0; n < width && y < width; n++) {
+        }
+        for(int n = 0; n < width && y < width; n++) { // дозаполнение
             field[x][y++] = 0;
         }
-        y = start_y;
-        x++;
+        y = start_y; // возвращение
+        x = ( x > height - 2) ? height - 1 : x + 1; // прорисовка в пределах поля
     }
-
+    return x;
 }
 
 //////////// GUN CLASS ////////////
@@ -105,7 +108,7 @@ void Game::run() {
     curs_set(0);
     noecho();
     cbreak();
-    timeout(440);
+    timeout(740);
 }
 
 void Game::stop() {
@@ -130,16 +133,17 @@ int** Asteroid::construct_asteroid(int width, int height) {
         }
     }
     // заполняем пустоту
-    // for(int i = 0; i < ast_height; i ++) {
-    //     for(int j = 0; j < ast_width; j++) {
-    //         if (ast[i][j] == 1 && ast[i+1][j+1] == 0) {
-    //             int fill = rand() % 2;
-    //             if (fill == 1)
-    //                 ast[i][j+1] = 1;
-    //             else
-    //                 ast[i+1][j] = 1;
-    //         }
-    //     }
-    // }
+    for(int i = 0; i < ast_height - 1; i ++) {
+        for(int j = 0; j < ast_width - 1; j++) {
+            if (ast[i][j] != ast[i+1][j+1]) {
+                ast[i+1][j+1] = 1;
+                int fill_pos = rand() % 2;
+                if (fill_pos == 1)
+                    ast[i][j+1] = 1;
+                else
+                    ast[i+1][j] = 1;
+            }
+        }
+    }
     return ast;
 }
