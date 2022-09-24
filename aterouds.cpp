@@ -8,8 +8,7 @@ int main (void) {
     Game game;
     int quit = 0, signal = 0, gun_mode = 0;
     int x = 1, y = 5, x_gun = 0, y_gun = 0;
-    int height = 10, width = 10;
-    //int x_ast = rand() % (height-height/3+1), 
+    int height = 10, width = 20;
     int x_ast = rand() % height, y_ast = width - 1;
     char spaceship = '>', asteroid = '@', shot = '-';
     Field f(height, width);
@@ -21,7 +20,7 @@ int main (void) {
     gunpos gp = {gun_mode, 3, g.getX(), g.getY()};
     asteroidpos ap = {aster, x_ast, y_ast};
     game.run();
-    f.init_field(sp, gp, ap);
+    f.init_field();
     f.draw_field(asteroid, spaceship, shot);
     while (1) {
         int command;
@@ -77,7 +76,7 @@ int main (void) {
         gp = {gun_mode, 3, g.getX(), g.getY()};
         y_ast = (y_ast < 0) ? y_ast = 0: y_ast;
         ap = {aster, x_ast, y_ast--};
-        gun_mode = f.init_field(sp, gp, ap);
+        gun_mode = f.set_objects(sp, gp, ap);
         f.draw_field(asteroid, spaceship, shot);
     }
     return 0;

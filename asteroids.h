@@ -67,7 +67,8 @@ class Field {
     public:
         Field();
         Field(int h, int w);
-        int init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap);
+        void init_field();
+        int set_objects(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap);
         int set_asteroid(int start_x, int start_y, struct asteroidpos ap);
         void draw_field(char asteroid, char spaceship, char shot);
         void draw_board();

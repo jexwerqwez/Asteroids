@@ -18,6 +18,12 @@ Field::Field(int h, int w) {
     }
 };
 
+void Field::init_field() {
+    for (int i = 0; i < height; i++)
+        for (int j = 0; j < width; j++)
+            field[i][j] = 0;
+}
+
 void Field::draw_board() {
     for(int i = 0; i < width; i++)
         printw("=");
@@ -47,26 +53,24 @@ void Field::draw_field(char asteroid, char spaceship, char shot) {
  * @param g значение выстрела (3)
  * @param g_x координата х выстрела
  * @param g_y координата у выстрела
- * @param a матрица астероида
+ * @param a матрица астероида (1/0)
  * @param a_x координата х астероида
  * @param a_y координата у астероида
  */
 
-int Field::init_field(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap) {
+int Field::set_objects(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap) {
     int flag = 0;
     int counter = 0;
     for (int i = 0; i < height; i++) {
         for (int j = 0; j < width; j++) {
-            if (gp.gun_mode == 1)
+            if (gp.gun_mode == 1) {
                 field[gp.g_x][gp.g_y] = gp.g;
-            field[sp.s_x][sp.s_y] = sp.s;
-            field[i][j] = 0;
+            }
             if(j == ap.a_y && i == ap.a_x) {  // если при отрисовке наткнулись на астероид
                 i = set_asteroid(ap.a_x, ap.a_y, ap);
             }
-            // } else {
-            //     field[i][j] = 0;
-            // }
+            field[sp.s_x][sp.s_y] = sp.s;
+            field[i][j] = 0;
         }
     }
     return gp.gun_mode;
@@ -76,9 +80,8 @@ int Field::set_asteroid(int start_x, int start_y, struct asteroidpos ap) {
     int x = start_x;
     int y = start_y;
     static int start = 0;
-    if (start_y == 0) {
+    if (start_y == 0)
         start++;
-    }
     for(int l = 0; l < height/3 && x < height; l++) {  // отрисовка астероида по х
         for(int k = start; k < width/3 && y < width; k++) {  // по у
             field[x][y++] = ap.asteroid[l][k];  // сначала заполним столбцами астероида
