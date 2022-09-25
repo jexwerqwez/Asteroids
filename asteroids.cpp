@@ -66,15 +66,10 @@ int Field::set_objects(struct spaceshippos sp, struct gunpos gp, struct asteroid
             if (gp.gun_mode == 1) {
                 field[gp.g_x][gp.g_y] = gp.g;
             }
-            field[sp.s_x][sp.s_y] = sp.s;
             if(j == ap.a_y && i == ap.a_x) {  // если при отрисовке наткнулись на астероид
-                for (int l = 0; l < ap.a_x; l++)
-                    for (int k = 0; k < ap.a_y; k++) {
-                        field[l][k] = 0;
-                        field[sp.s_x][sp.s_y] = sp.s;
-                    }
                 i = set_asteroid(ap.a_x, ap.a_y, ap);
             }
+            field[sp.s_x][sp.s_y] = sp.s;
             field[i][j] = 0;
         }
     }
@@ -91,10 +86,9 @@ int Field::set_asteroid(int start_x, int start_y, struct asteroidpos ap) {
         for(int k = start; k < width/3 && y < width; k++) {  // по у
             field[x][y++] = ap.asteroid[l][k];  // сначала заполним столбцами астероида
         }
-        for(int n = 0; n < width && y < width; n++) { // дозаполнение
-            field[x][y++] = 0;
+        for(int n = y; n < width && y < width; n++) { // дозаполнение
+            field[x][n] = 0;
         }
-        
         y = start_y; // возвращение
         x = ( x > height - 2) ? height - 1 : x + 1; // прорисовка в пределах поля
     }

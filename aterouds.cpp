@@ -14,16 +14,16 @@ int main (void) {
     Field f(height, width);
     Spaceship s(x, y);
     Gun g(x_gun, y_gun, 0.8);
-    Asteroid *ast = new Asteroid[2];
-    asteroidpos *ap = new asteroidpos[2];
-    int ***aster;
-    //Asteroid ast(0, 0, 0.8);
-    for(int i = 0; i < 2; i++) {
-        aster[i] = ast[i].construct_asteroid(width, height);
-        asteroidpos ap = {aster[i], x_ast, y_ast};
+    int size = 2;
+    Asteroid *ast = new Asteroid[size];
+    // Asteroid ast(0, 0, 0.8);
+    // int** aster = ast.construct_asteroid(width, height);
+    for (int i = 0; i < size; i++) {
+        
     }
     spaceshippos sp = {2, s.getX(), s.getY()};
     gunpos gp = {gun_mode, 3, g.getX(), g.getY()};
+    asteroidpos ap = {aster[], x_ast, y_ast};
     game.run();
     f.init_field();
     f.draw_field(asteroid, spaceship, shot);
@@ -31,15 +31,6 @@ int main (void) {
         int command;
         command = getch();
         switch (command) {
-            case 'q': {
-                raw();
-                quit = 1;
-                break;
-            }
-            case 'p': {
-                refresh();
-                if (getchar() == 'q') quit = 1;
-            }
             case 'd': {
                 y = ( y == width - 1 ) ? 0 : y + 1;
                 s.setY(y);
@@ -67,6 +58,15 @@ int main (void) {
                 g.setX(x_gun);
                 g.setY(y_gun);
             }
+            case 'p': {
+                refresh();
+                if (getchar() == 'q') quit = 1;
+            }
+            case 'q': {
+                raw();
+                quit = 1;
+                break;
+            }
         }
         if (quit) {
             game.stop();
@@ -77,18 +77,13 @@ int main (void) {
             y_gun = (y_gun >= width - 1) ? gun_mode = 0 : y_gun + 1;
             g.setY(y_gun);
         }
+        printw("%d;%d\n", sp.s_x, sp.s_y);
         sp = {2, s.getX(), s.getY()};
         gp = {gun_mode, 3, g.getX(), g.getY()};
         y_ast = (y_ast < 0) ? y_ast = 0: y_ast;
-        for(int i = 0; i < 2; i++) {
-            ap[i] = {aster[i], x_ast, y_ast--};
-            gun_mode = f.set_objects(sp, gp, ap[i]);
-        }
-        // ap[i] = {aster, x_ast, y_ast--};
-        // gun_mode = f.set_objects(sp, gp, ap);
+        ap = {aster, x_ast, y_ast--};
+        gun_mode = f.set_objects(sp, gp, ap);
         f.draw_field(asteroid, spaceship, shot);
     }
-    delete []ast;
-    delete []ap;
     return 0;
 }
