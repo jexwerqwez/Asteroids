@@ -54,6 +54,9 @@ class Gun: public Space_Object {
 
 class Asteroid: public Space_Object {
     public:
+        // Asteroid() {
+        //     ax = ay = av = 0;
+        // }
         Asteroid(int ax = 0, int ay = 0, float av = 0): Space_Object(ax, ay, av) {};
         int** construct_asteroid(int width, int height);
         int move_asteroid(struct asteroidpos ap);
