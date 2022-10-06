@@ -108,6 +108,7 @@ class Asteroids_Manager {
         vector<Asteroids*> getAsters() {return asters;};
         void destruct_asteroid(int i);
         void asts_manage();
+        Field getField() {return field;};
 };
 
 class Game {
