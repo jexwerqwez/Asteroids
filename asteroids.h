@@ -115,6 +115,7 @@ class Game {
     int status;
     public:
         Game();
+        friend Field;
         int getstatus() {return status;};
         void menu();
         void play(int, int);

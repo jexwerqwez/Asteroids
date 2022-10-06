@@ -7,27 +7,6 @@ bool Field::object_inside(Space_Object object) {
 
 void Field::draw_field() {
     move(0,0);
-    for(int i = 0; i < width; i++)
-        printw("=");
-    move(height, 0);
-    for(int i = 0; i < width; i++)
-        printw("=");  
-}
-
-Game::Game() {
-    initscr();
-    curs_set(0);
-    noecho();
-    cbreak();
-    clear();
-    refresh();
-    timeout(440);
-}
-
-void Game::menu() {
-    WINDOW* wnd;
-    int height = 21, width = 30;
-    int start = 0;
     for(int i = 0; i < height; i++) {
         printw("#\n");
     }
@@ -43,6 +22,24 @@ void Game::menu() {
         move(i, width);
         printw("#");
     }
+}
+
+Game::Game() {
+    initscr();
+    curs_set(0);
+    noecho();
+    cbreak();
+    clear();
+    refresh();
+    timeout(440);
+}
+
+void Game::menu() {
+    WINDOW* wnd;
+    int height = 20 + 2, width = 30 + 1;
+    int start = 0;
+    Field f(height, width);
+    f.draw_field();
     move(height/2-1, width/2-5);
     printw("###########");
     move(height/2, width/2-4);
@@ -113,22 +110,22 @@ void Game::play(int height, int width) {
         }
         switch (command) {
             case 'd': {
-                x = ( x == width - 1 ) ? 0 : x + 1;
+                x = ( x == width - 1 ) ? 1 : x + 1;
                 spaceship.setX(x);
                 break;
             }
             case 'a': {
-                x = ( x == 0) ? 0 : x - 1;
+                x = ( x == 1) ? 1 : x - 1;
                 spaceship.setX(x);
                 break;
             }
             case 'w': {
-                y = ( y == 1) ? height - 1 : y - 1;
+                y = ( y == 1) ? height - 2 : y - 1;
                 spaceship.setY(y);
                 break;
             }
             case 's': {
-                y = ( y == height - 1 ) ? 1 : y + 1; 
+                y = ( y == height - 2 ) ? 1 : y + 1; 
                 spaceship.setY(y);
                 break;
             }
