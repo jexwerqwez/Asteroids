@@ -50,6 +50,14 @@ void Asteroids_Manager::destruct_asteroid(int i) {
     asters.erase(asters.begin() + i);
 }
 
+void Spaceship::moveHorizontal(int x) {
+    position.setX(position.getX() + x);
+}
+
+void Spaceship::moveVertical(int y) {
+    position.setY(position.getY() + y);
+}
+
 void Spaceship::draw_spaceship(int x_off, int y_off) {
     mvaddch(y_off+position.getY(), x_off+position.getX(), getSprite());
 }

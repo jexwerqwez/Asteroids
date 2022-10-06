@@ -38,6 +38,8 @@ class Spaceship: public Space_Object{
         void draw_spaceship(int, int);
         void erase_spaceship(int, int);
         char getSprite() {return spaceship;};
+        void moveHorizontal(int x);
+        void moveVertical(int y);
         Space_Object getPos() {return position;};
 };
 

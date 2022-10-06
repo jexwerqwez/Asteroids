@@ -110,23 +110,22 @@ void Game::play(int height, int width) {
         }
         switch (command) {
             case 'd': {
-                x = ( x == width - 1 ) ? 1 : x + 1;
-                spaceship.setX(x);
+                if (bord.object_inside(shippos))
+                    spaceship.moveHorizontal(1);
+                else
+                    spaceship.moveHorizontal(-1);
                 break;
             }
             case 'a': {
-                x = ( x == 1) ? 1 : x - 1;
-                spaceship.setX(x);
+                    spaceship.moveHorizontal(-1);
                 break;
             }
             case 'w': {
-                y = ( y == 1) ? height - 2 : y - 1;
-                spaceship.setY(y);
+                    spaceship.moveVertical(-1);
                 break;
             }
             case 's': {
-                y = ( y == height - 2 ) ? 1 : y + 1; 
-                spaceship.setY(y);
+                    spaceship.moveVertical(1);
                 break;
             }
             case 'r': {
@@ -142,12 +141,13 @@ void Game::play(int height, int width) {
             }
         }
         spaceship.draw_spaceship(x, y);
-        // vector<Asteroids*> all_asts = manage.getAsters();
-        // for(int i = 0; i < all_asts.size(); i++) {
-        //     for(int j = 0; j < asts[i].getWidth(); j++) {
-        //         for (int k = 0; k < asts[i].getHeight(); k++) {
+        vector<Asteroids*> all_asts = manage.getAsters();
+        //printw("%d", (spaceship.getPos()).getX());
+        // for (int i = 0; i < all_asts.size(); i++) {
+        //     for (int j = 0; j < asts->getWidth(); j++) {
+        //         for(int k = 0; k < asts->getHeight(); k++) {
         //             Space_Object offset(j, k);
-        //             if((all_asts.at(i)->getPos()+offset) == spaceship.getPos())
+        //             if (all_asts.at(i)->getPos() == spaceship.getPos() + offset)
         //                 quit = 1;
         //         }
         //     }
