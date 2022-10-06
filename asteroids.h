@@ -26,7 +26,6 @@ class Space_Object {
         Space_Object operator-(Space_Object pos) {
             return Space_Object(this->x - pos.getX(), this->y - pos.getY());
         }
-        Space_Object getPos(Space_Object pos) {return pos;};
 };
 
 class Spaceship: public Space_Object{
@@ -39,6 +38,7 @@ class Spaceship: public Space_Object{
         void draw_spaceship(int, int);
         void erase_spaceship(int, int);
         char getSprite() {return spaceship;};
+        Space_Object getPos() {return position;};
 };
 
 class Gun: public Space_Object {
@@ -47,9 +47,8 @@ class Gun: public Space_Object {
         Space_Object position;
     public:
         Gun(char gsp, Space_Object pos): gun(gsp), Space_Object() {};
-        void shot(int);
-        void draw_shot();
-        void erase_shot();
+        void draw_shot(int, int);
+        void erase_shot(int, int);
         char getSprite() {return gun;};
 };
 
@@ -59,13 +58,14 @@ class Asteroids: public Space_Object {
         Space_Object position;
     public:
         friend class ViewModule;
-        Asteroids(vector<vector<char>> a, Space_Object pos): asteroid(a), Space_Object(pos) {};
+        Asteroids(vector<vector<char>> a, Space_Object pos): asteroid(a), position(pos) {};
         Asteroids(Asteroids &ast): asteroid(ast.asteroid), position(0,0) {};
         int getWidth() {return asteroid.at(0).size();};
         int getHeight() {return asteroid.size();};
-        void draw_asteroid(int);
-        void erase_asteroid(int);
+        void draw_asteroid();
+        void erase_asteroid();
         void move_ast(int);
+        Space_Object getPos() {return position;};
         // int move_asteroid(struct asteroidpos ap);
         // int asteroid_status(int x, int y);
 };
@@ -107,18 +107,7 @@ class Asteroids_Manager {
         Asteroids_Manager(Field f): field(f) {};
         vector<Asteroids*> getAsters() {return asters;};
         void destruct_asteroid(int i);
-        void Update();
-};
-
-class GunManager {
-        Field field;
-        vector<Gun*> active_shots;
-    public:
-        GunManager(Field f): field(f) {};
-        void gunUpdate(int, Spaceship);
-        void gunTouch(int);
-        vector<Gun*> getShots() {return active_shots;};
-        Field getField() {return field;};
+        void asts_manage();
 };
 
 class Game {
