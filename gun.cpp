@@ -1,9 +1,18 @@
 #include "asteroids.h"
 
-void Gun::draw_shot(int x_off, int y_off) {
-    mvaddch(y_off+position.getY(), x_off+position.getX(), getSprite());
+void Gun::draw_shot() {
+    mvaddch(position.getY(), position.getX(), getSprite());
 }
 
-void Gun::erase_shot(int x_prev, int y_prev) {
-    mvaddch(y_prev+position.getY(), x_prev+position.getX(), ' ');
+void Gun::erase_shot() {
+    mvaddch(position.getY(), position.getX(), ' ');
+}
+
+void Gun::moveShot(int x) {
+    position.setX(position.getX() + x);
+}
+
+void Gun::makeShot(Space_Object pos) {
+    position.setX(pos.getX());
+    position.setY(pos.getY());
 }

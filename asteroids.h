@@ -38,8 +38,8 @@ class Spaceship: public Space_Object{
         void draw_spaceship();
         void erase_spaceship();
         char getSprite() {return spaceship;};
-        void moveHorizontal(int x);
-        void moveVertical(int y);
+        void moveHorizontal(int);
+        void moveVertical(int);
         Space_Object getPos() {return position;};
 };
 
@@ -48,10 +48,13 @@ class Gun: public Space_Object {
     protected:
         Space_Object position;
     public:
-        Gun(char gsp, Space_Object pos): gun(gsp), Space_Object() {};
-        void draw_shot(int, int);
-        void erase_shot(int, int);
+        Gun(char gsp, Space_Object pos): gun(gsp), position(pos) {};
+        void draw_shot();
+        void erase_shot();
+        void moveShot(int);
+        void makeShot(Space_Object);
         char getSprite() {return gun;};
+        Space_Object getPos() {return position;};
 };
 
 class Asteroids: public Space_Object {
@@ -68,8 +71,6 @@ class Asteroids: public Space_Object {
         void erase_asteroid();
         void move_ast(int);
         Space_Object getPos() {return position;};
-        // int move_asteroid(struct asteroidpos ap);
-        // int asteroid_status(int x, int y);
 };
 
 
@@ -81,16 +82,10 @@ class Field {
         int getFieldWidth() {return width;};
         int getFieldHeight() {return height;};
         bool object_inside(Space_Object object);
-        // void init_field();
-        // int set_objects(struct spaceshippos sp, struct gunpos gp, struct asteroidpos ap);
-        // int set_asteroid(int start_x, int start_y, struct asteroidpos ap);
         void draw_field();
-        // void draw_board();
-        // ~Field() { for(int i = 0; i < height; i++) delete field[i]; delete[]field; };
 };
 
 class ViewModule {
-        // Asteroids ast;
         Spaceship sp;
     public:
         void draw_asteroid();
