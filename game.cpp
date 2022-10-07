@@ -77,7 +77,7 @@ void Game::play(int height, int width) {
     while (1) {
         int command;
         command = getch();
-        spaceship.erase_spaceship(x+(spaceship.getPos()).getX(), y+(spaceship.getPos()).getY());
+        spaceship.erase_spaceship();
         gun.erase_shot(x_gun-1, y_gun);
         manage.asts_manage();
         if (gun_mode) {
@@ -113,18 +113,17 @@ void Game::play(int height, int width) {
                 break;
             }
         }
-        spaceship.draw_spaceship(x+(spaceship.getPos()).getX(), y+(spaceship.getPos()).getY());
+        spaceship.draw_spaceship();
         vector<Asteroids*> all_asts = manage.getAsters();
-        //printw("%d", (spaceship.getPos()).getX());
-        // for (int i = 0; i < all_asts.size(); i++) {
-        //     for (int j = 0; j < asts->getWidth(); j++) {
-        //         for(int k = 0; k < asts->getHeight(); k++) {
-        //             Space_Object offset(j, k);
-        //             if (all_asts.at(i)->getPos() == spaceship.getPos() + offset)
-        //                 quit = 1;
-        //         }
-        //     }
-        // }
+        for (int i = 0; i < all_asts.size(); i++) {
+            for (int j = 0; j < asts->getWidth(); j++) {
+                for(int k = 0; k < asts->getHeight(); k++) {
+                    Space_Object offset(j, k);
+                    if (all_asts.at(i)->getPos()+ offset == spaceship.getPos())
+                        quit = 1;
+                }
+            }
+        }
         refresh();
         if (quit){
             curs_set(1);

@@ -34,9 +34,9 @@ class Spaceship: public Space_Object{
         Space_Object position;
     public:
         friend class ViewModule;
-        Spaceship(char ssp, Space_Object pos): spaceship(ssp), Space_Object() {};
-        void draw_spaceship(int, int);
-        void erase_spaceship(int, int);
+        Spaceship(char ssp, Space_Object pos): spaceship(ssp), position(pos) {};
+        void draw_spaceship();
+        void erase_spaceship();
         char getSprite() {return spaceship;};
         void moveHorizontal(int x);
         void moveVertical(int y);
