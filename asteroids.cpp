@@ -23,8 +23,8 @@ void eraseAsts(Asteroids* ast) {
     ast -> erase_asteroid();
 }
 void moveAstsLeft(Asteroids_Manager* ast_manage, Asteroids* aster, int a) {
-    if(aster->getX() < (ast_manage->getField()).getFieldWidth() && aster->getX() >= 0 && 
-        aster->getY() >= -5 && aster->getY() < (ast_manage->getField()).getFieldHeight())
+    if(aster->getPos().getX() < (ast_manage->getField()).getFieldWidth() && aster->getPos().getX() > 1 && 
+        aster->getPos().getY() >= -5 && aster->getPos().getY() < (ast_manage->getField()).getFieldHeight())
         aster->move_ast(1);
     else
         ast_manage->destruct_asteroid(a);
