@@ -60,19 +60,20 @@ void Game::play(int height, int width) {
     int gun_mode = 0;
     Space_Object astpos(10, 10);
     Space_Object shippos(x, y);
-    Space_Object gunpos(x_gun,y_gun);
+    Space_Object shotpos(x_gun,y_gun);
     char shipsprite = '>';
-    char gunsprite = {'-'};
+    char shotsprite = {'-'};
     vector<vector<char>> asteroid = {
         {'*', ' ',},
         {'*', '*',},
     };
     Asteroids *asts = new Asteroids(asteroid, astpos);
     // Gun *shots = new Gun(gunsprite, gunpos);
-    Gun gun(gunsprite, gunpos);
+    Shot shot(shotsprite, shotpos);
     Field bord(height, width);
     Spaceship spaceship(shipsprite, shippos);
     Asteroids_Manager manage(bord);
+    Gun gun(bord);
     bord.draw_field();
     while (1) {
         int command;
@@ -102,7 +103,6 @@ void Game::play(int height, int width) {
             }
             case 'r': {
                 gun_mode = 1;
-                gun.makeShot(spaceship.getPos());
                 break;
             }
             case 'q': {
@@ -115,9 +115,8 @@ void Game::play(int height, int width) {
             }
         }
         if (gun_mode) {
-            gun.erase_shot();
-            gun.moveShot(1);
-            gun.draw_shot();
+            gun.gun_manager(spaceship.getPos());
+            gun_mode = 0;
         }
         spaceship.draw_spaceship();
         vector<Asteroids*> all_asts = manage.getAsters();
@@ -125,12 +124,12 @@ void Game::play(int height, int width) {
             for (int j = 0; j < asts->getWidth(); j++) {
                 for(int k = 0; k < asts->getHeight(); k++) {
                     Space_Object offset(j, k);
-                    if (all_asts.at(i)->getPos()+ offset == gun.getPos()) {
-                        manage.destruct_asteroid(i);
-                        gun.erase_shot();
-                        gun.makeShot(spaceship.getPos());
-                        gun_mode = 0;
-                    }
+                    // if (all_asts.at(i)->getPos()+ offset == shot.getPos()) {
+                    //     manage.destruct_asteroid(i);
+                    //     shot.erase_shot();
+                    //     shot.makeShot(spaceship.getPos());
+                    //     gun_mode = 0;
+                    // }
                     if (all_asts.at(i)->getPos()+ offset == spaceship.getPos())
                         quit = 1;
                 }

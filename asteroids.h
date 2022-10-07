@@ -43,17 +43,17 @@ class Spaceship: public Space_Object{
         Space_Object getPos() {return position;};
 };
 
-class Gun: public Space_Object {
-        char gun;
+class Shot: public Space_Object {
+        char shot;
     protected:
         Space_Object position;
     public:
-        Gun(char gsp, Space_Object pos): gun(gsp), position(pos) {};
+        Shot(char shsp, Space_Object pos): shot(shsp), position(pos) {};
         void draw_shot();
         void erase_shot();
         void moveShot(int);
         void makeShot(Space_Object);
-        char getSprite() {return gun;};
+        char getSprite() {return shot;};
         Space_Object getPos() {return position;};
 };
 
@@ -106,6 +106,18 @@ class Asteroids_Manager {
         void destruct_asteroid(int i);
         void asts_manage();
         Field getField() {return field;};
+};
+
+class Gun {
+    Field field;
+    vector <Shot*> shots;
+    Spaceship* spaceship;
+    public:
+        Gun(Field f): field(f) {};
+        vector<Shot*> getShots() {return shots;};
+        Field getField() {return field;};
+        void destruct_shot(int i);
+        void gun_manager(Space_Object);
 };
 
 class Game {
