@@ -138,9 +138,49 @@ void Game::play(int height, int width) {
         }
         refresh();
         if (quit){
+            gameover(height, width);
+            break;
+        }
+    }
+}
+
+void Game::gameover(int height, int width) {
+    Field bord(height, width);
+    bord.draw_field();
+    move(height/2-3, width/2-5);
+    printw("###########");
+    move(height/2-2, width/2-4);
+    printw("GAME OVER");
+    move(height/2-1, width/2-5);
+    printw("###########");
+    move(height/2, width/2-7);
+    printw("Press q to quit");
+    move(height/2+1, width/2-8);
+    printw("Press p to replay");
+    int quit = 0;
+    int start = 0;
+    while (1) {
+        int command = getch();
+        switch (command)
+        {
+            case 'p': {
+                start = 1;
+                break;
+            }
+            case 'q': {
+                raw();
+                quit = 1;
+                break;
+            }
+        }
+        if (quit){
             curs_set(1);
             nocbreak();
-            endwin();
+            break;
+        }
+        if (start) {
+            clear();
+            play(height, width);
             break;
         }
     }

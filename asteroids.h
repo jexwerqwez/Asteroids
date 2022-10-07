@@ -116,7 +116,10 @@ class Game {
         int getstatus() {return status;};
         void menu();
         void play(int, int);
-        void stop();
+        void gameover(int, int);
+        ~Game() {
+            endwin();
+        }
 };
 
 #endif
