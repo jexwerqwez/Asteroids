@@ -22,4 +22,6 @@ void Field::draw_field() {
         move(i, width);
         printw("#");
     }
+    move(height+1, 0);
+    printw("spaceship: WASD;    gun: R;     quit: Q;    play: P;");
 }
