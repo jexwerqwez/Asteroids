@@ -68,6 +68,7 @@ void Game::play(int height, int width) {
         {'*', '*',},
     };
     Asteroids *asts = new Asteroids(asteroid, astpos);
+    // Gun *shots = new Gun(gunsprite, gunpos);
     Gun gun(gunsprite, gunpos);
     Field bord(height, width);
     Spaceship spaceship(shipsprite, shippos);
@@ -80,30 +81,22 @@ void Game::play(int height, int width) {
         manage.asts_manage();
         switch (command) {
             case 'd': {
-                if ((spaceship.getPos()).getX() == width - 1)
-                    (spaceship.getPos()).setX(1);
-                else
+                if (bord.object_inside(spaceship.getPos()) && (spaceship.getPos().getX() < width - 2))
                     spaceship.moveHorizontal(1);
                 break;
             }
             case 'a': {
-                if ((spaceship.getPos()).getX() == 1)
-                    (spaceship.getPos()).setX(1);
-                else
+                if (bord.object_inside(spaceship.getPos()) && (spaceship.getPos().getX() > 1))
                     spaceship.moveHorizontal(-1);
                 break;
             }
             case 'w': {
-                if ((spaceship.getPos()).getY() == 1)
-                    (spaceship.getPos()).setY(1);
-                else
+                if (bord.object_inside(spaceship.getPos()) && (spaceship.getPos().getY() > 1))
                     spaceship.moveVertical(-1);
                 break;
             }
             case 's': {
-                if ((spaceship.getPos()).getY() == height - 2)
-                    (spaceship.getPos()).setY(1);
-                else
+                if (bord.object_inside(spaceship.getPos()) && (spaceship.getPos().getY() < height - 2))
                     spaceship.moveVertical(1);
                 break;
             }
@@ -127,6 +120,7 @@ void Game::play(int height, int width) {
             gun.draw_shot();
         }
         spaceship.draw_spaceship();
+        printw("%d", spaceship.getPos().getX());
         // vector<Asteroids*> all_asts = manage.getAsters();
         // for (int i = 0; i < all_asts.size(); i++) {
         //     for (int j = 0; j < asts->getWidth(); j++) {

@@ -1,8 +1,8 @@
 #include "asteroids.h"
 
 bool Field::object_inside(Space_Object object) {
-    return object.getX() >= 0 && object.getX() <= width &&
-            object.getY() >= 0 && object.getY() <= height;
+    return object.getX() > 0 && object.getX() < width-1 &&
+            object.getY() > 0 && object.getY() < height-1;
 }
 
 void Field::draw_field() {
