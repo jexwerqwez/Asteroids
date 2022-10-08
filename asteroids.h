@@ -117,7 +117,7 @@ class Gun {
         vector<Shot*> getShots() {return shots;};
         Field getField() {return field;};
         void destruct_shot(int i);
-        void gun_manager(Space_Object);
+        void gun_manager(Space_Object, int);
 };
 
 class Game {
