@@ -1,6 +1,7 @@
 #include "asteroids.h"
 
-Game::Game() {
+Game::Game(string file) {
+    filename = file;
     initscr();
     curs_set(0);
     noecho();
@@ -11,19 +12,12 @@ Game::Game() {
 }
 
 void Game::menu() {
-    WINDOW* wnd;
-    int height = 20 + 2, width = 30 + 1;
+    settings.parser(settings, filename);
+    int height = settings.height+2, width = settings.width + 1;
     int start = 0;
     Field f(height, width);
     f.draw_field();
-    move(height/2-1, width/2-5);
-    printw("###########");
-    move(height/2, width/2-4);
-    printw("ASTEROIDS");
-    move(height/2+1, width/2-5);
-    printw("###########");
-    move(height/2+2, width/2-7);
-    printw("Press p to start");
+    print_info(height, width, "ASTEROIDS");
     int quit = 0;
     while (1) {
         int command = getch();
@@ -128,7 +122,6 @@ void Game::play(int height, int width) {
                         if (all_asts.at(i)->getPos() + offset == all_shots.at(l)->getPos()) {
                             manage.destruct_asteroid(i);
                             gun.destruct_shot(l);
-                            refresh();
                         }
                     }
                 }
@@ -145,14 +138,7 @@ void Game::play(int height, int width) {
 void Game::gameover(int height, int width) {
     Field bord(height, width);
     bord.draw_field();
-    move(height/2-3, width/2-5);
-    printw("###########");
-    move(height/2-2, width/2-4);
-    printw("GAME OVER");
-    move(height/2-1, width/2-5);
-    printw("###########");
-    move(height/2, width/2-7);
-    printw("Press q to quit");
+    print_info(height, width, "GAME OVER");
     move(height/2+1, width/2-8);
     printw("Press p to replay");
     int quit = 0;
@@ -182,4 +168,15 @@ void Game::gameover(int height, int width) {
             break;
         }
     }
+}
+
+void Game::print_info(int height, int width, char* str) {
+    move(height/2-3, width/2-5);
+    printw("###########");
+    move(height/2-2, width/2-4);
+    printw("%s", str);
+    move(height/2-1, width/2-5);
+    printw("###########");
+    move(height/2, width/2-7);
+    printw("Press q to quit");
 }

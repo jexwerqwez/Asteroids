@@ -6,7 +6,17 @@
 #include <ctime>
 #include <time.h>
 #include <vector>
+#include <string>
+#include <fstream>
 using namespace std;
+
+struct Settings {
+    unsigned height;
+    unsigned width;
+    Settings(unsigned h = 10, unsigned w = 10): height(h), width(w) {};
+    int parser(Settings &set, string &filename);
+};
+
 
 class Space_Object {
     int x;
@@ -33,7 +43,6 @@ class Spaceship: public Space_Object{
     protected:
         Space_Object position;
     public:
-        friend class ViewModule;
         Spaceship(char ssp, Space_Object pos): spaceship(ssp), position(pos) {};
         void draw_spaceship();
         void erase_spaceship();
@@ -62,7 +71,6 @@ class Asteroids: public Space_Object {
     protected:
         Space_Object position;
     public:
-        friend class ViewModule;
         Asteroids(vector<vector<char>> a, Space_Object pos): asteroid(a), position(pos) {};
         Asteroids(Asteroids &ast): asteroid(ast.asteroid), position(0,0) {};
         int getWidth() {return asteroid.at(0).size();};
@@ -73,7 +81,6 @@ class Asteroids: public Space_Object {
         Space_Object getPos() {return position;};
 };
 
-
 class Field {
     int height;
     int width;
@@ -83,18 +90,6 @@ class Field {
         int getFieldHeight() {return height;};
         bool object_inside(Space_Object object);
         void draw_field();
-};
-
-class ViewModule {
-        Spaceship sp;
-    public:
-        void draw_asteroid();
-        void erase_asteroid();
-        void draw_spaceship();
-        void erase_spaceshi();
-        void draw_gun();
-        void draw_field();
-        void draw_menu(Field **field);
 };
 
 class Asteroids_Manager {
@@ -122,13 +117,16 @@ class Gun {
 
 class Game {
     int status;
+    string filename;
+    Settings settings;
     public:
-        Game();
+        Game(string file);
         friend Field;
         int getstatus() {return status;};
         void menu();
         void play(int, int);
         void gameover(int, int);
+        void print_info(int, int, char*);
         ~Game() {
             endwin();
         }
