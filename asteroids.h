@@ -2,12 +2,13 @@
 #define ASTEROIDS
 
 #include <iostream>
-#include <ncurses.h>
+#include <ncursesw/ncurses.h>
 #include <ctime>
 #include <time.h>
 #include <vector>
 #include <string>
 #include <fstream>
+#include <unistd.h>
 using namespace std;
 
 struct Settings {
@@ -38,6 +39,17 @@ class Space_Object {
         }
 };
 
+class Field {
+    int height;
+    int width;
+    public:
+        Field(int h, int w): height(h), width(w) {};
+        int getFieldWidth() {return width;};
+        int getFieldHeight() {return height;};
+        bool object_inside(Space_Object object);
+        void draw_field();
+};
+
 class Spaceship: public Space_Object{
         char spaceship;
     protected:
@@ -49,6 +61,7 @@ class Spaceship: public Space_Object{
         char getSprite() {return spaceship;};
         void moveHorizontal(int);
         void moveVertical(int);
+        Space_Object change_position(int, Field);
         Space_Object getPos() {return position;};
 };
 
@@ -81,17 +94,6 @@ class Asteroids: public Space_Object {
         Space_Object getPos() {return position;};
 };
 
-class Field {
-    int height;
-    int width;
-    public:
-        Field(int h, int w): height(h), width(w) {};
-        int getFieldWidth() {return width;};
-        int getFieldHeight() {return height;};
-        bool object_inside(Space_Object object);
-        void draw_field();
-};
-
 class Asteroids_Manager {
     Field field;
     vector <Asteroids*> asters;
@@ -103,6 +105,7 @@ class Asteroids_Manager {
         Field getField() {return field;};
 };
 
+
 class Gun {
     Field field;
     vector <Shot*> shots;
@@ -112,7 +115,7 @@ class Gun {
         vector<Shot*> getShots() {return shots;};
         Field getField() {return field;};
         void destruct_shot(int i);
-        void gun_manager(Space_Object, int);
+        int gun_manager(Space_Object, int);
 };
 
 class Game {
@@ -126,7 +129,7 @@ class Game {
         void menu();
         void play(int, int);
         void gameover(int, int);
-        void print_info(int, int, char*);
+        void print_info(int, int, const char*);
         ~Game() {
             endwin();
         }

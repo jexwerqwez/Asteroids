@@ -43,6 +43,7 @@ void Asteroids_Manager::asts_manage() {
     asters.push_back(new Asteroids(asteroid, ast_pos));
     for(int i = 0; i < asters.size(); i++)
         drawAsts(asters[i]);
+    usleep(1e5);
 }
 
 void Asteroids_Manager::destruct_asteroid(int i) {

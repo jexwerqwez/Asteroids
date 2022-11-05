@@ -36,16 +36,18 @@ void Shot::makeShot(Space_Object pos) {
     position.setX(pos.getX());
     position.setY(pos.getY());
 }
-void Gun::gun_manager(Space_Object pos, int signal) {
+int Gun::gun_manager(Space_Object pos, int signal) {
+        if(shots.size() > 10)
+            signal = 0;
         for (int i = 0; i < shots.size(); i++)
             eraseShots(shots[i]);
         for (int i = 0; i < shots.size(); i++)
             moveShotsRigth(this, shots[i], i);
-        timeout(240);
         char shot = {'-'};
         Space_Object shotpos(pos.getX(), pos.getY());
-        if(signal)
+        if(signal) 
             shots.push_back(new Shot(shot, shotpos));
         for (int i = 0; i < shots.size(); i++)
             drawShots(shots[i]);
+    return signal;
 }
