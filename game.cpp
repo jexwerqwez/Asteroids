@@ -65,6 +65,7 @@ void Game::play(int height, int width) {
     // Gun *shots = new Gun(gunsprite, gunpos);
     Shot shot(shotsprite, shotpos);
     Field bord(height, width);
+    int score = 0;
     Spaceship spaceship(shipsprite, shippos);
     Asteroids_Manager manage(bord);
     Gun gun(bord);
@@ -99,13 +100,19 @@ void Game::play(int height, int width) {
                         quit = 1;
                     for (int l = 0; l < all_shots.size(); l++) {
                         if (all_asts.at(i)->getPos() + offset == all_shots.at(l)->getPos()) {
-                            
-        //                     gun.destruct_shot(l);
+                            all_asts.at(i)->erase_asteroid();
+                            manage.destruct_asteroid(i);
+                            all_shots.at(l)->erase_shot();
+                            gun.destruct_shot(l);
+                            score += 3;
                         }
                     }
                 }
             }
         }
+        move(height, width/2-4);
+        printw("SCORE: %d", score);
+        gun_mode = 0;
         refresh();
         if (quit){
             gameover(height, width);
