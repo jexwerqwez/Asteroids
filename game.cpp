@@ -11,6 +11,7 @@ Game::Game(string file) {
 }
 
 void Game::menu() {
+    start_color();
     settings.parser(settings, filename);
     int height = settings.height+2, width = settings.width + 1;
     int start = 0;
@@ -61,7 +62,7 @@ void Game::play(int height, int width) {
         {'*', ' ',},
         {'*', '*',},
     };
-    Asteroids *asts = new Asteroids(asteroid, astpos);
+    Asteroids *asts = new Asteroids(asteroid, astpos, 1+rand()%2);
     // Gun *shots = new Gun(gunsprite, gunpos);
     Shot shot(shotsprite, shotpos);
     Field bord(height, width);
@@ -100,11 +101,15 @@ void Game::play(int height, int width) {
                         quit = 1;
                     for (int l = 0; l < all_shots.size(); l++) {
                         if (all_asts.at(i)->getPos() + offset == all_shots.at(l)->getPos()) {
-                            all_asts.at(i)->erase_asteroid();
-                            manage.destruct_asteroid(i);
+                            all_asts.at(i)->setHeath(all_asts.at(i)->getHealt()-1);
                             all_shots.at(l)->erase_shot();
+                            score += 1;
                             gun.destruct_shot(l);
-                            score += 3;
+                            if(all_asts.at(i)->getHealt() == 0) {
+                                all_asts.at(i)->erase_asteroid();
+                                manage.destruct_asteroid(i);
+                                score += 3;
+                            }
                         }
                     }
                 }

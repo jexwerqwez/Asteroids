@@ -81,14 +81,17 @@ class Shot: public Space_Object {
 
 class Asteroids: public Space_Object {
         vector<vector<char>> asteroid;
+        int health;
     protected:
         Space_Object position;
     public:
-        Asteroids(vector<vector<char>> a, Space_Object pos): asteroid(a), position(pos) {};
+        Asteroids(vector<vector<char>> a, Space_Object pos, int h): asteroid(a), position(pos), health(h) {};
         Asteroids(Asteroids &ast): asteroid(ast.asteroid), position(0,0) {};
         int getWidth() {return asteroid.at(0).size();};
         int getHeight() {return asteroid.size();};
-        void draw_asteroid();
+        int getHealt() {return health;};
+        void setHeath(int h) {health = h;};
+        void draw_asteroid(int color);
         void erase_asteroid();
         void move_ast(int);
         Space_Object getPos() {return position;};
