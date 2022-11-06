@@ -43,8 +43,8 @@ void Asteroids_Manager::asts_manage() {
     Space_Object ast_pos(field.getFieldWidth() - 2, 1 + rand() % (field.getFieldHeight()-asteroid.size()-1));
     asters.push_back(new Asteroids(asteroid, ast_pos, 1+rand()%2));
     for(int i = 0; i < asters.size(); i++) {
-        init_pair(2, COLOR_BLUE, 0);
         init_pair(1, COLOR_WHITE, 0);
+        init_pair(2, COLOR_BLUE, 0);
         drawAsts(asters[i], asters.at(i)->getHealt());
     }
     usleep(1e5);

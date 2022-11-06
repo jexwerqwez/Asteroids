@@ -4,8 +4,8 @@ CFLAGS=-c
 
 all: asteroids
 
-asteroids: settings.o gun.o asteroids.o spaceship.o game.o field.o main.o
-	$(CC) settings.o gun.o asteroids.o spaceship.o game.o field.o main.o -lcurses -o ./asteroids
+asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o main.o
+	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o main.o -lncursesw -o ./asteroids
 
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
@@ -19,6 +19,8 @@ gun.o: gun.cpp
 	$(CC) $(CFLAGS) gun.cpp
 spaceship.o: gun.cpp
 	$(CC) $(CFLAGS) spaceship.cpp
+bonus.o: bonus.cpp
+	$(CC) $(CFLAGS) bonus.cpp
 settings.o: settings.cpp
 	$(CC) $(CFLAGS) settings.cpp
 
