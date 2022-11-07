@@ -114,9 +114,12 @@ class Asteroids: public Space_Object {
 class Asteroids_Manager {
     Field field;
     vector <Asteroids*> asters;
+    double velocity;
     public:
-        Asteroids_Manager(Field f): field(f) {};
+        Asteroids_Manager(Field f, double v): field(f), velocity(v) {};
         vector<Asteroids*> getAsters() {return asters;};
+        int getVelocity() {return velocity;};
+        void setVelocity(int v) {velocity = v;};
         void destruct_asteroid(int);
         void asts_manage();
         Field getField() {return field;};
@@ -131,7 +134,28 @@ class Gun {
         vector<Shot*> getShots() {return shots;};
         Field getField() {return field;};
         void destruct_shot(int);
-        int gun_manager(Space_Object, int);
+        int gun_manager(Space_Object, int, int);
+};
+
+class Game {
+    int status;
+    string filename;
+    Settings settings;
+    int score;
+    public:
+        Game(string file);
+        friend Field;
+        int getstatus() {return status;};
+        void menu();
+        void play(int, int);
+        void gameover(int, int);
+        void print_info(int, int, const char*);
+        int getScore() {return score;};
+        void setScore(int s) {score = s;};
+        ~Game() {
+            endwin();
+        }
+        void timer(int, int, int, int, int, int);
 };
 
 class Bonus: public Space_Object {
@@ -144,7 +168,7 @@ class Bonus: public Space_Object {
         void erase_bonus();
         char getSprite() {return bonus;};
         void generate_bonus(Space_Object);
-        void set_effect(Spaceship, Asteroids_Manager, Gun, char);
+        void set_effect(Spaceship, Asteroids_Manager, Gun, Game, char, int);
         Space_Object getPos() {return position;};
 };
 
@@ -157,24 +181,6 @@ class Bonus_Manager {
         Field getField() {return field;};
         void destruct_bonus(int);
         void bonus_manager(Space_Object, int);
-};
-
-class Game {
-    int status;
-    string filename;
-    Settings settings;
-    public:
-        Game(string file);
-        friend Field;
-        int getstatus() {return status;};
-        void menu();
-        void play(int, int);
-        void gameover(int, int);
-        void print_info(int, int, const char*);
-        ~Game() {
-            endwin();
-        }
-        void timer(int, int, int, int, int, int);
 };
 
 #endif

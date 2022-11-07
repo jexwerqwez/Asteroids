@@ -18,6 +18,7 @@ long time_stop() {
 
 Game::Game(string file) {
     filename = file;
+    score = 0;
     initscr();
     curs_set(0);
     noecho();
@@ -87,9 +88,8 @@ void Game::play(int height, int width) {
     Bonus *bonuses = new Bonus(bonussprite, bonuspos);
     Shot shot(shotsprite, shotpos);
     Field bord(height, width);
-    int score = 0;
     Spaceship spaceship(1, shipsprite, shippos);
-    Asteroids_Manager manage(bord);
+    Asteroids_Manager manage(bord, 1e5);
     Bonus_Manager bonus_manage(bord);
     Gun gun(bord);
     bord.draw_field();
@@ -112,7 +112,7 @@ void Game::play(int height, int width) {
                 break;
             }
         }
-        gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode);
+        gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode, 0);
         spaceship.draw_spaceship();
         vector<Asteroids*> all_asts = manage.getAsters();
         vector<Shot*> all_shots = gun.getShots();
@@ -127,18 +127,18 @@ void Game::play(int height, int width) {
                         if (all_asts.at(i)->getPos() + offset == all_shots.at(l)->getPos()) {
                             all_asts.at(i)->setHeath(all_asts.at(i)->getHealt()-1);
                             all_shots.at(l)->erase_shot();
-                            score += 1;
+                            setScore(getScore()+1);
                             gun.destruct_shot(l);
                             if(all_asts.at(i)->getHealt() == 0) {
                                 all_asts.at(i)->erase_asteroid();
                                 manage.destruct_asteroid(i);
-                                score += 3;
+                                setScore(getScore()+3);
                             }
                         }
                     }
                     for (int m = 0; m < all_bonuses.size(); m++) {
                         if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
-                            all_bonuses.at(m)->set_effect(spaceship, manage, gun, all_bonuses.at(m)->getSprite());
+                            all_bonuses.at(m)->set_effect(spaceship, manage, gun, *this, all_bonuses.at(m)->getSprite(), gun_mode);
                             all_bonuses.at(m)->erase_bonus();
                             bonus_manage.destruct_bonus(m);
                         }
@@ -149,7 +149,7 @@ void Game::play(int height, int width) {
         if(spaceship.getHealt() == 0)
             quit = 1;
         move(height, width/2-10);
-        printw("SCORE: %d\tHEALT: %d", score, spaceship.getHealt());
+        printw("SCORE: %d\tHEALT: %d", getScore(), spaceship.getHealt());
         gun_mode = 0;
         refresh();
         if (quit){

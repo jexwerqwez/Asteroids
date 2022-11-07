@@ -45,12 +45,6 @@ void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
             break;
         case 7: bonus = '7';
             break;
-        case 8: bonus = '8';
-            break;
-        case 9: bonus = '9';
-            break;
-        case 10: bonus = 'P';
-            break;
         }
         if(rand()%100 == 6) {
             Space_Object bonuspos(rand()%field.getFieldWidth(), 1 + rand() % field.getFieldHeight());
@@ -60,38 +54,21 @@ void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
             drawBonuses(bonuses[i]);
 }
 
-void Bonus::set_effect(Spaceship spaceship, Asteroids_Manager all_asts, Gun gun, char type) {
+void Bonus::set_effect(Spaceship spaceship, Asteroids_Manager all_asts, Gun gun, Game game, char type, int gun_mode) {
     switch (type) {
-        case '1': spaceship.setHeath(spaceship.getHealt()+1);
+        case '1': spaceship.setHeath(spaceship.getHealt()+1); // int extra_life;
             break;
-        case '2': spaceship.setHeath(spaceship.getHealt()+6);
+        case '2': spaceship.setHeath(spaceship.getHealt()+6); // int invulnerability;
             break;
-        case '3':
+        case '3': gun.gun_manager(spaceship.getPos(), gun_mode, 1); // int burst_shot;
             break;
-        case '4':
+        case '4': game.setScore(game.getScore() * 2); // int score_multiplier;
             break;
-        case '5':
+        case '5': all_asts.setVelocity(1e6);// int asteroid_slowdown;
             break;
-        case '6':
+        case '6': all_asts.setVelocity(1e4);// int asteroid_acceleration;
             break;
-        case '7':
-            break;
-        case '8':
-            break;
-        case '9':
-            break;
-        case 'P':
+        case '7': gun.gun_manager(spaceship.getPos(), 0, 0);// int gun_disabling;
             break;
         }
 }
-
-    // int extra_life;
-    // int invulnerability;
-    // int bullet_slowdown;
-    // int bullet_acceleration;
-    // int burst_shot;
-    // int score_multiplier;
-    // int asteroid_slowdown;
-    // int asteroid_acceleration;
-    // int asteroid_rain;
-    // int gun_disabling;
