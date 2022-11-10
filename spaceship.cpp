@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "spaceship.h"
 
 void Spaceship::moveHorizontal(int x) {
     position.setX(position.getX() + x);
