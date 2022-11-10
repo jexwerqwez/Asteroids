@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "settings.h"
 
 int Settings::parser(Settings &set, string &filename) {
     ifstream file(filename);
