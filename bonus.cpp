@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "game.h"
 
 void Bonus::draw_bonus(){
     mvaddch(position.getY(), position.getX(), getSprite());
