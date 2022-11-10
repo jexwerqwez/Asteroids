@@ -1,5 +1,5 @@
-#include "asteroids.h"
-using namespace std;
+#include "base.h"
+#include "game.h"
 
 int main (int argc, char* argv[]) {
     Settings setts;
