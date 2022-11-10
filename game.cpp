@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "game.h"
 
 struct timeval tv1, tv2, dtv;
 struct timezone tz;
