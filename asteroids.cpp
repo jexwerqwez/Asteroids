@@ -47,7 +47,7 @@ void Asteroids_Manager::asts_manage() {
         init_pair(2, COLOR_BLUE, 0);
         drawAsts(asters[i], asters.at(i)->getHealt());
     }
-    usleep(1e5);
+    usleep(getVelocity());
 }
 
 void Asteroids_Manager::destruct_asteroid(int i) {
