@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "gun.h"
 
 void Shot::draw_shot() {
     mvaddch(position.getY(), position.getX(), getSprite());
