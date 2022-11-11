@@ -13,10 +13,8 @@ void Menu::print_info(int height, int width, const char* str) {
 }
 
 void Start::processing(Field f) {
-    init_pair(1, COLOR_WHITE, 0);
-    start_color();
-    settings.parser(settings, filename);
-    int height = settings.height+2, width = settings.width + 1;
+    COLOR_PAIR(1);
+    int height = f.getFieldHeight()+2, width = f.getFieldWidth() + 1;
     int start = 0;
     f.draw_field();
     print_info(height, width, "ASTEROIDS");
@@ -51,7 +49,7 @@ void Start::processing(Field f) {
 }
 
 void Finish::processing(Field f) {
-    int height = settings.height+2, width = settings.width + 1;
+    int height = f.getFieldHeight() + 2, width = f.getFieldWidth() + 1;
     f.draw_field();
     print_info(height, width, "GAME OVER");
     move(height/2+1, width/2-8);
