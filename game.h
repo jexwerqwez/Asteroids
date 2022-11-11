@@ -12,13 +12,10 @@ class Game {
     Settings settings;
     int score;
     public:
-        Game(string file);
+        Game() {};
         friend Field;
         int getstatus() {return status;};
-        void menu();
         void play(int, int);
-        void gameover(int, int);
-        void print_info(int, int, const char*);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
         ~Game() {
@@ -49,5 +46,33 @@ class Bonus_Manager {
         Field getField() {return field;};
         void destruct_bonus(int);
         void bonus_manager(Space_Object, int);
+};
+
+class Menu {
+    protected:
+        Field field;
+    public:
+    Menu(Field f): field(f) {};
+    virtual void processing(Field) = 0;
+    void print_info(int, int, const char*);
+};
+class Start: virtual public Menu {
+    string filename;
+    Settings settings;
+    public:
+        Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
+        void processing(Field);
+};
+class Pause: virtual public Menu {
+    public:
+        Pause(Field f): Menu(f) {};
+        void processing(Field);
+};
+class Finish: virtual public Menu {
+    string filename;
+    Settings settings;
+    public:
+        Finish(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
+        void processing(Field);
 };
 #endif

@@ -16,54 +16,6 @@ long time_stop() {
     return (dtv.tv_sec*1000+dtv.tv_usec/1000);
 }
 
-Game::Game(string file) {
-    filename = file;
-    score = 0;
-    initscr();
-    curs_set(0);
-    noecho();
-    clear();
-    refresh();
-    cbreak();
-}
-
-void Game::menu() {
-    start_color();
-    settings.parser(settings, filename);
-    int height = settings.height+2, width = settings.width + 1;
-    int start = 0;
-    Field f(height, width);
-    f.draw_field();
-    print_info(height, width, "ASTEROIDS");
-    int quit = 0;
-    while (1) {
-        int command = getch();
-        switch (command)
-        {
-            case 'p': {
-                start = 1;
-                break;
-            }
-            case 'q': {
-                raw();
-                quit = 1;
-                break;
-            }
-        }
-        if (quit){
-            curs_set(1);
-            nocbreak();
-            endwin();
-            break;
-        }
-        if (start) {
-            clear();
-            play(height, width);
-            break;
-        }
-    }
-}
-
 void Game::play(int height, int width) {
     int quit = 0;
     int command = 0;
@@ -152,58 +104,15 @@ void Game::play(int height, int width) {
         printw("SCORE: %d\tHEALT: %d", getScore(), spaceship.getHealt());
         gun_mode = 0;
         refresh();
-        if (quit){
-            gameover(height, width);
+        if (quit) {
+            Finish finish(bord, filename, settings);
+            finish.processing(bord);
             break;
         }
         timer(ms, s, m, h, height, width);
     }
 }
 
-void Game::gameover(int height, int width) {
-    Field bord(height, width);
-    bord.draw_field();
-    print_info(height, width, "GAME OVER");
-    move(height/2+1, width/2-8);
-    printw("Press p to replay");
-    int quit = 0;
-    int start = 0;
-    while (1) {
-        int command = getch();
-        switch (command) {
-            case 'p': {
-                start = 1;
-                break;
-            }
-            case 'q': {
-                raw();
-                quit = 1;
-                break;
-            }
-        }
-        if (quit){
-            curs_set(1);
-            nocbreak();
-            break;
-        }
-        if (start) {
-            clear();
-            play(height, width);
-            break;
-        }
-    }
-}
-
-void Game::print_info(int height, int width, const char* str) {
-    move(height/2-3, width/2-5);
-    printw("###########");
-    move(height/2-2, width/2-4);
-    printw("%s", str);
-    move(height/2-1, width/2-5);
-    printw("###########");
-    move(height/2, width/2-7);
-    printw("Press q to quit");
-}
 
 void Game::timer(int ms, int s, int m, int h, int height, int width) {
     ms = time_stop();
