@@ -6,22 +6,29 @@
 #include "spaceship.h"
 #include "gun.h"
 #include "asteroids.h"
+struct Time {
+    unsigned int ms = 0, s = 0, m = 0, h = 0;
+};
+
 class Game {
     int status;
     string filename;
     Settings settings;
+    Time time;
     int score;
     public:
         Game() {};
         friend Field;
         int getstatus() {return status;};
-        void play(int, int);
+        void play(int, int, Time);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
+        Time getTime() {return time;};
+        void setTime(Time t) {time.ms = t.ms; time.s = t.s; time.m = t.m; time.h = t.h;};
         ~Game() {
             endwin();
         }
-        void timer(int, int, int, int, int, int);
+        Time timer(Time, int, int);
 };
 class Bonus: public Space_Object {
         char bonus;
@@ -55,6 +62,7 @@ class Menu {
     Menu(Field f): field(f) {};
     virtual void processing(Field) = 0;
     void print_info(int, int, const char*);
+    int choices(int, int, Time, Field, int);
 };
 class Start: virtual public Menu {
     string filename;
@@ -66,6 +74,12 @@ class Start: virtual public Menu {
 class Pause: virtual public Menu {
     public:
         Pause(Field f): Menu(f) {};
+        void processing(Field);
+};
+class Settings_Menu: virtual public Menu {
+    public:
+        Settings_Menu(Field f): Menu(f) {};
+        void setting_menu(Field);
         void processing(Field);
 };
 class Finish: virtual public Menu {

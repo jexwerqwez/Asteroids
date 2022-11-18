@@ -16,14 +16,12 @@ long time_stop() {
     return (dtv.tv_sec*1000+dtv.tv_usec/1000);
 }
 
-void Game::play(int height, int width) {
+void Game::play(int height, int width, Time time) {
     int quit = 0;
     int command = 0;
     int x = 5, y = height/2;
     int x_gun = x, y_gun = y;
     int gun_mode = 0;
-    time_start();
-    int s = 0, m = 0, h = 0, ms = 0;
     Space_Object astpos(10, 10);
     Space_Object shippos(x, y);
     Space_Object shotpos(x_gun,y_gun);
@@ -45,8 +43,9 @@ void Game::play(int height, int width) {
     Bonus_Manager bonus_manage(bord);
     Gun gun(bord);
     bord.draw_field();
-    timeout(1);
+    timeout(3);
     while (1) {
+        timer(time, height, width);
         raw();
         command = getch();
         spaceship.erase_spaceship();
@@ -56,11 +55,6 @@ void Game::play(int height, int width) {
         switch(command) {
             case 'r': {
                 gun_mode = (gun_mode == 1) ? 0: 1;
-                break;
-            }
-            case 'q': {
-                raw();
-                quit = 1;
                 break;
             }
         }
@@ -109,27 +103,28 @@ void Game::play(int height, int width) {
             finish.processing(bord);
             break;
         }
-        timer(ms, s, m, h, height, width);
     }
 }
 
 
-void Game::timer(int ms, int s, int m, int h, int height, int width) {
-    ms = time_stop();
-    if (ms > 999) {
-        s += 1;
-        ms = 0;
+Time Game::timer(Time time, int height, int width) {
+    time.ms = time_stop();
+    if (time.ms > 999) {
+        time.s += 1;
+        time.ms = 0;
         time_start();
     }
-    if (s > 59) {
-        m += 1;
-        s = 0;
+    if (time.s > 59) {
+        time.m += 1;
+        time.s = 0;
     }
-    if (m > 59) {
-        h += 1;
-        m = 0;
+    if (time.m > 59) {
+        time.h += 1;
+        time.m = 0;
     }
+    setTime(time);
     move(height + 1, width/2-10);
-    refresh();
-    printw("%d:%02d:%02d.%03d", h, m, s, ms);
+    // //refresh();
+    printw("%d:%02d:%02d.%03d", time.h, time.m, time.s, time.ms);
+    return time;
 }

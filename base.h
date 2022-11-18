@@ -8,5 +8,6 @@
 #include <string>
 #include <fstream>
 #include <unistd.h>
+#include <wchar.h>
 using namespace std;
 #endif
