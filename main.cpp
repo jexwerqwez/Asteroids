@@ -14,7 +14,11 @@ int main (int argc, char* argv[]) {
     wattrset(stdscr, COLOR_PAIR(4));
     refresh();
     Settings settings;
-    string filename = argv[1];
+    string filename;
+    if (argc < 2)
+        filename = "settings";
+    else
+        filename = argv[1];
     settings.parser(settings, filename);
     Field field(settings.height, settings.width);
     Start start(field, filename, settings);

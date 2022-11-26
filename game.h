@@ -20,7 +20,7 @@ class Game {
         Game() {};
         friend Field;
         int getstatus() {return status;};
-        void play(int, int, Time);
+        void play(int, int, Time, int);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
         Time getTime() {return time;};

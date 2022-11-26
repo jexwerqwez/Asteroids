@@ -16,7 +16,7 @@ long time_stop() {
     return (dtv.tv_sec*1000+dtv.tv_usec/1000);
 }
 
-void Game::play(int height, int width, Time time) {
+void Game::play(int height, int width, Time time, int hard) {
     int quit = 0;
     int command = 0;
     int x = 5, y = height/2;
@@ -92,6 +92,7 @@ void Game::play(int height, int width, Time time) {
                 }
             }
         }
+        usleep(hard);
         if(spaceship.getHealt() == 0)
             quit = 1;
         move(height, width/2-10);

@@ -45,7 +45,6 @@ void Asteroids_Manager::asts_manage() {
     for(int i = 0; i < asters.size(); i++) {
         drawAsts(asters[i], asters.at(i)->getHealt());
     }
-    usleep(getVelocity());
 }
 
 void Asteroids_Manager::destruct_asteroid(int i) {

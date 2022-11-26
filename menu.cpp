@@ -19,9 +19,8 @@ void Menu::print_info(int height, int width, const char* str) {
 
 int Menu::choices(int height, int width, Time time, Field f, int mode) {
     unsigned choice = 0, gamemode = 0;
-    int start = 0, settings = 0, quit = 0;
-    int shift = 3;
-    int items = 3;
+    int start = 0, settings = 0, quit = 0, hard = 1e5;
+    int shift = 3, items = 3;
     const char** array;
     keypad(stdscr, true);
         switch (mode)
@@ -35,6 +34,9 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
             break;
         case 3:
             array = (items == 4) ? setting_set : finish_set;
+            break;
+        case 4:
+            array = (items == 4) ? finish_set : NULL;
             break;
         }
     while (1) {
@@ -68,12 +70,31 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
                         settings = 1;
                     }
                 } else if (choice == 2) {
+                    if (items == 4) {
+                        move(height/2 + 2, width/2+2);
+                        printw("\tKEKw");
+                    } else {
+                        quit = 1;
+                    }
+                } else if (choice == 3) {
                     quit = 1;
                 }
                 break;
         }
-        move(height/2+4, width/2);
-        printw("GAMEMODE %d", gamemode);
+        switch (gamemode)
+        {
+        case 0:
+            hard = 3e5;
+            break;
+        case 1:
+            hard = 1e5;
+            break;
+        case 2:
+            hard = 5e4;
+            break;
+        default:
+            break;
+        }
         if (quit){
             curs_set(1);
             nocbreak();
@@ -83,7 +104,7 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
         if (start) {
             clear();
             Game game;
-            game.play(height, width, time);
+            game.play(height, width, time, hard);
             break;
         }
         if (settings && mode != 2) {
@@ -91,8 +112,6 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
             Settings_Menu setts(f);
             setts.processing(f);
             break;
-        } else if (settings && mode == 2) {
-            return 1;
         }
     }
     return 0;
