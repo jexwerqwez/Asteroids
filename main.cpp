@@ -19,5 +19,8 @@ int main (int argc, char* argv[]) {
     Field field(settings.height, settings.width);
     Start start(field, filename, settings);
     start.processing(field);
+    curs_set(1);
+    nocbreak();
+    endwin();
     return 0;
 }

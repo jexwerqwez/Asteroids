@@ -1,10 +1,11 @@
 #include "game.h"
 #define START 3
 #define FINISH 3
-#define SETTING 3
+#define SETTING 4
 
 const char* start_set[START] = {"Play", "Settings", "Quit"};
-const char* setting_set[SETTINGS] = {"Continue", "Difficulty", "Quit"};
+const char* setting_set[SETTINGS] = {"Continue", "Difficulty", "Field", "Quit"};
+const char* difficulty_set[START] = {"Easy", "Norm", "Hard"};
 const char* finish_set[FINISH] = {"Replay", "Settings", "Quit"};
 
 void Menu::print_info(int height, int width, const char* str) {
@@ -17,9 +18,10 @@ void Menu::print_info(int height, int width, const char* str) {
 }
 
 int Menu::choices(int height, int width, Time time, Field f, int mode) {
-    unsigned choice = 0;
+    unsigned choice = 0, gamemode = 0;
     int start = 0, settings = 0, quit = 0;
     int shift = 3;
+    int items = 3;
     const char** array;
     keypad(stdscr, true);
         switch (mode)
@@ -29,13 +31,14 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
             break;
         case 2:
             array = setting_set;
+            items = 4;
             break;
         case 3:
-            array = finish_set;
+            array = (items == 4) ? setting_set : finish_set;
             break;
         }
     while (1) {
-        for(int i = 0; i < 3; i++) {
+        for(int i = 0; i < items; i++) {
             if (i == choice)
                 mvaddch(height/2+i, width/2-shift-2, '>');
             else
@@ -49,19 +52,28 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
                     choice--; 
                 break;
             case KEY_DOWN:
-                if ( choice != 2 )
+                if ( choice != 3 )
                     choice++;
                 break;
             case 10:
                 if(choice == 0) {
                     start = 1;
                 } else if (choice == 1) {
-                    settings = 1;
+                    if (items == 4) {
+                        (gamemode == 2) ? gamemode = 0 : gamemode += 1;
+                        move(height/2 + 1, width/2+2);
+                        printw(" ");
+                        printw("\t%s", difficulty_set[gamemode]);
+                    } else {
+                        settings = 1;
+                    }
                 } else if (choice == 2) {
                     quit = 1;
                 }
                 break;
         }
+        move(height/2+4, width/2);
+        printw("GAMEMODE %d", gamemode);
         if (quit){
             curs_set(1);
             nocbreak();
