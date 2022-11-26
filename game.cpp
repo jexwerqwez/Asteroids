@@ -44,8 +44,9 @@ void Game::play(int height, int width, Time time, int hard) {
     Gun gun(bord);
     bord.draw_field();
     timeout(3);
+    clock_t t0 = clock();
     while (1) {
-        timer(time, height, width);
+        score = 0;
         raw();
         command = getch();
         spaceship.erase_spaceship();
@@ -96,7 +97,10 @@ void Game::play(int height, int width, Time time, int hard) {
         if(spaceship.getHealt() == 0)
             quit = 1;
         move(height, width/2-10);
+        clock_t t1 = clock();
         printw("SCORE: %d\tHEALT: %d", getScore(), spaceship.getHealt());
+        move(height+1, width/2-10);
+        printw("time: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
         gun_mode = 0;
         refresh();
         if (quit) {
@@ -105,27 +109,4 @@ void Game::play(int height, int width, Time time, int hard) {
             break;
         }
     }
-}
-
-
-Time Game::timer(Time time, int height, int width) {
-    time.ms = time_stop();
-    if (time.ms > 999) {
-        time.s += 1;
-        time.ms = 0;
-        time_start();
-    }
-    if (time.s > 59) {
-        time.m += 1;
-        time.s = 0;
-    }
-    if (time.m > 59) {
-        time.h += 1;
-        time.m = 0;
-    }
-    setTime(time);
-    move(height + 1, width/2-10);
-    // //refresh();
-    printw("%d:%02d:%02d.%03d", time.h, time.m, time.s, time.ms);
-    return time;
 }
