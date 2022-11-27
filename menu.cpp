@@ -7,6 +7,7 @@ const char* start_set[START] = {"Play", "Settings", "Quit"};
 const char* setting_set[SETTINGS] = {"Continue", "Difficulty", "Field", "Quit"};
 const char* difficulty_set[START] = {"Easy", "Norm", "Hard"};
 const char* finish_set[FINISH] = {"Replay", "Settings", "Quit"};
+const char* info_set[2] = {"\t h = ", "\t w = "};
 
 void Menu::print_info(int height, int width, const char* str) {
     move(height/2-3, width/2-5);
@@ -22,6 +23,7 @@ int Menu::choices(int height, int width, Field f, int mode) {
     int start = 0, settings = 0, quit = 0, hard = 1e5;
     int shift = 3, items = 3;
     const char** array;
+    int newheight = height, newwidth = width;
     keypad(stdscr, true);
         switch (mode)
         {
@@ -71,8 +73,41 @@ int Menu::choices(int height, int width, Field f, int mode) {
                     }
                 } else if (choice == 2) {
                     if (items == 4) {
+                        int ch;
                         move(height/2 + 2, width/2+2);
-                        printw("\tKEKw");
+                        while(ch = getch()) {
+                            if (ch == KEY_DOWN || ch == KEY_UP)
+                                break;
+                            else {
+                                int param = newheight;
+                                int j = 0;
+                                // int j = 0;
+                                // if (ch == KEY_RIGHT) {
+                                //     param = newwidth;
+                                //     j = 1;
+                                // }
+                                switch (ch)
+                                {
+                                case 10:
+                                    (j == 1) ? j = 0 : j += 1;
+                                    printw("j = %d", j);
+                                case '=':
+                                    move(height/2 + 2, width/2+2);
+                                    printw(" ");
+                                    printw("%s%d", info_set[j], param++);
+                                    break;
+                                case '-':
+                                    move(height/2 + 2, width/2+2);
+                                    printw(" ");
+                                    printw("%s%d", info_set[j], param--);
+                                    break;
+                                }
+                                
+
+                                if (j == 0) newheight = param;
+                                else newwidth = param;
+                            }
+                        }
                     } else {
                         quit = 1;
                     }
