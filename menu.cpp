@@ -17,7 +17,7 @@ void Menu::print_info(int height, int width, const char* str) {
     printw("###########");
 }
 
-int Menu::choices(int height, int width, Time time, Field f, int mode) {
+int Menu::choices(int height, int width, Field f, int mode) {
     unsigned choice = 0, gamemode = 0;
     int start = 0, settings = 0, quit = 0, hard = 1e5;
     int shift = 3, items = 3;
@@ -104,7 +104,7 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
         if (start) {
             clear();
             Game game;
-            game.play(height, width, time, hard);
+            game.play(height, width, hard, 0);
             break;
         }
         if (settings && mode != 2) {
@@ -119,27 +119,24 @@ int Menu::choices(int height, int width, Time time, Field f, int mode) {
 
 void Start::processing(Field f) {
     COLOR_PAIR(1);
-    Time time;
     f.draw_field();
-    int height = f.getFieldHeight()+2, width = f.getFieldWidth() + 1;
+    int height = f.getFieldHeight(), width = f.getFieldWidth();
     print_info(height, width, "ASTEROIDS");
-    choices(height, width, time, f, 1);
+    choices(height, width, f, 1);
 }
 
 void Finish::processing(Field f) {
-    Time time;
-    int height = f.getFieldHeight() + 2, width = f.getFieldWidth() + 1;
+    int height = f.getFieldHeight(), width = f.getFieldWidth();
     f.draw_field();
     print_info(height, width, "GAME OVER");
-    choices(height, width, time, f, 3);
+    choices(height, width, f, 3);
 }
 
 void Settings_Menu::processing(Field f) {
-    Time time;
-    int height = f.getFieldHeight() + 2, width = f.getFieldWidth() + 1;
+    int height = f.getFieldHeight(), width = f.getFieldWidth();
     f.draw_field();
     print_info(height, width, "SETTINGS");
-    int regime = choices(height, width, time, f, 2);
+    int regime = choices(height, width, f, 2);
     if (regime)
         clear();
 }

@@ -1,22 +1,6 @@
 #include "game.h"
 
-struct timeval tv1, tv2, dtv;
-struct timezone tz;
-void time_start() {
-    gettimeofday(&tv1, &tz);
-}
-long time_stop() {
-    gettimeofday(&tv2, &tz);
-    dtv.tv_sec = tv2.tv_sec - tv1.tv_sec;
-    dtv.tv_usec = tv2.tv_usec - tv1.tv_usec;
-    if(dtv.tv_usec < 0) {
-        dtv.tv_sec--;
-        dtv.tv_usec+=1000000;
-    }
-    return (dtv.tv_sec*1000+dtv.tv_usec/1000);
-}
-
-void Game::play(int height, int width, Time time, int hard) {
+void Game::play(int height, int width, int hard, int score) {
     int quit = 0;
     int command = 0;
     int x = 5, y = height/2;
@@ -45,8 +29,8 @@ void Game::play(int height, int width, Time time, int hard) {
     bord.draw_field();
     timeout(3);
     clock_t t0 = clock();
+    setScore(score);
     while (1) {
-        score = 0;
         raw();
         command = getch();
         spaceship.erase_spaceship();
@@ -98,9 +82,9 @@ void Game::play(int height, int width, Time time, int hard) {
             quit = 1;
         move(height, width/2-10);
         clock_t t1 = clock();
-        printw("SCORE: %d\tHEALT: %d", getScore(), spaceship.getHealt());
+        printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
         move(height+1, width/2-10);
-        printw("time: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
+        printw("TIME: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
         gun_mode = 0;
         refresh();
         if (quit) {
