@@ -73,39 +73,28 @@ int Menu::choices(int height, int width, Field f, int mode) {
                     }
                 } else if (choice == 2) {
                     if (items == 4) {
+                        int j = 0;
                         int ch;
                         move(height/2 + 2, width/2+2);
                         while(ch = getch()) {
                             if (ch == KEY_DOWN || ch == KEY_UP)
                                 break;
                             else {
-                                int param = newheight;
-                                int j = 0;
-                                // int j = 0;
-                                // if (ch == KEY_RIGHT) {
-                                //     param = newwidth;
-                                //     j = 1;
-                                // }
                                 switch (ch)
                                 {
                                 case 10:
                                     (j == 1) ? j = 0 : j += 1;
-                                    printw("j = %d", j);
                                 case '=':
                                     move(height/2 + 2, width/2+2);
                                     printw(" ");
-                                    printw("%s%d", info_set[j], param++);
+                                    printw("%s%d", info_set[j], (j == 0) ? newheight++ : newwidth++);
                                     break;
                                 case '-':
                                     move(height/2 + 2, width/2+2);
                                     printw(" ");
-                                    printw("%s%d", info_set[j], param--);
+                                    printw("%s%d", info_set[j], (j == 0) ? newheight-- : newwidth--);
                                     break;
                                 }
-                                
-
-                                if (j == 0) newheight = param;
-                                else newwidth = param;
                             }
                         }
                     } else {
@@ -119,13 +108,13 @@ int Menu::choices(int height, int width, Field f, int mode) {
         switch (gamemode)
         {
         case 0:
-            hard = 3e5;
-            break;
-        case 1:
             hard = 1e5;
             break;
+        case 1:
+            hard = 8e4;
+            break;
         case 2:
-            hard = 5e4;
+            hard = 4e4;
             break;
         default:
             break;
@@ -139,6 +128,8 @@ int Menu::choices(int height, int width, Field f, int mode) {
         if (start) {
             clear();
             Game game;
+            height = newheight;
+            width = newwidth;
             game.play(height, width, hard, 0);
             break;
         }
