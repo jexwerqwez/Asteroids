@@ -10,7 +10,7 @@ void Spaceship::moveVertical(int y) {
 
 void Spaceship::draw_spaceship() {
     move(position.getY(), position.getX());
-    mvaddch(position.getY(), position.getX(), getSprite() | A_BOLD | COLOR_PAIR(3));
+    mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR(3));
 }
 
 void Spaceship::erase_spaceship() {
