@@ -23,7 +23,7 @@ int main (int argc, char* argv[]) {
     settings.parser(settings, filename);
     Field field(settings.height, settings.width);
     Start start(field, filename, settings);
-    start.processing(field);
+    start.processing(settings, field);
     curs_set(1);
     nocbreak();
     endwin();

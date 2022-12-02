@@ -9,13 +9,12 @@
 class Game {
     int status;
     string filename;
-    Settings settings;
     int score;
     public:
         Game() {};
         friend Field;
         int getstatus() {return status;};
-        void play(int, int, int, int);
+        void play(int, int, int, Settings);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
         ~Game() {
@@ -52,33 +51,33 @@ class Menu {
         Field field;
     public:
     Menu(Field f): field(f) {};
-    virtual void processing(Field) = 0;
+    virtual void processing(Settings, Field) = 0;
     void print_info(int, int, const char*);
-    int choices(int, int, Field, int);
+    int choices(Settings, Field, int);
 };
 class Start: virtual public Menu {
     string filename;
     Settings settings;
     public:
         Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
-        void processing(Field);
+        void processing(Settings, Field);
 };
 class Pause: virtual public Menu {
     public:
         Pause(Field f): Menu(f) {};
-        void processing(Field);
+        void processing(Settings, Field);
 };
 class Settings_Menu: virtual public Menu {
     public:
         Settings_Menu(Field f): Menu(f) {};
-        void setting_menu(Field);
-        void processing(Field);
+        void setting_menu(Settings, Field);
+        void processing(Settings, Field);
 };
 class Finish: virtual public Menu {
     string filename;
     Settings settings;
     public:
         Finish(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
-        void processing(Field);
+        void processing(Settings, Field);
 };
 #endif

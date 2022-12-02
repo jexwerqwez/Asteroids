@@ -4,7 +4,10 @@
 struct Settings {
     unsigned height;
     unsigned width;
-    Settings(unsigned h = 10, unsigned w = 10): height(h), width(w) {};
+    int score;
+    unsigned hithpoint;
+    Settings(unsigned h = 10, unsigned w = 10, int s = 0, unsigned hp = 1): height(h), 
+            width(w), score(s), hithpoint(hp) {};
     int parser(Settings &set, string &filename);
 };
 #endif

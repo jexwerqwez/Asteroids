@@ -17,6 +17,14 @@ int Settings::parser(Settings &set, string &filename) {
                 getline(file, str);
                 set.width = stoi(str);
             }
+            if(str == "score") {
+                getline(file,str);
+                set.score = stoi(str);
+            }
+            if(str == "hp") {
+                getline(file, str);
+                set.hithpoint = stoi(str);
+            }
         }
     }
     return 0;

@@ -18,12 +18,13 @@ void Menu::print_info(int height, int width, const char* str) {
     printw("###########");
 }
 
-int Menu::choices(int height, int width, Field f, int mode) {
+int Menu::choices(Settings set, Field f, int mode) {
     unsigned choice = 0, gamemode = 0;
     int start = 0, settings = 0, quit = 0, hard = 1e5;
     int shift = 3, items = 3;
     const char** array;
-    int newheight = height, newwidth = width;
+    int height = f.getFieldHeight(), width = f.getFieldWidth();
+    int newheight = f.getFieldHeight(), newwidth = f.getFieldWidth();
     keypad(stdscr, true);
         switch (mode)
         {
@@ -130,39 +131,39 @@ int Menu::choices(int height, int width, Field f, int mode) {
             Game game;
             height = newheight;
             width = newwidth;
-            game.play(height, width, hard, 0);
+            game.play(height, width, hard, set);
             break;
         }
         if (settings && mode != 2) {
             clear();
             Settings_Menu setts(f);
-            setts.processing(f);
+            setts.processing(set, f);
             break;
         }
     }
     return 0;
 }
 
-void Start::processing(Field f) {
+void Start::processing(Settings set, Field f) {
     COLOR_PAIR(1);
     f.draw_field();
     int height = f.getFieldHeight(), width = f.getFieldWidth();
     print_info(height, width, "ASTEROIDS");
-    choices(height, width, f, 1);
+    choices(set, f, 1);
 }
 
-void Finish::processing(Field f) {
+void Finish::processing(Settings set, Field f) {
     int height = f.getFieldHeight(), width = f.getFieldWidth();
     f.draw_field();
     print_info(height, width, "GAME OVER");
-    choices(height, width, f, 3);
+    choices(set, f, 3);
 }
 
-void Settings_Menu::processing(Field f) {
+void Settings_Menu::processing(Settings set, Field f) {
     int height = f.getFieldHeight(), width = f.getFieldWidth();
     f.draw_field();
     print_info(height, width, "SETTINGS");
-    int regime = choices(height, width, f, 2);
+    int regime = choices(set, f, 2);
     if (regime)
         clear();
 }
