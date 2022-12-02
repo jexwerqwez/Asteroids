@@ -11,11 +11,11 @@ const char* info_set[2] = {"\t h = ", "\t w = "};
 
 void Menu::print_info(int height, int width, const char* str) {
     move(height/2-3, width/2-5);
-    printw("###########");
+    printw("===========");
     move(height/2-2, width/2-4);
     printw("%s", str);
     move(height/2-1, width/2-5);
-    printw("###########");
+    printw("===========");
 }
 
 int Menu::choices(Settings set, Field f, int mode) {

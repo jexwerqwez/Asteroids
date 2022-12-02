@@ -9,5 +9,7 @@
 #include <fstream>
 #include <unistd.h>
 #include <wchar.h>
+#include <thread>
+#include <chrono>
 using namespace std;
 #endif

@@ -31,11 +31,17 @@ void Game::play(int height, int width, int hard, Settings setts) {
     timeout(3);
     clock_t t0 = clock();
     setScore(score);
+    thread th([&](){
+        while(!quit) {
+            manage.asts_manage();
+            // this_thread::sleep_for(chrono::milliseconds(370));
+        }
+    });
+    th.detach();
     while (1) {
-        raw();
+        //raw();
         command = getch();
         spaceship.erase_spaceship();
-        manage.asts_manage();
         spaceship.change_position(command, bord);
         bonus_manage.bonus_manager(bonuspos, 1);
         switch(command) {
@@ -81,12 +87,12 @@ void Game::play(int height, int width, int hard, Settings setts) {
                 }
             }
         }
-        usleep(hard);
-        if(spaceship.getHealt() == 0)
+        this_thread::sleep_for(chrono::milliseconds(10));
+        if(spaceship.getHealt() <= 0)
             quit = 1;
         move(height, width/2-10);
         clock_t t1 = clock();
-        printw("SCORE: %d\tHP: %d or %d", getScore(), spaceship.getHealt(), setts.hithpoint);
+        printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
         move(height+1, width/2-10);
         printw("TIME: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
         gun_mode = 0;
