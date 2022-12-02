@@ -34,11 +34,14 @@ void Game::play(int height, int width, int hard, Settings setts) {
     thread th([&](){
         while(!quit) {
             manage.asts_manage();
-            // this_thread::sleep_for(chrono::milliseconds(370));
+            this_thread::sleep_for(chrono::milliseconds(330));
         }
     });
-    th.detach();
     while (1) {
+        if(spaceship.getHealt() <= 0) {
+            quit = 1;
+            break;
+        }
         //raw();
         command = getch();
         spaceship.erase_spaceship();
@@ -87,9 +90,6 @@ void Game::play(int height, int width, int hard, Settings setts) {
                 }
             }
         }
-        this_thread::sleep_for(chrono::milliseconds(10));
-        if(spaceship.getHealt() <= 0)
-            quit = 1;
         move(height, width/2-10);
         clock_t t1 = clock();
         printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
@@ -97,10 +97,11 @@ void Game::play(int height, int width, int hard, Settings setts) {
         printw("TIME: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
         gun_mode = 0;
         refresh();
-        if (quit) {
-            Finish finish(bord, filename, setts);
-            finish.processing(setts, bord);
-            break;
-        }
+        this_thread::sleep_for(chrono::milliseconds(25));
+    }
+    if (quit) {
+        th.detach();
+        Finish finish(bord, filename, setts);
+        finish.processing(setts, bord);
     }
 }

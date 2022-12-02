@@ -46,7 +46,7 @@ void Asteroids_Manager::asts_manage() {
         for(int i = 0; i < asters.size(); i++) {
             drawAsts(asters[i], asters.at(i)->getHealt());
         }
-        this_thread::sleep_for(chrono::milliseconds(370));
+    //     this_thread::sleep_for(chrono::milliseconds(370));
     // }
     //this_thread::sleep_for(chrono::milliseconds(1000));
     // usleep(1e5);
