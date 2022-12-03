@@ -8,6 +8,9 @@ void Bonus::erase_bonus() {
     mvaddch(position.getY(), position.getX(), ' ');
 }
 
+void Bonus::move_bonus(int offset) {
+    position.setX(position.getX() - offset);
+}
 
 void drawBonuses(Bonus* b) {
     b -> draw_bonus();
@@ -22,21 +25,30 @@ void Bonus_Manager::destruct_bonus(int i) {
     bonuses.erase(bonuses.begin() + i);
 }
 
+void moveBonusLeft(Bonus_Manager* bonuses, Bonus* bonus, int a) {
+    if ((bonuses->getField()).object_inside(bonus->getPos()))
+        bonus->move_bonus(1);
+    else
+        bonuses->destruct_bonus(a);
+}
+
 void Bonus::generate_bonus(Space_Object pos) {
     position.setX(pos.getX());
     position.setY(pos.getY());
 }
 void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
-        for (int i = 0; i < bonuses.size(); i++)
-            eraseBonuses(bonuses[i]);
-        int bonus_type = 1+rand()%11;
-        char bonus = '0';
-        if(rand()%100 == 6) {
-            Space_Object bonuspos(rand()%field.getFieldWidth(), 1 + rand() % field.getFieldHeight());
-            bonuses.push_back(new Bonus(bonus, bonuspos));
-        }
-        for (int i = 0; i < bonuses.size(); i++)
-            drawBonuses(bonuses[i]);
+    for (int i = 0; i < bonuses.size(); i++)
+        eraseBonuses(bonuses[i]);
+    for (int i = 0; i < bonuses.size(); i++)
+        moveBonusLeft(this, bonuses[i], i);
+    int bonus_type = 1+rand()%11;
+    char bonus = '0';
+   if(rand()%100 == 6) {
+        Space_Object bonuspos(field.getFieldWidth() - 2, 1 + rand() % field.getFieldHeight());
+        bonuses.push_back(new Bonus(bonus, bonuspos));
+   }
+    for (int i = 0; i < bonuses.size(); i++)
+        drawBonuses(bonuses[i]);
 }
 
 void Bonus::set_effect(Spaceship spaceship, Asteroids_Manager all_asts, Gun gun, Game game, char type, int gun_mode) {

@@ -29,6 +29,7 @@ class Bonus: public Space_Object {
         Bonus(char bsp, Space_Object pos): bonus(bsp), position(pos) {};
         void draw_bonus();
         void erase_bonus();
+        void move_bonus(int);
         char getSprite() {return bonus;};
         void generate_bonus(Space_Object);
         void set_effect(Spaceship, Asteroids_Manager, Gun, Game, char, int);

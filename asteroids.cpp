@@ -32,24 +32,19 @@ void moveAstsLeft(Asteroids_Manager* ast_manage, Asteroids* aster, int a) {
 }
 
 void Asteroids_Manager::asts_manage() {
-    // while(1) {
-        for(int i = 0; i < asters.size(); i++)
-            eraseAsts(asters[i]);
-        for(int i = 0; i < asters.size(); i++)
-            moveAstsLeft(this, asters[i], i);
-        vector<vector<char>> asteroid = {
-            {'*', ' '},
-            {'*', '*'},
-        };
-        Space_Object ast_pos(field.getFieldWidth() - 2, 1 + rand() % (field.getFieldHeight()-asteroid.size()-1));
-        asters.push_back(new Asteroids(asteroid, ast_pos, 1+rand()%2));
-        for(int i = 0; i < asters.size(); i++) {
-            drawAsts(asters[i], asters.at(i)->getHealt());
-        }
-    //     this_thread::sleep_for(chrono::milliseconds(370));
-    // }
-    //this_thread::sleep_for(chrono::milliseconds(1000));
-    // usleep(1e5);
+    for(int i = 0; i < asters.size(); i++)
+        eraseAsts(asters[i]);
+    for(int i = 0; i < asters.size(); i++)
+        moveAstsLeft(this, asters[i], i);
+    vector<vector<char>> asteroid = {
+        {'*', ' '},
+        {'*', '*'},
+    };
+    Space_Object ast_pos(field.getFieldWidth() - 2, 1 + rand() % (field.getFieldHeight()-asteroid.size()-1));
+    asters.push_back(new Asteroids(asteroid, ast_pos, 1+rand()%2));
+    for(int i = 0; i < asters.size(); i++) {
+        drawAsts(asters[i], asters.at(i)->getHealt());
+    }
 }
 
 void Asteroids_Manager::destruct_asteroid(int i) {

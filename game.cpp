@@ -27,6 +27,7 @@ void Game::play(int height, int width, int hard, Settings setts) {
     Asteroids_Manager manage(bord, 1e5);
     Bonus_Manager bonus_manage(bord);
     Gun gun(bord);
+
     bord.draw_field();
     timeout(3);
     clock_t t0 = clock();
@@ -34,18 +35,19 @@ void Game::play(int height, int width, int hard, Settings setts) {
     thread th([&](){
         while(!quit) {
             manage.asts_manage();
-            this_thread::sleep_for(chrono::milliseconds(330));
+            this_thread::sleep_for(chrono::milliseconds(230));
         }
     });
+    mutex mtx;
     while (1) {
+        int prev_score = getScore();
+        int prev_health = spaceship.getHealt();
         if(spaceship.getHealt() <= 0) {
             quit = 1;
             break;
         }
         //raw();
         command = getch();
-        spaceship.erase_spaceship();
-        spaceship.change_position(command, bord);
         bonus_manage.bonus_manager(bonuspos, 1);
         switch(command) {
             case 'r': {
@@ -53,8 +55,15 @@ void Game::play(int height, int width, int hard, Settings setts) {
                 break;
             }
         }
-        gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode, 0);
-        spaceship.draw_spaceship();
+       if(command) {
+            mtx.lock();
+            this_thread::sleep_for(chrono::milliseconds(130));
+            spaceship.erase_spaceship();
+            spaceship.change_position(command, bord);
+            gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode, 0);
+            spaceship.draw_spaceship();
+            mtx.unlock();
+       }
         vector<Asteroids*> all_asts = manage.getAsters();
         vector<Shot*> all_shots = gun.getShots();
         vector<Bonus*> all_bonuses = bonus_manage.getBonuses();
@@ -90,14 +99,16 @@ void Game::play(int height, int width, int hard, Settings setts) {
                 }
             }
         }
-        move(height, width/2-10);
-        clock_t t1 = clock();
-        printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
-        move(height+1, width/2-10);
-        printw("TIME: %lf", (double)(t1-t0) / CLOCKS_PER_SEC);
+        if (getScore()-prev_score != 0 || spaceship.getHealt()-prev_health != 0) {
+            mtx.lock();
+            this_thread::sleep_for(chrono::milliseconds(30));
+            move(height, width/2-10);
+            //clock_t t1 = clock();
+            printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
+            mtx.unlock();
+            //move(height+1, width/2-10);
+        }
         gun_mode = 0;
-        refresh();
-        this_thread::sleep_for(chrono::milliseconds(25));
     }
     if (quit) {
         th.detach();
