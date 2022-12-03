@@ -7,7 +7,11 @@ int main (int argc, char* argv[]) {
     noecho();
     start_color();
     clear();
-    init_pair(5, COLOR_WHITE, COLOR_WHITE) ; // bord
+    //init_pair(6, )
+    init_pair(8, COLOR_WHITE, COLOR_WHITE) ; // bord
+    init_pair(7, COLOR_YELLOW, 0);
+    init_pair(6, COLOR_MAGENTA, 0);
+    init_pair(5, COLOR_GREEN, 0);
     init_pair(4, COLOR_WHITE, 0);  // text, shot
     init_pair(2, COLOR_BLUE, 0);  // meteor 1
     init_pair(3, COLOR_RED, 0);  // spaceship

@@ -24,10 +24,10 @@ void Game::play(int height, int width, int hard, Settings setts) {
     Shot shot(shotsprite, shotpos);
     Field bord(height, width);
     Spaceship spaceship(setts.hithpoint, shipsprite, shippos);
-    Asteroids_Manager manage(bord, 1e5);
+    Asteroids_Manager manage(bord, 200);
     Bonus_Manager bonus_manage(bord);
     Gun gun(bord);
-
+    int main_velocity = 30;
     bord.draw_field();
     timeout(3);
     clock_t t0 = clock();
@@ -35,10 +35,12 @@ void Game::play(int height, int width, int hard, Settings setts) {
     thread th([&](){
         while(!quit) {
             manage.asts_manage();
-            this_thread::sleep_for(chrono::milliseconds(230));
+            this_thread::sleep_for(chrono::milliseconds(manage.getVelocity()));
         }
     });
     mutex mtx;
+    move(height, width/2-10);
+    printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
     while (1) {
         int prev_score = getScore();
         int prev_health = spaceship.getHealt();
@@ -57,7 +59,7 @@ void Game::play(int height, int width, int hard, Settings setts) {
         }
        if(command) {
             mtx.lock();
-            this_thread::sleep_for(chrono::milliseconds(130));
+            this_thread::sleep_for(chrono::milliseconds(main_velocity));
             spaceship.erase_spaceship();
             spaceship.change_position(command, bord);
             gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode, 0);
@@ -91,7 +93,7 @@ void Game::play(int height, int width, int hard, Settings setts) {
                     }
                     for (int m = 0; m < all_bonuses.size(); m++) {
                         if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
-                            all_bonuses.at(m)->set_effect(spaceship, manage, gun, *this, all_bonuses.at(m)->getSprite(), gun_mode);
+                            all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun, this, rand()%8, gun_mode);
                             all_bonuses.at(m)->erase_bonus();
                             bonus_manage.destruct_bonus(m);
                         }

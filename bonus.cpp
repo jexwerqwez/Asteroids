@@ -1,7 +1,7 @@
 #include "game.h"
 
-void Bonus::draw_bonus(){
-    mvaddch(position.getY(), position.getX(), getSprite());
+void Bonus::draw_bonus(int effect){
+    mvaddch(position.getY(), position.getX(), getSprite()| COLOR_PAIR(effect));
 }
 
 void Bonus::erase_bonus() {
@@ -12,8 +12,8 @@ void Bonus::move_bonus(int offset) {
     position.setX(position.getX() - offset);
 }
 
-void drawBonuses(Bonus* b) {
-    b -> draw_bonus();
+void drawBonuses(Bonus* b, int effect) {
+    b -> draw_bonus(effect);
 }
 
 void eraseBonuses(Bonus* b) {
@@ -44,28 +44,32 @@ void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
     int bonus_type = 1+rand()%11;
     char bonus = '0';
    if(rand()%100 == 6) {
-        Space_Object bonuspos(field.getFieldWidth() - 2, 1 + rand() % field.getFieldHeight());
+        Space_Object bonuspos(field.getFieldWidth() - 2, 1 + rand() % (field.getFieldHeight()-1));
         bonuses.push_back(new Bonus(bonus, bonuspos));
-   }
+    }
     for (int i = 0; i < bonuses.size(); i++)
-        drawBonuses(bonuses[i]);
+        drawBonuses(bonuses[i], rand()%8);
 }
 
-void Bonus::set_effect(Spaceship spaceship, Asteroids_Manager all_asts, Gun gun, Game game, char type, int gun_mode) {
+void Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gun, Game* game, int type, int gun_mode) {
+    mvaddstr(80, 12, "CATCH");
     switch (type) {
-        case '1': spaceship.setHeath(spaceship.getHealt()+1); // int extra_life;
+        case 0: spaceship->setHeath(spaceship->getHealt()+1); // int extra_life;
+            
             break;
-        case '2': spaceship.setHeath(spaceship.getHealt()+6); // int invulnerability;
+        case 1: spaceship->setHeath(spaceship->getHealt()+6); // int invulnerability;
             break;
-        case '3': gun.gun_manager(spaceship.getPos(), gun_mode, 1); // int burst_shot;
+        case 2: gun->gun_manager(spaceship->getPos(), gun_mode, 1); // int burst_shot;
             break;
-        case '4': game.setScore(game.getScore() * 2); // int score_multiplier;
+        case 3: game->setScore(game->getScore() * 2); // int score_multiplier;
             break;
-        case '5': all_asts.setVelocity(1e6);// int asteroid_slowdown;
+        case 4: all_asts->setVelocity(all_asts->getVelocity()+100);// int asteroid_slowdown;
             break;
-        case '6': all_asts.setVelocity(1e4);// int asteroid_acceleration;
+        case 5: all_asts->setVelocity(all_asts->getVelocity()-100);// int asteroid_acceleration;
             break;
-        case '7': gun.gun_manager(spaceship.getPos(), 0, 0);// int gun_disabling;
+        case 6: gun->gun_manager(spaceship->getPos(), 0, 0);// int gun_disabling;
+            break;
+        case 7: spaceship->setHeath(spaceship->getHealt()-100000);
             break;
         }
 }
