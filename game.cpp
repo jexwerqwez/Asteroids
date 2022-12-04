@@ -1,6 +1,7 @@
 #include "game.h"
 
 void Game::play(int height, int width, Settings setts) {
+    srand(time(NULL));
     int command = 0, gun_mode = 0, effect = 0;
     char bonussprite = '0', shipsprite = '>',  shotsprite = '-';
     int score = setts.score;
@@ -30,7 +31,7 @@ void Game::play(int height, int width, Settings setts) {
     setScore(score);
     thread th([&](){
         while(getstatus() != 2) {
-            manage.asts_manage();
+            manage.asts_manage(1+hard);
             this_thread::sleep_for(chrono::milliseconds(manage.getVelocity()));
         }
     });
@@ -98,7 +99,7 @@ void Game::play(int height, int width, Settings setts) {
         }
         if(effect != 0) {
             move(height+1, width/2-10);
-            printw("CATCH!");
+            printw("CATCH %d!", effect);
         }
 
         if (getScore()-prev_score != 0 || spaceship.getHealt()-prev_health != 0) {
