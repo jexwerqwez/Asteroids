@@ -51,13 +51,11 @@ void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
         drawBonuses(bonuses[i], rand()%8);
 }
 
-void Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gun, Game* game, int type, int gun_mode) {
-    mvaddstr(80, 12, "CATCH");
+int Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gun, Game* game, int type, int gun_mode) {
     switch (type) {
-        case 0: spaceship->setHeath(spaceship->getHealt()+1); // int extra_life;
-            
+        case 0: spaceship->setHeath(spaceship->getHealt()+1); // extra_life;
             break;
-        case 1: spaceship->setHeath(spaceship->getHealt()+6); // int invulnerability;
+        case 1: spaceship->setHeath(spaceship->getHealt()-1); // spaceship acceleration
             break;
         case 2: gun->gun_manager(spaceship->getPos(), gun_mode, 1); // int burst_shot;
             break;
@@ -72,4 +70,5 @@ void Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* g
         case 7: spaceship->setHeath(spaceship->getHealt()-100000);
             break;
         }
+    return type;
 }
