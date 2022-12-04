@@ -10,13 +10,19 @@ class Game {
     int status;
     string filename;
     int score;
+    int hard;
+    int main_velocity;
     public:
-        Game() {};
+        Game(int h): hard(h) {};
         friend Field;
         int getstatus() {return status;};
-        void play(int, int, int, Settings);
+        void setstatus(int s) {status = s;};
+        void sethard(Asteroids_Manager*);
+        void play(int, int, Settings);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
+        int getVelocity() {return main_velocity;};
+        void setVelocity(int v) {main_velocity = v;};
         ~Game() {
             endwin();
         }
@@ -29,10 +35,12 @@ class Bonus: public Space_Object {
         Bonus(char bsp, Space_Object pos): bonus(bsp), position(pos) {};
         void draw_bonus(int);
         void erase_bonus();
+        // int getType() {return type;};
+        // void setType(int t) {type = t;};
         void move_bonus(int);
         char getSprite() {return bonus;};
         void generate_bonus(Space_Object);
-        void set_effect(Spaceship*, Asteroids_Manager*, Gun*, Game*, int, int);
+        int set_effect(Spaceship*, Asteroids_Manager*, Gun*, Game*, int, int);
         Space_Object getPos() {return position;};
 };
 
