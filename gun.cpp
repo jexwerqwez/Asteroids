@@ -1,7 +1,7 @@
 #include "gun.h"
 
 void Shot::draw_shot() {
-    mvaddch(position.getY(), position.getX(), getSprite());
+    mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR(7));
 }
 
 void Shot::erase_shot() {
