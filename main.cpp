@@ -12,11 +12,11 @@ int main (int argc, char* argv[]) {
     init_pair(7, COLOR_YELLOW, 0);
     init_pair(6, COLOR_MAGENTA, 0);
     init_pair(5, COLOR_GREEN, 0);
-    init_pair(4, COLOR_WHITE, 0);  // text, shot
+    init_pair(3, COLOR_WHITE, 0);  // text, shot
     init_pair(2, COLOR_BLUE, 0);  // meteor 1
-    init_pair(3, COLOR_RED, 0);  // spaceship
+    init_pair(4, COLOR_RED, 0);  // spaceship
     init_pair(1, COLOR_CYAN, 0);  // meteor 2
-    wattrset(stdscr, COLOR_PAIR(4));
+    wattrset(stdscr, COLOR_PAIR(3));
     refresh();
     Settings settings;
     string filename;
