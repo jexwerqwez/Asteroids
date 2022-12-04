@@ -26,7 +26,7 @@ void Bonus_Manager::destruct_bonus(int i) {
 }
 
 void moveBonusLeft(Bonus_Manager* bonuses, Bonus* bonus, int a) {
-    if ((bonuses->getField()).object_inside(bonus->getPos()))
+    if ((bonuses->getField()).object_inside(bonus->getPos()-1))
         bonus->move_bonus(1);
     else
         bonuses->destruct_bonus(a);
@@ -55,7 +55,7 @@ int Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gu
     switch (type) {
         case 0: spaceship->setHeath(spaceship->getHealt()+1); // extra_life;
             break;
-        case 1: spaceship->setHeath(spaceship->getHealt()-1); // spaceship acceleration
+        case 1: game->setVelocity(10); // spaceship acceleration
             break;
         case 2: gun->gun_manager(spaceship->getPos(), gun_mode, 1); // int burst_shot;
             break;
