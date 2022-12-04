@@ -106,20 +106,6 @@ int Menu::choices(Settings set, Field f, int mode) {
                 }
                 break;
         }
-        switch (gamemode)
-        {
-        case 0:
-            hard = 1e5;
-            break;
-        case 1:
-            hard = 8e4;
-            break;
-        case 2:
-            hard = 4e4;
-            break;
-        default:
-            break;
-        }
         if (quit){
             curs_set(1);
             nocbreak();
@@ -128,10 +114,10 @@ int Menu::choices(Settings set, Field f, int mode) {
         }
         if (start) {
             clear();
-            Game game;
+            Game game(gamemode);
             height = newheight;
             width = newwidth;
-            game.play(height, width, hard, set);
+            game.play(height, width, set);
             break;
         }
         if (settings && mode != 2) {
