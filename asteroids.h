@@ -31,7 +31,7 @@ class Asteroids_Manager {
         int getVelocity() {return velocity;};
         void setVelocity(int v) {velocity = v;};
         void destruct_asteroid(int);
-        void asts_manage();
+        void asts_manage(int);
         Field getField() {return field;};
 };
 #endif
