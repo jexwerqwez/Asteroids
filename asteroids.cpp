@@ -31,7 +31,7 @@ void moveAstsLeft(Asteroids_Manager* ast_manage, Asteroids* aster, int a) {
         ast_manage->destruct_asteroid(a);
 }
 
-void Asteroids_Manager::asts_manage() {
+void Asteroids_Manager::asts_manage(int health) {
     for(int i = 0; i < asters.size(); i++)
         eraseAsts(asters[i]);
     for(int i = 0; i < asters.size(); i++)
@@ -41,7 +41,7 @@ void Asteroids_Manager::asts_manage() {
         {'*', '*'},
     };
     Space_Object ast_pos(field.getFieldWidth() - 2, 1 + rand() % (field.getFieldHeight()-asteroid.size()-1));
-    asters.push_back(new Asteroids(asteroid, ast_pos, 1+rand()%2));
+    asters.push_back(new Asteroids(asteroid, ast_pos, 1+rand()%health));
     for(int i = 0; i < asters.size(); i++) {
         drawAsts(asters[i], asters.at(i)->getHealt());
     }
