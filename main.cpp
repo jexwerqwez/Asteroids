@@ -8,7 +8,7 @@ int main (int argc, char* argv[]) {
     start_color();
     clear();
     //init_pair(6, )
-    init_pair(9, COLOR_WHITE, COLOR_RED);
+    init_pair(9, COLOR_WHITE, COLOR_BLUE);
     init_pair(8, COLOR_WHITE, COLOR_WHITE) ; // bord
     init_pair(7, COLOR_YELLOW, 0);
     init_pair(6, COLOR_MAGENTA, 0);
@@ -28,7 +28,7 @@ int main (int argc, char* argv[]) {
     settings.parser(settings, filename);
     Field field(settings.height, settings.width);
     Start start(field, filename, settings);
-    start.processing(settings, field);
+    start.processing(settings, &field);
     curs_set(1);
     nocbreak();
     endwin();
