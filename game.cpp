@@ -26,11 +26,11 @@ void Game::play(int height, int width, Settings setts) {
     mutex mtx;
     clock_t t0 = clock();
     setstatus(0);
-    bord.draw_field();
+    bord.draw_field(0);
     timeout(3);
     setScore(score);
     thread th([&](){
-        while(getstatus() != 2) {
+        while(getstatus() != -1 && getstatus() != 1) {
             manage.asts_manage(1+hard);
             this_thread::sleep_for(chrono::milliseconds(manage.getVelocity()));
         }
@@ -38,10 +38,11 @@ void Game::play(int height, int width, Settings setts) {
     move(height, width/2-10);
     printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
     while (1) {
+        //clear();
         int prev_score = getScore();
         int prev_health = spaceship.getHealt();
         if(spaceship.getHealt() <= 0) {
-            setstatus(2);
+            setstatus(-1);
             break;
         }
         //raw();
@@ -89,7 +90,7 @@ void Game::play(int height, int width, Settings setts) {
                     }
                     for (int m = 0; m < all_bonuses.size(); m++) {
                         if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
-                            effect = all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun, this, rand()%8, gun_mode);
+                            effect = all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun, this, 7 /*rand()%8*/, gun_mode);
                             all_bonuses.at(m)->erase_bonus();
                             bonus_manage.destruct_bonus(m);
                         }
@@ -101,9 +102,9 @@ void Game::play(int height, int width, Settings setts) {
             move(height+1, width/2-10);
             printw("CATCH %d!", effect);
         }
-
         if (getScore()-prev_score != 0 || spaceship.getHealt()-prev_health != 0) {
             mtx.lock();
+            bord.draw_field(0);
             this_thread::sleep_for(chrono::milliseconds(30));
             move(height, width/2-10);
             //clock_t t1 = clock();
@@ -113,10 +114,11 @@ void Game::play(int height, int width, Settings setts) {
         }
         gun_mode = 0;
     }
-    if (getstatus() == 2) {
+    if (getstatus() == -1) {
         th.detach();
-        Finish finish(bord, filename, setts);
-        finish.processing(setts, bord);
+        if (effect == 7) {setstatus(1);bord.draw_field(1);}
+        Finish finish(bord, filename, setts, *this);
+        finish.processing(setts, &bord);
     }
 }
 
