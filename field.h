@@ -10,6 +10,6 @@ class Field {
         int getFieldWidth() {return width;};
         int getFieldHeight() {return height;};
         bool object_inside(Space_Object object);
-        void draw_field();
+        void draw_field(int mode);
 };
 #endif
