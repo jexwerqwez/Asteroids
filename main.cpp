@@ -8,6 +8,7 @@ int main (int argc, char* argv[]) {
     start_color();
     clear();
     //init_pair(6, )
+    init_pair(9, COLOR_WHITE, COLOR_RED);
     init_pair(8, COLOR_WHITE, COLOR_WHITE) ; // bord
     init_pair(7, COLOR_YELLOW, 0);
     init_pair(6, COLOR_MAGENTA, 0);
@@ -16,7 +17,7 @@ int main (int argc, char* argv[]) {
     init_pair(2, COLOR_BLUE, 0);  // meteor 1
     init_pair(4, COLOR_RED, 0);  // spaceship
     init_pair(1, COLOR_CYAN, 0);  // meteor 2
-    wattrset(stdscr, COLOR_PAIR(3));
+    wattrset(stdscr, COLOR_PAIR(3) | A_BOLD);
     refresh();
     Settings settings;
     string filename;
