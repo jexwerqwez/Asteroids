@@ -7,7 +7,6 @@ bool Field::object_inside(Space_Object object) {
 
 void Field::draw_field() {
     move(0,0);
-    attrset(COLOR_PAIR(3) | A_BOLD);
     for(int i = 0; i < height; i++) {
         addch(' ' | COLOR_PAIR(8));
         addch('\n');
