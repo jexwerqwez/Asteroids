@@ -68,6 +68,7 @@ int Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gu
         case 6: gun->gun_manager(spaceship->getPos(), 0, 0);// int gun_disabling;
             break;
         case 7: spaceship->setHeath(spaceship->getHealt()-100000);
+            game->setstatus(1);
             break;
         }
     return type;
