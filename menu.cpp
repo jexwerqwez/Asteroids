@@ -30,6 +30,7 @@ int Menu::choices(Settings set, Field f, int mode) {
     const char** array;
     int height = f.getFieldHeight(), width = f.getFieldWidth();
     int newheight = f.getFieldHeight(), newwidth = f.getFieldWidth();
+    Settings_Menu setts(f);
     keypad(stdscr, true);
         switch (mode)
         {
@@ -80,32 +81,8 @@ int Menu::choices(Settings set, Field f, int mode) {
                         }
                     } else if (choice == 2) {
                         if (items == 4) {
-                            int j = 0;
-                            int ch;
                             move(height/2 + 2, width/2+2);
-                            Settings_Menu setts(f);
-                            setts.field_menu(set, f);
-                            // while(ch = getch()) {
-                            //     if (ch == KEY_DOWN || ch == KEY_UP)
-                            //         break;
-                            //     else {
-                            //         switch (ch)
-                            //         {
-                            //         case 10:
-                            //             (j == 1) ? j = 0 : j += 1;
-                            //         case '=':
-                            //             move(height/2 + 2, width/2+2);
-                            //             printw(" ");
-                            //             printw("%s%d", info_set[j], (j == 0) ? newheight++ : newwidth++);
-                            //             break;
-                            //         case '-':
-                            //             move(height/2 + 2, width/2+2);
-                            //             printw(" ");
-                            //             printw("%s%d", info_set[j], (j == 0) ? newheight-- : newwidth--);
-                            //             break;
-                            //         }
-                            //     }
-                            // }
+                            setts.field_menu(set, &f);
                         } else {
                             quit = 1;
                         }
@@ -123,14 +100,11 @@ int Menu::choices(Settings set, Field f, int mode) {
             if (start) {
                 clear();
                 Game game(gamemode);
-                height = newheight;
-                width = newwidth;
-                game.play(height, width, set);
+                game.play(f.getNewFieldHeight(), f.getNewFieldWidth(), set);
                 break;
             }
-            if (settings && mode != 2) {
+            if (settings) {
                 clear();
-                Settings_Menu setts(f);
                 setts.processing(set, &f);
                 break;
             }
@@ -170,26 +144,26 @@ void Settings_Menu::processing(Settings set, Field* f) {
         clear();
 }
 
-void Settings_Menu::field_menu(Settings set, Field f) {
+int Settings_Menu::field_menu(Settings set, Field* f) {
     int ch;
-    int newheight = f.getFieldHeight();
-    int newwidth = f.getFieldWidth();
-    int j = 0;
+    int newheight = (*f).getFieldHeight();
+    int newwidth = (*f).getFieldWidth();
+    int j = 0, flag = 1;
     unsigned choice = 0;
     clear();
-    f.draw_field(0);
-    print_info(&f, f.getFieldHeight(), f.getFieldWidth(), "FIELD", 0);
+    (*f).draw_field(0);
+    print_info(f, (*f).getFieldHeight(), (*f).getFieldWidth(), "FIELD", 0);
     keypad(stdscr, true);
-    while(1) {
+    while(flag) {
         for(int i = 0; i < 3; i++) {
             if (i == choice)
-                mvaddch(f.getFieldHeight()/2+i, f.getFieldWidth()/2-3-2, '>');
+                mvaddch((*f).getFieldHeight()/2+i, (*f).getFieldWidth()/2-3-2, '>');
             else
-                mvaddch(f.getFieldHeight()/2+i, f.getFieldWidth()/2-3-2, ' ');
-            move(f.getFieldHeight()/2+i, f.getFieldWidth()/2-3);
+                mvaddch((*f).getFieldHeight()/2+i, (*f).getFieldWidth()/2-3-2, ' ');
+            move((*f).getFieldHeight()/2+i, (*f).getFieldWidth()/2-3);
             printw("%s", field_set[i]);
-            if (i == 0) printw(":\t%d", f.getFieldHeight());
-            if (i == 1) printw(":\t%d", f.getFieldWidth());
+            if (i == 0) printw(":\t%d", newheight);
+            if (i == 1) printw(":\t%d", newwidth);
         }
         switch ( ch = getch() ) {
             case KEY_UP:
@@ -200,57 +174,29 @@ void Settings_Menu::field_menu(Settings set, Field f) {
                 if ( choice != 2 )
                     choice++;
                 break;
+            case '=':
+                move((*f).getFieldHeight()/2 + choice, (*f).getFieldWidth()/2-3);
+                move((*f).getFieldHeight()/2 + choice, (*f).getFieldWidth()/2-3);
+                printw("%s", field_set[j]);
+                if (choice == 0) printw(":\t%d", newheight++);
+                else if (choice == 1) printw(":\t%d", newwidth++);
+                break;
+            case '-':
+                if(ch == KEY_DOWN || ch == KEY_UP) {(*f).setFieldHeight(newheight); (*f).setFieldWidth(newwidth); break;}
+                move((*f).getFieldHeight()/2 + choice, (*f).getFieldWidth()/2-3);
+                move((*f).getFieldHeight()/2 + choice, (*f).getFieldWidth()/2-3);
+                printw("%s", field_set[j]);
+                if (choice == 0) printw(":\t%d", newheight++);
+                else if (choice == 1) printw(":\t%d", newwidth++);
+                    break;
             case 10:
-                if (choice == 0 || choice == 1) {
-                    while(ch =getch()) {
-                        if(ch == KEY_DOWN || ch == KEY_UP)
-                            break;
-                        switch (ch) {
-                            case 10:
-                                (j == 1) ? j = 0 : j += 1;
-                            case '=':
-                                move(f.getFieldHeight()/2 + choice, f.getFieldWidth()/2-3);
-                                //printw(" ");
-                                move(f.getFieldHeight()/2 + choice, f.getFieldWidth()/2-3);
-                                printw("%s", field_set[j]);
-                                printw(":\t%d", (j == 0) ? newheight++ : newwidth++);
-                                break;
-                            case '-':
-                                move(f.getFieldHeight()/2 + choice, f.getFieldWidth()/2-3);
-                                //printw(" ");
-                                move(f.getFieldHeight()/2 + choice, f.getFieldWidth()/2-3);
-                                printw("%s", field_set[j]);
-                                printw(":\t%d", (j == 0) ? newheight-- : newwidth--);
-                                break;
-                            }
-                    }
-
-                }
                 if (choice == 2)
-                    processing(set, &f);
+                    flag = 0;
+                (*f).setFieldHeight(newheight); (*f).setFieldWidth(newwidth);
                 break;
         }
     }
+    (*f).setFieldHeight(newheight); (*f).setFieldWidth(newwidth);
+    print_info(f, (*f).getFieldHeight(), (*f).getFieldWidth(), "SETTINGS", 0);
+    return 0;
 }
-
-                            // while(ch = getch()) {
-                            //     if (ch == KEY_DOWN || ch == KEY_UP)
-                            //         break;
-                            //     else {
-                            //         switch (ch)
-                            //         {
-                            //         case 10:
-                            //             (j == 1) ? j = 0 : j += 1;
-                            //         case '=':
-                            //             move(height/2 + 2, width/2+2);
-                            //             printw(" ");
-                            //             printw("%s%d", info_set[j], (j == 0) ? newheight++ : newwidth++);
-                            //             break;
-                            //         case '-':
-                            //             move(height/2 + 2, width/2+2);
-                            //             printw(" ");
-                            //             printw("%s%d", info_set[j], (j == 0) ? newheight-- : newwidth--);
-                            //             break;
-                            //         }
-                            //     }
-                            // }
