@@ -81,7 +81,7 @@ class Settings_Menu: virtual public Menu {
     public:
         Settings_Menu(Field f): Menu(f) {};
         void setting_menu(Settings, Field);
-        void field_menu(Settings, Field);
+        int field_menu(Settings, Field*);
         void processing(Settings, Field*);
 };
 class Finish: virtual public Menu {
