@@ -116,9 +116,58 @@ int Menu::choices(Settings set, Field f, int mode) {
 void Start::processing(Settings set, Field* f) {
     COLOR_PAIR(3);
     int height = (*f).getFieldHeight(), width = (*f).getFieldWidth();
-    print_info(f, height, width, "ASTEROIDS", 0);
+    //print_info(f, height, width, "MENU", 0);
+    f->draw_field(0);
+    print_hello(set, f);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
     choices(set, *f, 1);
 }
+
+void Start::print_hello(Settings set, Field* f) {
+    int x = 24;
+    int y = 3;
+    attrset(COLOR_PAIR(8));
+    move(y,x);
+        char cell_type = '*';
+        char one_cell[2] = {cell_type};
+        char two_cells[3] = {cell_type,cell_type};
+        char three_cells[4] = {cell_type,cell_type,cell_type};
+        addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); 
+        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); 
+        addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
+        addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
+        move(y+1, x);
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
+        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
+        addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
+        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
+        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell);  addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
+        move(y+2,x);
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
+        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
+        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));  addstr(three_cells); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
+        move(y+3,x);
+        addstr(three_cells); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
+        addch(' ' | COLOR_PAIR(3));  addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));
+        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
+        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
+        move(y+4,x);
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
+        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
+        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));  addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
+        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); 
+        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
+}
+
 
 void Finish::processing(Settings set, Field* f) {
     int height = (*f).getFieldHeight(), width = (*f).getFieldWidth();
