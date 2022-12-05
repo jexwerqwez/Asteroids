@@ -61,8 +61,8 @@ class Menu {
         Field field;
     public:
     Menu(Field f): field(f) {};
-    virtual void processing(Settings, Field) = 0;
-    void print_info(int, int, const char*);
+    virtual void processing(Settings, Field*) = 0;
+    void print_info(Field*, int, int, const char*, int);
     int choices(Settings, Field, int);
 };
 class Start: virtual public Menu {
@@ -70,24 +70,26 @@ class Start: virtual public Menu {
     Settings settings;
     public:
         Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
-        void processing(Settings, Field);
+        void processing(Settings, Field*);
 };
 class Pause: virtual public Menu {
     public:
         Pause(Field f): Menu(f) {};
-        void processing(Settings, Field);
+        void processing(Settings, Field*);
 };
 class Settings_Menu: virtual public Menu {
     public:
         Settings_Menu(Field f): Menu(f) {};
         void setting_menu(Settings, Field);
-        void processing(Settings, Field);
+        void field_menu(Settings, Field);
+        void processing(Settings, Field*);
 };
 class Finish: virtual public Menu {
     string filename;
     Settings settings;
+    Game game;
     public:
-        Finish(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
-        void processing(Settings, Field);
+        Finish(Field f, string n, Settings s, Game g): Menu(f), filename(n), settings(s), game(g) {};
+        void processing(Settings, Field*);
 };
 #endif
