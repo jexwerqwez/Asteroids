@@ -71,6 +71,7 @@ class Start: virtual public Menu {
     public:
         Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
         void processing(Settings, Field*);
+        void print_hello(Settings, Field*);
 };
 class Pause: virtual public Menu {
     public:
