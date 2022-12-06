@@ -1,27 +1,15 @@
 #include "game.h"
+#include "alphabet.h"
 #define START 3
 #define FINISH 3
 #define SETTING 4
+#define CELL_TYPE '*'
 
 const char* start_set[START] = {"Play", "Settings", "Quit"};
 const char* setting_set[SETTINGS] = {"Continue", "Difficulty", "Field", "Quit"};
 const char* difficulty_set[START] = {"Easy", "Norm", "Hard"};
 const char* finish_set[FINISH] = {"Replay", "Settings", "Quit"};
 const char* field_set[START] = {"Height", "Width", "Back"};
-
-void Menu::print_info(Field* f, int height, int width, const char* str, int mode) {
-    clear();
-    attrset(A_BOLD | COLOR_PAIR((mode == 1) ? 9 : 3));
-    field.draw_field(mode);
-    move(height/2-3, width/2-5);
-    for(int i = 0; i < strlen(str)+2; i++)
-        addch('=');
-    move(height/2-2, width/2-4);
-    printw("%s", str);
-    move(height/2-1, width/2-5);
-    for(int i = 0; i < strlen(str)+2; i++)
-        addch('=');
-}
 
 int Menu::choices(Settings set, Field f, int mode) {
     unsigned choice = 0, gamemode = 0;
@@ -114,66 +102,88 @@ int Menu::choices(Settings set, Field f, int mode) {
 }
 
 void Start::processing(Settings set, Field* f) {
+    clear();
     COLOR_PAIR(3);
     int height = (*f).getFieldHeight(), width = (*f).getFieldWidth();
-    //print_info(f, height, width, "MENU", 0);
+    //print_info(f, height, width, "ASTEROIDS", 0);
     f->draw_field(0);
-    print_hello(set, f);
-    attroff(COLOR_PAIR(9));
-    attrset(A_BOLD);
-    COLOR_PAIR(3);
+    print_asteroids(set, f);
     choices(set, *f, 1);
 }
 
-void Start::print_hello(Settings set, Field* f) {
-    int x = 24;
+void Start::print_asteroids(Settings set, Field* f) {
+    clear();
+    f->draw_field(0);
+    int x = f->getFieldWidth()/2-16;
     int y = 3;
     attrset(COLOR_PAIR(8));
-    move(y,x);
-        char cell_type = '*';
-        char one_cell[2] = {cell_type};
-        char two_cells[3] = {cell_type,cell_type};
-        char three_cells[4] = {cell_type,cell_type,cell_type};
-        addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); 
-        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); 
-        addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
-        addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
-        move(y+1, x);
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
-        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
-        addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
-        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
-        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell);  addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
-        move(y+2,x);
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
-        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
-        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));  addstr(three_cells); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
-        move(y+3,x);
-        addstr(three_cells); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
-        addch(' ' | COLOR_PAIR(3));  addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));
-        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
-        addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(one_cell); 
-        move(y+4,x);
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(two_cells); 
-        addch(' ' | COLOR_PAIR(3)); addch(' ' | COLOR_PAIR(3)); addstr(one_cell); addch(' ' | COLOR_PAIR(3));
-        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));  addstr(one_cell); addch(' ' | COLOR_PAIR(3)); 
-        addstr(one_cell); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); addch(' ' | COLOR_PAIR(3)); addstr(three_cells); 
-        addch(' ' | COLOR_PAIR(3)); addstr(two_cells); addch(' ' | COLOR_PAIR(3));addch(' ' | COLOR_PAIR(3)); addstr(two_cells);
+    print_a(x,y,CELL_TYPE);x += 4;print_s(x,y, CELL_TYPE);x +=3;print_t(x, y, CELL_TYPE);
+    x+=4;print_e(x, y, CELL_TYPE);x+=3;print_r(x, y, CELL_TYPE);x+=4;print_o(x, y, CELL_TYPE);
+    x+=4;print_i(x, y, CELL_TYPE);x+=4;print_d(x, y, CELL_TYPE);x+=4;print_s(x, y, CELL_TYPE);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
 }
 
+void Settings_Menu::print_settings(Settings set, Field* f) {
+    clear();
+    f->draw_field(0);
+    int x = f->getFieldWidth()/2-15;
+    int y = 3;
+    attrset(COLOR_PAIR(8));
+    print_s(x,y, CELL_TYPE);x +=3;print_e(x, y, CELL_TYPE);x+=3;print_t(x, y, CELL_TYPE);
+    x+=4;print_t(x, y, CELL_TYPE);x+=4;print_i(x, y, CELL_TYPE);x+=4;print_n(x, y, CELL_TYPE);
+    x+=5;print_g(x, y, CELL_TYPE);x+=5;print_s(x, y, CELL_TYPE);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
+}
+
+void Settings_Menu::print_field(Settings set, Field* f) {
+    clear();
+    f->draw_field(0);
+    int x = f->getFieldWidth()/2-8;
+    int y = 3;
+    attrset(COLOR_PAIR(8));
+    print_f(x,y,CELL_TYPE);x += 3;print_i(x, y, CELL_TYPE);x+=4;print_e(x, y, CELL_TYPE);x+=3;
+    print_l(x, y, CELL_TYPE);x+=4;print_d(x, y, CELL_TYPE);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
+}
+
+void Finish::print_blackhole(Settings set, Field* f) {
+    clear();
+    f->draw_field(1);
+    int x = f->getFieldWidth()/2-17;
+    int y = 3;
+    attrset(COLOR_PAIR(8));
+    print_b(x,y,CELL_TYPE);x += 4;print_l(x, y, CELL_TYPE);x+=4;print_a(x, y, CELL_TYPE);x+=4;print_c(x, y, CELL_TYPE);x+=4;
+    print_k(x, y, CELL_TYPE);x+=5;print_h(x, y, CELL_TYPE);x+=4;print_o(x, y, CELL_TYPE);x+=4;print_l(x, y, CELL_TYPE);x+=4;print_e(x, y, CELL_TYPE);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
+}
+
+void Finish::print_gameover(Settings set, Field* f) {
+    clear();
+    f->draw_field(0);
+    int x = f->getFieldWidth()/2-16;
+    int y = 3;
+    attrset(COLOR_PAIR(8));
+    print_g(x, y, CELL_TYPE);x+=5;print_a(x,y,CELL_TYPE);x += 4; print_m(x,y,CELL_TYPE);x += 6;
+    print_e(x, y, CELL_TYPE);x+=3; print_o(x, y, CELL_TYPE);x+=4;print_v(x, y, CELL_TYPE);x+=4;
+    print_e(x, y, CELL_TYPE);x+=3;print_r(x, y, CELL_TYPE);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
+}
 
 void Finish::processing(Settings set, Field* f) {
     int height = (*f).getFieldHeight(), width = (*f).getFieldWidth();
     while(!(getch() == 10)) {
         attroff(A_BLINK);
-        (game.getstatus() == 1) ? print_info(f, height, width, "BLACK HOLE!", 1) : print_info(f, height, width, "GAME OVER", 0);
+        (game.getstatus() == 1) ? print_blackhole(set,f) : print_gameover(set,f);
         move(height/2, width/2-2);
         printw("SCORE: %d", game.getScore());
         attrset(A_BLINK | COLOR_PAIR((game.getstatus() == 1) ? 9 : 3));
@@ -181,13 +191,14 @@ void Finish::processing(Settings set, Field* f) {
         printw("Press ENTER to replay");
     }
     attrset(COLOR_PAIR(3));
-    print_info(f, height, width, "GAME OVER", 0);
+    print_gameover(set,f);
     choices(set, *f, 3);
 }
 
 void Settings_Menu::processing(Settings set, Field* f) {
     int height = (*f).getFieldHeight(), width = (*f).getFieldWidth();
-    print_info(f, height, width, "SETTINGS", 0);
+    f->draw_field(0);
+    print_settings(set, f);
     int regime = choices(set, *f, 2);
     if (regime)
         clear();
@@ -201,7 +212,7 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
     unsigned choice = 0;
     clear();
     (*f).draw_field(0);
-    print_info(f, (*f).getFieldHeight(), (*f).getFieldWidth(), "FIELD", 0);
+    print_field(set, f);
     keypad(stdscr, true);
     while(flag) {
         for(int i = 0; i < 3; i++) {
@@ -246,6 +257,6 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
         }
     }
     (*f).setFieldHeight(newheight); (*f).setFieldWidth(newwidth);
-    print_info(f, (*f).getFieldHeight(), (*f).getFieldWidth(), "SETTINGS", 0);
+    print_settings(set,f);
     return 0;
 }
