@@ -82,7 +82,6 @@ void print_s(int x, int y, char cell_type) {
     addstr(two_cells);
 }
 
-
 void print_t(int x, int y, char cell_type) {
     char one_cell[2] = {cell_type};
     char two_cells[3] = {cell_type,cell_type};
@@ -291,6 +290,22 @@ void print_v(int x, int y, char cell_type) {
     addstr(one_cell); move(y+3,x+2); addstr(one_cell); 
     move(y+4,x);
     move(y+4,x+1);addstr(one_cell);
+}
+
+void print_u(int x, int y, char cell_type) {
+    char one_cell[2] = {cell_type};
+    char two_cells[3] = {cell_type,cell_type};
+    char three_cells[4] = {cell_type,cell_type,cell_type};
+    move(y,x);
+    addstr(one_cell); move(y,x+2); addstr(one_cell); 
+    move(y+1, x);
+    addstr(one_cell); move(y+1,x+2); addstr(one_cell); 
+    move(y+2,x);
+    addstr(one_cell); move(y+2,x+2); addstr(one_cell); 
+    move(y+3,x);
+    addstr(one_cell); move(y+3,x+2); addstr(one_cell); 
+    move(y+4,x);
+    addstr(three_cells); 
 }
 
 #endif
