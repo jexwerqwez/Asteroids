@@ -4,6 +4,7 @@ The game Asteroids was developed as a project-technological practice on the cour
 * Dodge the space bodies.
 * Score as many points as possible by destroying the asteroids. 
 Unidentified flying objects can help or hinder these goals. 
+
 # Demonstration
 <img src='https://github.com/jexwerquez/Asteroids/blob/develop/dem.gif?raw=true'/>
 
@@ -18,6 +19,7 @@ make all
 # Features
 * Choice of difficulty
 * Changing the field size
+
 # Requirements
 * C++ 17
 * Linux
