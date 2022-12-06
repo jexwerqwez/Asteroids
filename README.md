@@ -7,6 +7,7 @@ Unidentified flying objects can help or hinder these goals.
 # Demonstration
 <img src='https://github.com/jexwerquez/practice/blob/develop/demo.gif?raw=true'/>
 # Installation
+
 ````
 git clone https://github.com/jexwerquez/practice.git
 cd Asteroids
