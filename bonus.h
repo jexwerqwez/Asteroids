@@ -1,10 +1,10 @@
 #ifndef BONUS
 #define BONUS
-#include "base.h"
-#include "objects.h"
-#include "field.h"
 #include "asteroids.h"
-#include "spaceship.h"
-#include "gun.h"
+#include "base.h"
+#include "field.h"
 #include "game.h"
+#include "gun.h"
+#include "objects.h"
+#include "spaceship.h"
 #endif
