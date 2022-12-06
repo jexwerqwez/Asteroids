@@ -71,7 +71,7 @@ class Start: virtual public Menu {
     public:
         Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
         void processing(Settings, Field*);
-        void print_hello(Settings, Field*);
+        void print_asteroids(Settings, Field*);
 };
 class Pause: virtual public Menu {
     public:
@@ -82,6 +82,8 @@ class Settings_Menu: virtual public Menu {
     public:
         Settings_Menu(Field f): Menu(f) {};
         void setting_menu(Settings, Field);
+        void print_settings(Settings, Field*);
+        void print_field(Settings, Field*);
         int field_menu(Settings, Field*);
         void processing(Settings, Field*);
 };
@@ -91,6 +93,8 @@ class Finish: virtual public Menu {
     Game game;
     public:
         Finish(Field f, string n, Settings s, Game g): Menu(f), filename(n), settings(s), game(g) {};
+        void print_gameover(Settings, Field*);
+        void print_blackhole(Settings, Field*);
         void processing(Settings, Field*);
 };
 #endif
