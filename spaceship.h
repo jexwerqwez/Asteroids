@@ -10,7 +10,7 @@ class Spaceship: public Space_Object{
         Space_Object position;
     public:
         Spaceship(int h, char ssp, Space_Object pos): health(h), spaceship(ssp), position(pos) {};
-        void draw_spaceship();
+        void draw_spaceship(int);
         void erase_spaceship();
         int getHealt() {return health;};
         void setHeath(int h) {health = h;};
