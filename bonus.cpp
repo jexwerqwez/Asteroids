@@ -57,17 +57,17 @@ int Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts, Gun* gu
             break;
         case 1: game->setVelocity(10); // spaceship acceleration
             break;
-        case 2: gun->gun_manager(spaceship->getPos(), gun_mode, 1); // int burst_shot;
+        case 2: game->setScore(game->getScore() * 2); // int score_multiplier;
             break;
-        case 3: game->setScore(game->getScore() * 2); // int score_multiplier;
+        case 3: all_asts->setVelocity(all_asts->getVelocity()+100);// int asteroid_slowdown;
             break;
-        case 4: all_asts->setVelocity(all_asts->getVelocity()+100);// int asteroid_slowdown;
+        case 4: spaceship->draw_spaceship(1); // int spaceship_blink
             break;
         case 5: all_asts->setVelocity(all_asts->getVelocity()-100);// int asteroid_acceleration;
             break;
         case 6: gun->gun_manager(spaceship->getPos(), 0, 0);// int gun_disabling;
             break;
-        case 7: spaceship->setHeath(spaceship->getHealt()-100000);
+        case 7: spaceship->setHeath(spaceship->getHealt()-100000); //black hole
             game->setstatus(1);
             break;
         }
