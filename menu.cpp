@@ -36,7 +36,7 @@ int Menu::choices(Settings set, Field f, int mode) {
             array = (finflag == 3) ? finish_set : NULL;
             break;
         case 5:
-            while(1) {clear(); setts.print_rules(set, &f);this_thread::sleep_for(chrono::milliseconds(10));}
+            while(1) {clear(); setts.print_rules(set, &f);}
             break;
         }
         while (1) {
@@ -120,6 +120,7 @@ void print_asteroids(Settings set, Field* f) {
     print_a(x,y,CELL_TYPE);x += 4;print_s(x,y, CELL_TYPE);x +=3;print_t(x, y, CELL_TYPE);
     x+=4;print_e(x, y, CELL_TYPE);x+=3;print_r(x, y, CELL_TYPE);x+=4;print_o(x, y, CELL_TYPE);
     x+=4;print_i(x, y, CELL_TYPE);x+=4;print_d(x, y, CELL_TYPE);x+=4;print_s(x, y, CELL_TYPE);
+    print_background(set, f);
     attroff(COLOR_PAIR(9));
     attrset(A_BOLD);
     COLOR_PAIR(3);
@@ -134,6 +135,7 @@ void Settings_Menu::print_settings(Settings set, Field* f) {
     print_s(x,y, CELL_TYPE);x +=3;print_e(x, y, CELL_TYPE);x+=3;print_t(x, y, CELL_TYPE);
     x+=4;print_t(x, y, CELL_TYPE);x+=4;print_i(x, y, CELL_TYPE);x+=4;print_n(x, y, CELL_TYPE);
     x+=5;print_g(x, y, CELL_TYPE);x+=5;print_s(x, y, CELL_TYPE);
+    print_background(set, f);
     attroff(COLOR_PAIR(9));
     attrset(A_BOLD);
     COLOR_PAIR(3);
@@ -145,6 +147,7 @@ void Settings_Menu::print_field(Settings set, Field* f) {
     attrset(COLOR_PAIR(8));
     print_f(x,y,CELL_TYPE);x += 3;print_i(x, y, CELL_TYPE);x+=4;print_e(x, y, CELL_TYPE);x+=3;
     print_l(x, y, CELL_TYPE);x+=4;print_d(x, y, CELL_TYPE);
+    print_background(set, f);
     attroff(COLOR_PAIR(9));
     attrset(A_BOLD);
     COLOR_PAIR(3);
@@ -173,6 +176,21 @@ void Finish::print_gameover(Settings set, Field* f) {
     print_g(x, y, CELL_TYPE);x+=5;print_a(x,y,CELL_TYPE);x += 4; print_m(x,y,CELL_TYPE);x += 6;
     print_e(x, y, CELL_TYPE);x+=3; print_o(x, y, CELL_TYPE);x+=4;print_v(x, y, CELL_TYPE);x+=4;
     print_e(x, y, CELL_TYPE);x+=3;print_r(x, y, CELL_TYPE);
+    print_background(set, f);
+    attroff(COLOR_PAIR(9));
+    attrset(A_BOLD);
+    COLOR_PAIR(3);
+}
+
+void Settings_Menu::print_rules(Settings set, Field* f) {
+    clear();
+    f->draw_field(0);
+    int x = f->getFieldWidth()/2-8;
+    int y = TITLEPOS;
+    attrset(COLOR_PAIR(8));
+    print_r(x, y, CELL_TYPE);x+=4;print_u(x,y,CELL_TYPE);x += 4; print_l(x,y,CELL_TYPE);x += 4;
+    print_e(x, y, CELL_TYPE);x+=3; print_s(x, y, CELL_TYPE);
+    print_background(set, f);
     attroff(COLOR_PAIR(9));
     attrset(A_BOLD);
     COLOR_PAIR(3);
@@ -190,23 +208,9 @@ int Finish::processing(Settings set, Field* f) {
         printw("Press ENTER to replay");
     }
     attrset(COLOR_PAIR(3));
-    print_background(set, f);
     print_gameover(set,f);
     choices(set, *f, 3);
     return 0;
-}
-
-void Settings_Menu::print_rules(Settings set, Field* f) {
-    clear();
-    f->draw_field(0);
-    int x = f->getFieldWidth()/2-8;
-    int y = TITLEPOS;
-    attrset(COLOR_PAIR(8));
-    print_r(x, y, CELL_TYPE);x+=4;print_u(x,y,CELL_TYPE);x += 4; print_l(x,y,CELL_TYPE);x += 4;
-    print_e(x, y, CELL_TYPE);x+=3; print_s(x, y, CELL_TYPE);
-    attroff(COLOR_PAIR(9));
-    attrset(A_BOLD);
-    COLOR_PAIR(3);
 }
 
 int Settings_Menu::rules_processing(Settings set, Field* f) {
@@ -237,7 +241,6 @@ int Settings_Menu::rules_processing(Settings set, Field* f) {
         if (ch == 10)
             flag = 0;
     }
-    print_background(set, f);
     print_rules(set,f);
     return 0;
 }
@@ -247,7 +250,6 @@ int Settings_Menu::processing(Settings set, Field* f) {
     clear();
     f->draw_field(0);
     print_settings(set, f);
-    print_background(set, f);
     choices(set, *f, 2);
     return 0;
 }
@@ -260,13 +262,12 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
     unsigned choice = 0;
     clear();
     f->draw_field(0);
-    print_background(set, f);
     print_field(set, f);
     keypad(stdscr, true);
     while(flag) {
         attroff(A_BOLD);
-        mvaddstr(f->getFieldHeight()-3, f->getFieldWidth()-24, "Press '+/=' to increase");
-        mvaddstr(f->getFieldHeight()-2, f->getFieldWidth()-24, "Press '-/_' to decrease");
+        mvaddstr(f->getFieldHeight()-3, f->getFieldWidth()/2, "Press '+/=' to increase");
+        mvaddstr(f->getFieldHeight()-2, f->getFieldWidth()/2, "Press '-/_' to decrease");
         attrset(A_BOLD);
         for(int i = 0; i < 3; i++) {
             if (i == choice)
