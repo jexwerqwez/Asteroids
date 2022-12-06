@@ -9,7 +9,9 @@ Unidentified flying objects can help or hinder these goals.
 # Installation
 ````
 git clone https://github.com/jexwerquez/practice.git
-cd 
+cd Asteroids
+make all
+./asteroids
 ````
 # Features
 * Choice of difficulty
