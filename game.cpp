@@ -1,8 +1,11 @@
 #include "game.h"
 
+const char* bonus_info[7] = {"EXTRA LIFE", "SPACESHIP&BONUSES ACCELERATION", "SCORE MULTIPLIER", "ASTEROIDS SLOWDOWN",
+                            "BLINK", "ASTEROIDS ACCELERATION", "DISABLED GUN"};
+
 void Game::play(int height, int width, Settings setts) {
     srand(time(NULL));
-    int command = 0, gun_mode = 0, effect = 0;
+    int command = 0, gun_mode = 0, effect = 0, blink = 0;
     char bonussprite = '0', shipsprite = '>',  shotsprite = '-';
     int score = setts.score;
     vector<vector<char>> asteroid = {
@@ -33,24 +36,23 @@ void Game::play(int height, int width, Settings setts) {
         while(getstatus() != -1 && getstatus() != 1) {
             manage.asts_manage(1+hard);
             this_thread::sleep_for(chrono::milliseconds(manage.getVelocity()));
+            bord.draw_field(0);
         }
     });
     move(height, width/2-10);
     printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
     while (1) {
-        //clear();
         int prev_score = getScore();
         int prev_health = spaceship.getHealt();
         if(spaceship.getHealt() <= 0) {
             setstatus(-1);
             break;
         }
-        //raw();
         command = getch();
         bonus_manage.bonus_manager(bonuspos, 1);
         switch(command) {
             case 'r': {
-                gun_mode = (gun_mode == 1) ? 0: 1;
+                if(effect != 6) gun_mode = (gun_mode == 1) ? 0: 1;
                 break;
             }
         }
@@ -60,7 +62,7 @@ void Game::play(int height, int width, Settings setts) {
             spaceship.erase_spaceship();
             spaceship.change_position(command, bord);
             gun_mode = gun.gun_manager(spaceship.getPos(), gun_mode, 0);
-            spaceship.draw_spaceship();
+            spaceship.draw_spaceship(blink);
             mtx.unlock();
        }
         vector<Asteroids*> all_asts = manage.getAsters();
@@ -90,7 +92,7 @@ void Game::play(int height, int width, Settings setts) {
                     }
                     for (int m = 0; m < all_bonuses.size(); m++) {
                         if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
-                            effect = all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun, this, 7 /*rand()%8*/, gun_mode);
+                            effect = all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun, this, sethard(&manage), gun_mode);
                             all_bonuses.at(m)->erase_bonus();
                             bonus_manage.destruct_bonus(m);
                         }
@@ -100,12 +102,11 @@ void Game::play(int height, int width, Settings setts) {
         }
         if(effect != 0) {
             move(height+1, width/2-10);
-            printw("CATCH %d!", effect);
+            printw("CATCH %s!", bonus_info[effect]);
         }
+        if (effect == 4) blink = 1;
         if (getScore()-prev_score != 0 || spaceship.getHealt()-prev_health != 0) {
             mtx.lock();
-            bord.draw_field(0);
-            this_thread::sleep_for(chrono::milliseconds(30));
             move(height, width/2-10);
             //clock_t t1 = clock();
             printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
@@ -122,22 +123,28 @@ void Game::play(int height, int width, Settings setts) {
     }
 }
 
-void Game::sethard(Asteroids_Manager* asters) {
+int Game::sethard(Asteroids_Manager* asters) {
+    int luckybox = 0;
     switch (hard)
     {
     case 0:
         asters->setVelocity(200);
         setVelocity(30);
+        luckybox = rand()%4;
         break;
     case 1:
         asters->setVelocity(130);
         setVelocity(35);
+        luckybox = rand()%8;
         break;
     case 2:
         asters->setVelocity(70);
         setVelocity(40);
+        if(rand()%4 == 0) luckybox = rand()%4;
+        else luckybox = 3+rand()%8;
         break;
     default:
         break;
     }
+    return luckybox;
 }
