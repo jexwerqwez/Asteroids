@@ -17,7 +17,7 @@ class Game {
         friend Field;
         int getstatus() {return status;};
         void setstatus(int s) {status = s;};
-        void sethard(Asteroids_Manager*);
+        int sethard(Asteroids_Manager*);
         void play(int, int, Settings);
         int getScore() {return score;};
         void setScore(int s) {score = s;};
@@ -61,7 +61,7 @@ class Menu {
         Field field;
     public:
     Menu(Field f): field(f) {};
-    virtual void processing(Settings, Field*) = 0;
+    virtual int processing(Settings, Field*) = 0;
     void print_info(Field*, int, int, const char*, int);
     int choices(Settings, Field, int);
 };
@@ -70,13 +70,12 @@ class Start: virtual public Menu {
     Settings settings;
     public:
         Start(Field f, string n, Settings s): Menu(f), filename(n), settings(s) {};
-        void processing(Settings, Field*);
-        void print_asteroids(Settings, Field*);
+        int processing(Settings, Field*);
 };
 class Pause: virtual public Menu {
     public:
         Pause(Field f): Menu(f) {};
-        void processing(Settings, Field*);
+        int processing(Settings, Field*);
 };
 class Settings_Menu: virtual public Menu {
     public:
@@ -85,7 +84,9 @@ class Settings_Menu: virtual public Menu {
         void print_settings(Settings, Field*);
         void print_field(Settings, Field*);
         int field_menu(Settings, Field*);
-        void processing(Settings, Field*);
+        void print_rules(Settings, Field*);
+        int processing(Settings, Field*);
+        int rules_processing(Settings, Field*);
 };
 class Finish: virtual public Menu {
     string filename;
@@ -95,6 +96,6 @@ class Finish: virtual public Menu {
         Finish(Field f, string n, Settings s, Game g): Menu(f), filename(n), settings(s), game(g) {};
         void print_gameover(Settings, Field*);
         void print_blackhole(Settings, Field*);
-        void processing(Settings, Field*);
+        int processing(Settings, Field*);
 };
 #endif
