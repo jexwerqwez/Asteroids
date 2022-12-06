@@ -6,6 +6,7 @@ The game Asteroids was developed as a project-technological practice on the cour
 Unidentified flying objects can help or hinder these goals. 
 # Demonstration
 <img src='https://github.com/jexwerquez/practice/blob/develop/demo.gif?raw=true'/>
+
 # Installation
 
 ````
