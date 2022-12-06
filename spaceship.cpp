@@ -8,9 +8,10 @@ void Spaceship::moveVertical(int y) {
     position.setY(position.getY() + y);
 }
 
-void Spaceship::draw_spaceship() {
+void Spaceship::draw_spaceship(int blink) {
     move(position.getY(), position.getX());
-    mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR( (getHealt() > 3) ? 5 : 4));
+    if(blink) mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR( (getHealt() > 3) ? 5 : 4) | A_BLINK);
+    else mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR( (getHealt() > 3) ? 5 : 4));
 }
 
 void Spaceship::erase_spaceship() {
