@@ -1,4 +1,4 @@
-#include "settings.h"
+#include "../includes/settings.h"
 
 int Settings::parser(Settings &set, string &filename) {
   ifstream file(filename);

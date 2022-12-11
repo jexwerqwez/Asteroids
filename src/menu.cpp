@@ -1,5 +1,5 @@
-#include "alphabet.h"
-#include "game.h"
+#include "../includes/alphabet.h"
+#include "../includes/game.h"
 #define ITEMS 4
 #define TITLEPOS 5
 #define CELL_TYPE '*'

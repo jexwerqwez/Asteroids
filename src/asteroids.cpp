@@ -1,4 +1,4 @@
-#include "asteroids.h"
+#include "../includes/asteroids.h"
 
 void Asteroids::draw_asteroid(int color) {
   for (int i = 0; i < asteroid.size(); i++) {

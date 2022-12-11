@@ -1,4 +1,4 @@
-#include "game.h"
+#include "../includes/game.h"
 
 const char* bonus_info[7] = {"EXTRA LIFE",
                              "SPACESHIP&BONUSES ACCELERATION",

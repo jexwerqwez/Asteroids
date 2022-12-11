@@ -1,5 +1,5 @@
-#include "base.h"
-#include "game.h"
+#include "../includes/base.h"
+#include "../includes/game.h"
 
 int main(int argc, char* argv[]) {
   initscr();

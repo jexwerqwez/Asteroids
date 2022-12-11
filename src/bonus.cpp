@@ -1,4 +1,4 @@
-#include "game.h"
+#include "../includes/game.h"
 
 void Bonus::draw_bonus(int effect) {
   mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR(effect));

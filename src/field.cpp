@@ -1,4 +1,4 @@
-#include "field.h"
+#include "../includes/field.h"
 
 bool Field::object_inside(Space_Object object) {
   return object.getX() > 0 && object.getX() < width - 1 && object.getY() > 0 &&

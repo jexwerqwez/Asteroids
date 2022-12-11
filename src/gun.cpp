@@ -1,4 +1,4 @@
-#include "gun.h"
+#include "../includes/gun.h"
 
 void Shot::draw_shot() {
   mvaddch(position.getY(), position.getX(), getSprite() | COLOR_PAIR(7));
