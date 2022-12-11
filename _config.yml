@@ -8,7 +8,7 @@ url:              https://jexwerquez.github.io
 baseurl:          '/'
 
 paginate:         5
-remote_theme: jexwerquez/asteroids
+remote_theme: fongandrew/hydeout
 plugins:
   - jekyll-feed
   - jekyll-gist
