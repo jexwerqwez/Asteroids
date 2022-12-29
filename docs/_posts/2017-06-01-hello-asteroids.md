@@ -4,9 +4,11 @@ title: Introduction
 excerpt_separator:  <!--more-->
 ---
 
-The game asteroids was developed as a project-technological practice 
+The game Asteroids was developed as a project-technological practice 
 on the course of object-oriented programming by a student at the 
 Bauman Moscow State Technical University.
+
+<a href="https://github.com/jexwerquez/Asteroids" target="_blank">View the project on GitHub</a>
 
 ### Process descriprion
 
