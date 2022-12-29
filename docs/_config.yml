@@ -3,7 +3,7 @@ highlighter:      rouge
 
 title:            Asteroids
 tagline:          'BMSTU practice project'
-description:      '<a href="https://github.com/jexwerquez" target="_blank">Rogaleva Yulia</a> OOP practice project.'
+description:      'The OOP practice project by <a href="https://github.com/jexwerquez/" target="_blank">Rogaleva Yulia</a>'
 url:              https://jexwerquez.github.io
 baseurl:          '/'
 
