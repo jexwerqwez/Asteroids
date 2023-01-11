@@ -1,0 +1,17 @@
+markdown:         kramdown
+highlighter:      rouge
+
+title:            Asteroids
+tagline:          'BMSTU practice project'
+description:      'OOP practice project by <a href="https://github.com/jexwerquez" target="_blank">Rogaleva Yulia</a>.'
+url:              https://jexwerquez.github.io
+baseurl:          '/'
+
+paginate:         5
+remote_theme: fongandrew/hydeout
+plugins:
+  - jekyll-feed
+  - jekyll-gist
+  - jekyll-paginate
+
+sidebar_home_link:  true
