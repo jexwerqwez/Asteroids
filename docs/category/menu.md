@@ -12,7 +12,7 @@ Menu description.
 * Read the game rules.
 * Quit the game.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/asteroids.png?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/asteroids.png?raw=true'/>
 
 ### Settings menu
 
@@ -21,7 +21,7 @@ Menu description.
 * Change the size of the field
 * Quit the game.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/settings.png?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/settings.png?raw=true'/>
 
 ### Game over menu
 
@@ -30,4 +30,4 @@ Menu description.
 * Read the game rules.
 * Quit the game.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/gameover.png?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/gameover.png?raw=true'/>
