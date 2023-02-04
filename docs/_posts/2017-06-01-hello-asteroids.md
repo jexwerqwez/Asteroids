@@ -21,12 +21,12 @@ The game ends when a spaceship collides with an asteroids.
 
 ### Demonstration
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/dem.gif?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/dem.gif?raw=true'/>
 
 ### Installation
 
 ```
-git clone https://github.com/jexwerquez/practice.git
+git clone git@github.com:jexwerquez/Asteroids.git
 cd asteroids
 make all
 ./asteroids
