@@ -6,12 +6,12 @@ The game Asteroids was developed as a project-technological practice on the cour
 Unidentified flying objects can help or hinder these goals. 
 
 # Demonstration
-<img src='https://github.com/jexwerquez/Asteroids/blob/develop/dem.gif?raw=true'/>
+<img src='https://github.com/jexwerquez/Asteroids/blob/main/dem.gif?raw=true'/>
 
 # Installation
 
 ````
-git clone https://github.com/jexwerquez/practice.git
+git clone git@github.com:jexwerquez/Asteroids.git
 cd Asteroids
 make all
 ./asteroids
