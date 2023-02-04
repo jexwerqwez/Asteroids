@@ -28,7 +28,7 @@ Pick up or avoid flying UFOs which can have positive or negative effects.
 * Fast spaceship.
 * No anti-bonuses.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/easy.gif?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/easy.gif?raw=true'/>
 
 ### Normal mode
 
@@ -36,7 +36,7 @@ Pick up or avoid flying UFOs which can have positive or negative effects.
 * The spaceship moves slower.
 * The number of bonuses and anti-bonuses is equal.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/normal.gif?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/normal.gif?raw=true'/>
 
 ### Hard mode
 
@@ -44,4 +44,4 @@ Pick up or avoid flying UFOs which can have positive or negative effects.
 * The spaceship moves even slower.
 * The number of anti-bonuses dominates the bonuses.
 
-<img src='https://github.com/jexwerquez/asteroids/blob/develop/files/hard.gif?raw=true'/>
+<img src='https://github.com/jexwerquez/asteroids/blob/main/files/hard.gif?raw=true'/>
