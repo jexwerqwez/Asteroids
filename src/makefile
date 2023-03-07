@@ -1,6 +1,5 @@
 CC=g++
-CFLAGS=-c
-# -Wall -Werror -Wextra
+CFLAGS=-c -Wall -Werror -Wextra
 
 all: asteroids
 
