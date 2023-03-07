@@ -28,21 +28,20 @@ void Bonus::generate_bonus(Space_Object pos) {
   position.setX(pos.getX());
   position.setY(pos.getY());
 }
-void Bonus_Manager::bonus_manager(Space_Object pos, int bonus_mode) {
-  for (int i = 0; i < bonuses.size(); i++) eraseBonuses(bonuses[i]);
-  for (int i = 0; i < bonuses.size(); i++) moveBonusLeft(this, bonuses[i], i);
-  int bonus_type = 1 + rand() % 11;
+void Bonus_Manager::bonus_manager() {
+  for (long unsigned int i = 0; i < bonuses.size(); i++) eraseBonuses(bonuses[i]);
+  for (long unsigned int i = 0; i < bonuses.size(); i++) moveBonusLeft(this, bonuses[i], i);
   char bonus = '0';
   if (rand() % 100 == 6) {
     Space_Object bonuspos(field.getFieldWidth() - 2,
                           1 + rand() % (field.getFieldHeight() - 1));
     bonuses.push_back(new Bonus(bonus, bonuspos));
   }
-  for (int i = 0; i < bonuses.size(); i++) drawBonuses(bonuses[i], rand() % 8);
+  for (long unsigned int i = 0; i < bonuses.size(); i++) drawBonuses(bonuses[i], rand() % 8);
 }
 
 int Bonus::set_effect(Spaceship* spaceship, Asteroids_Manager* all_asts,
-                      Gun* gun, Game* game, int type, int gun_mode) {
+                      Gun* gun, Game* game, int type) {
   switch (type) {
     case 0:
       spaceship->setHeath(spaceship->getHealt() + 1);  // extra_life;

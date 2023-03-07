@@ -1,16 +1,16 @@
 #include "../includes/asteroids.h"
 
 void Asteroids::draw_asteroid(int color) {
-  for (int i = 0; i < asteroid.size(); i++) {
-    for (int j = 0; j < asteroid[i].size(); j++) {
+  for (long unsigned int i = 0; i < asteroid.size(); i++) {
+    for (long unsigned int j = 0; j < asteroid[i].size(); j++) {
       mvaddch(position.getY() + i, position.getX() + j,
               asteroid[i][j] | COLOR_PAIR(color));
     }
   }
 }
 void Asteroids::erase_asteroid() {
-  for (int i = 0; i < asteroid.size(); i++) {
-    for (int j = 0; j < asteroid[i].size(); j++)
+  for (long unsigned int i = 0; i < asteroid.size(); i++) {
+    for (long unsigned int j = 0; j < asteroid[i].size(); j++)
       mvaddch(position.getY() + i, position.getX() + j, ' ');
   }
 }
@@ -30,8 +30,8 @@ void moveAstsLeft(Asteroids_Manager* ast_manage, Asteroids* aster, int a) {
 }
 
 void Asteroids_Manager::asts_manage(int health) {
-  for (int i = 0; i < asters.size(); i++) eraseAsts(asters[i]);
-  for (int i = 0; i < asters.size(); i++) moveAstsLeft(this, asters[i], i);
+  for (long unsigned int i = 0; i < asters.size(); i++) eraseAsts(asters[i]);
+  for (long unsigned int i = 0; i < asters.size(); i++) moveAstsLeft(this, asters[i], i);
   vector<vector<char>> asteroid = {
       {'*', ' '},
       {'*', '*'},
@@ -40,7 +40,7 @@ void Asteroids_Manager::asts_manage(int health) {
       field.getFieldWidth() - 2,
       1 + rand() % (field.getFieldHeight() - asteroid.size() - 1));
   asters.push_back(new Asteroids(asteroid, ast_pos, 1 + rand() % health));
-  for (int i = 0; i < asters.size(); i++) {
+  for (long unsigned int i = 0; i < asters.size(); i++) {
     drawAsts(asters[i], asters.at(i)->getHealt());
   }
 }

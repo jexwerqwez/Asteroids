@@ -18,6 +18,5 @@ class Field {
   int getNewFieldHeight() { return newheight; };
   bool object_inside(Space_Object object);
   void draw_field(int mode);
-  void draw_circle(int d);
 };
 #endif

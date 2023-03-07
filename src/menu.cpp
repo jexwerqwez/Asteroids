@@ -9,20 +9,21 @@
 #define BOT_W 40
 
 const char* start_set[ITEMS] = {"Play", "Settings", "Rules", "Quit"};
-const char* setting_set[ITEMS] = {"Play", "Difficulty", "Field", "Quit"};
-const char* difficulty_set[ITEMS] = {"Easy", "Norm", "Hard"};
+const char* setting_set[ITEMS] = {"Play", "Mode", "Field", "Quit"};
+const char* difficulty_set[ITEMS] = {"Fuzz", "Easy", "Norm", "Hard"};
 const char* finish_set[ITEMS] = {"Replay", "Settings", "Rules", "Quit"};
 const char* field_set[ITEMS] = {"Height", "Width", "Back"};
-void print_asteroids(Settings set, Field* f);
-void print_background(Settings, Field*);
+const char* mode_set[2] = {"On", "Off"};
+void print_asteroids(Field* f);
+void print_background(Field*);
 
 int Menu::choices(Settings set, Field f, int mode) {
   unsigned choice = 0, gamemode = 0;
-  int start = 0, settings = 0, quit = 0, rules = 0, hard = 1e5;
+  int start = 0, settings = 0, quit = 0;
   int shift = 3, finflag = 4;
   const char** array;
   int height = f.getFieldHeight(), width = f.getFieldWidth();
-  int newheight = f.getFieldHeight(), newwidth = f.getFieldWidth();
+//  int newheight = f.getFieldHeight(), newwidth = f.getFieldWidth();
   Settings_Menu setts(f);
   keypad(stdscr, true);
   switch (mode) {
@@ -41,12 +42,12 @@ int Menu::choices(Settings set, Field f, int mode) {
     case 5:
       while (1) {
         clear();
-        setts.print_rules(set, &f);
+        setts.print_rules(&f);
       }
       break;
   }
   while (1) {
-    for (int i = 0; i < 4; i++) {
+    for (unsigned int i = 0; i < 4; i++) {
       if (i == choice)
         mvaddch(height / 2 + i, width / 2 - shift - 2, '>');
       else
@@ -70,17 +71,17 @@ int Menu::choices(Settings set, Field f, int mode) {
           start = 1;
         } else if (choice == 1) {
           if (mode == 2) {
-            (gamemode == 2) ? gamemode = 0 : gamemode += 1;
+            (gamemode == 3) ? gamemode = 0 : gamemode += 1;
           } else {
             settings = 1;
           }
         } else if (choice == 2) {
           if (mode == 2) {
             move(height / 2 + 2, width / 2 + 2);
-            setts.field_menu(set, &f);
+            setts.field_menu(&f);
           } else {
-            setts.rules_processing(set, &f);
-            print_asteroids(set, &f);
+            setts.rules_processing(&f);
+            print_asteroids(&f);
           }
         } else if (choice == 3) {
           quit = 1;
@@ -109,15 +110,15 @@ int Menu::choices(Settings set, Field f, int mode) {
 int Start::processing(Settings set, Field* f) {
   clear();
   COLOR_PAIR(3);
-  int height = f->getFieldHeight(), width = f->getFieldWidth();
+//  int height = f->getFieldHeight(), width = f->getFieldWidth();
   f->draw_field(0);
-  print_asteroids(set, f);
-  print_background(set, f);
+  print_asteroids(f);
+  print_background(f);
   choices(set, *f, 1);
   return 0;
 }
 
-void print_asteroids(Settings set, Field* f) {
+void print_asteroids(Field* f) {
   clear();
   f->draw_field(0);
   int x = f->getFieldWidth() / 2 - 16;
@@ -140,13 +141,13 @@ void print_asteroids(Settings set, Field* f) {
   print_d(x, y, CELL_TYPE);
   x += 4;
   print_s(x, y, CELL_TYPE);
-  print_background(set, f);
+  print_background(f);
   attroff(COLOR_PAIR(9));
   attrset(A_BOLD);
   COLOR_PAIR(3);
 }
 
-void Settings_Menu::print_settings(Settings set, Field* f) {
+void Settings_Menu::print_settings(Field* f) {
   clear();
   f->draw_field(0);
   int x = f->getFieldWidth() / 2 - 15;
@@ -167,13 +168,13 @@ void Settings_Menu::print_settings(Settings set, Field* f) {
   print_g(x, y, CELL_TYPE);
   x += 5;
   print_s(x, y, CELL_TYPE);
-  print_background(set, f);
+  print_background(f);
   attroff(COLOR_PAIR(9));
   attrset(A_BOLD);
   COLOR_PAIR(3);
 }
 
-void Settings_Menu::print_field(Settings set, Field* f) {
+void Settings_Menu::print_field(Field* f) {
   int x = f->getFieldWidth() / 2 - 8;
   int y = TITLEPOS;
   attrset(COLOR_PAIR(8));
@@ -186,13 +187,13 @@ void Settings_Menu::print_field(Settings set, Field* f) {
   print_l(x, y, CELL_TYPE);
   x += 4;
   print_d(x, y, CELL_TYPE);
-  print_background(set, f);
+  print_background(f);
   attroff(COLOR_PAIR(9));
   attrset(A_BOLD);
   COLOR_PAIR(3);
 }
 
-void Finish::print_blackhole(Settings set, Field* f) {
+void Finish::print_blackhole(Field* f) {
   clear();
   f->draw_field(1);
   int x = f->getFieldWidth() / 2 - 17;
@@ -220,7 +221,7 @@ void Finish::print_blackhole(Settings set, Field* f) {
   COLOR_PAIR(3);
 }
 
-void Finish::print_gameover(Settings set, Field* f) {
+void Finish::print_gameover(Field* f) {
   clear();
   f->draw_field(0);
   int x = f->getFieldWidth() / 2 - 16;
@@ -241,13 +242,13 @@ void Finish::print_gameover(Settings set, Field* f) {
   print_e(x, y, CELL_TYPE);
   x += 3;
   print_r(x, y, CELL_TYPE);
-  print_background(set, f);
+  print_background(f);
   attroff(COLOR_PAIR(9));
   attrset(A_BOLD);
   COLOR_PAIR(3);
 }
 
-void Settings_Menu::print_rules(Settings set, Field* f) {
+void Settings_Menu::print_rules(Field* f) {
   clear();
   f->draw_field(0);
   int x = f->getFieldWidth() / 2 - 8;
@@ -262,7 +263,7 @@ void Settings_Menu::print_rules(Settings set, Field* f) {
   print_e(x, y, CELL_TYPE);
   x += 3;
   print_s(x, y, CELL_TYPE);
-  print_background(set, f);
+  print_background(f);
   attroff(COLOR_PAIR(9));
   attrset(A_BOLD);
   COLOR_PAIR(3);
@@ -272,7 +273,7 @@ int Finish::processing(Settings set, Field* f) {
   int height = f->getFieldHeight(), width = f->getFieldWidth();
   while (!(getch() == 10)) {
     attroff(A_BLINK);
-    (game.getstatus() == 1) ? print_blackhole(set, f) : print_gameover(set, f);
+    (game.getstatus() == 1) ? print_blackhole(f) : print_gameover(f);
     move(height / 2, width / 2 - 2);
     printw("SCORE: %d", game.getScore());
     attrset(A_BLINK | COLOR_PAIR((game.getstatus() == 1) ? 9 : 3));
@@ -280,20 +281,17 @@ int Finish::processing(Settings set, Field* f) {
     printw("Press ENTER to replay");
   }
   attrset(COLOR_PAIR(3));
-  print_gameover(set, f);
+  print_gameover(f);
   choices(set, *f, 3);
   return 0;
 }
 
-int Settings_Menu::rules_processing(Settings set, Field* f) {
+int Settings_Menu::rules_processing(Field* f) {
   int ch = 0;
-  int newheight = f->getFieldHeight();
-  int newwidth = f->getFieldWidth();
-  int j = 0, flag = 1;
-  unsigned choice = 0;
+  int flag = 1;
   clear();
   f->draw_field(0);
-  print_rules(set, f);
+  print_rules(f);
   move(f->getFieldHeight() / 2, f->getFieldWidth() / 2 - 10);
   attrset(A_UNDERLINE | A_BOLD);
   printw("CONTROL");
@@ -312,20 +310,19 @@ int Settings_Menu::rules_processing(Settings set, Field* f) {
     ch = getch();
     if (ch == 10) flag = 0;
   }
-  print_rules(set, f);
+  print_rules(f);
   return 0;
 }
 
 int Settings_Menu::processing(Settings set, Field* f) {
-  int height = f->getFieldHeight(), width = f->getFieldWidth();
   clear();
   f->draw_field(0);
-  print_settings(set, f);
+  print_settings(f);
   choices(set, *f, 2);
   return 0;
 }
 
-int Settings_Menu::field_menu(Settings set, Field* f) {
+int Settings_Menu::field_menu(Field* f) {
   int ch;
   int newheight = f->getFieldHeight();
   int newwidth = f->getFieldWidth();
@@ -333,7 +330,7 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
   unsigned choice = 0;
   clear();
   f->draw_field(0);
-  print_field(set, f);
+  print_field(f);
   keypad(stdscr, true);
   while (flag) {
     attroff(A_BOLD);
@@ -342,7 +339,7 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
     mvaddstr(f->getFieldHeight() - 3, f->getFieldWidth() / 2 - 12,
              "Press '-/_' to decrease");
     attrset(A_BOLD);
-    for (int i = 0; i < 3; i++) {
+    for (unsigned int i = 0; i < 3; i++) {
       if (i == choice)
         mvaddch(f->getFieldHeight() / 2 + i, f->getFieldWidth() / 2 - 3 - 2,
                 '>');
@@ -393,11 +390,11 @@ int Settings_Menu::field_menu(Settings set, Field* f) {
   }
   f->setFieldHeight(newheight);
   f->setFieldWidth(newwidth);
-  print_settings(set, f);
+  print_settings(f);
   return 0;
 }
 
-void print_background(Settings set, Field* f) {
+void print_background(Field* f) {
   int y = f->getFieldHeight() - 7;
   int x = f->getFieldWidth() - 3;
   attrset(COLOR_PAIR(8));

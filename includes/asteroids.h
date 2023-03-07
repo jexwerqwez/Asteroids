@@ -6,15 +6,14 @@
 #include "objects.h"
 class Asteroids : public Space_Object {
   vector<vector<char>> asteroid;
-  int health;
-
  protected:
   Space_Object position;
-
+private:
+  int health;
  public:
   Asteroids(vector<vector<char>> a, Space_Object pos, int h = 1)
       : asteroid(a), position(pos), health(h){};
-  Asteroids(Asteroids &ast) : asteroid(ast.asteroid), position(0, 0){};
+  Asteroids(Asteroids &ast, Space_Object &pos) : asteroid(ast.asteroid), position(pos){};
   int getWidth() { return asteroid.at(0).size(); };
   int getHeight() { return asteroid.size(); };
   int getHealt() { return health; };

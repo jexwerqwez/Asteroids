@@ -4,7 +4,7 @@
 
 void print_a(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -26,7 +26,7 @@ void print_a(int x, int y, char cell_type) {
 
 void print_b(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -46,7 +46,7 @@ void print_b(int x, int y, char cell_type) {
 
 void print_c(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -62,7 +62,7 @@ void print_c(int x, int y, char cell_type) {
 
 void print_h(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
@@ -87,7 +87,7 @@ void print_h(int x, int y, char cell_type) {
 void print_s(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(two_cells);
   move(y + 1, x);
@@ -103,7 +103,7 @@ void print_s(int x, int y, char cell_type) {
 
 void print_t(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -124,7 +124,7 @@ void print_t(int x, int y, char cell_type) {
 void print_e(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(two_cells);
   move(y + 1, x);
@@ -159,7 +159,7 @@ void print_r(int x, int y, char cell_type) {
 
 void print_o(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -181,7 +181,7 @@ void print_o(int x, int y, char cell_type) {
 
 void print_i(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(three_cells);
@@ -201,7 +201,7 @@ void print_i(int x, int y, char cell_type) {
 void print_d(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(two_cells);
   move(y + 1, x);
@@ -223,7 +223,7 @@ void print_d(int x, int y, char cell_type) {
 void print_n(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
   move(y, x + 3);
@@ -249,7 +249,7 @@ void print_n(int x, int y, char cell_type) {
 void print_g(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   char four_cells[5] = {cell_type, cell_type, cell_type, cell_type};
   move(y, x);
   addstr(four_cells);
@@ -270,7 +270,7 @@ void print_g(int x, int y, char cell_type) {
 void print_f(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(two_cells);
   move(y + 1, x);
@@ -286,7 +286,7 @@ void print_f(int x, int y, char cell_type) {
 void print_k(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
   move(y, x + 3);
@@ -309,7 +309,7 @@ void print_k(int x, int y, char cell_type) {
 
 void print_l(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
@@ -326,7 +326,7 @@ void print_l(int x, int y, char cell_type) {
 void print_m(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
   char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
   move(y, x + 4);
@@ -353,8 +353,8 @@ void print_m(int x, int y, char cell_type) {
 
 void print_v(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
-  char three_cells[4] = {cell_type, cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
+//  char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);
   move(y, x + 2);
@@ -378,7 +378,7 @@ void print_v(int x, int y, char cell_type) {
 
 void print_u(int x, int y, char cell_type) {
   char one_cell[2] = {cell_type};
-  char two_cells[3] = {cell_type, cell_type};
+//  char two_cells[3] = {cell_type, cell_type};
   char three_cells[4] = {cell_type, cell_type, cell_type};
   move(y, x);
   addstr(one_cell);

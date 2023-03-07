@@ -29,8 +29,3 @@ void Field::draw_field(int mode) {
   }
   move(height + 2, width / 2 - 5);
 }
-
-void Field::draw_circle(int d) {
-  int middle_h = getFieldHeight() / 2;
-  int middle_w = getFieldWidth() / 2;
-}

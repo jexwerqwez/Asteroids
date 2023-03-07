@@ -41,7 +41,7 @@ class Bonus : public Space_Object {
   void move_bonus(int);
   char getSprite() { return bonus; };
   void generate_bonus(Space_Object);
-  int set_effect(Spaceship*, Asteroids_Manager*, Gun*, Game*, int, int);
+  int set_effect(Spaceship*, Asteroids_Manager*, Gun*, Game*, int);
   Space_Object getPos() { return position; };
 };
 
@@ -55,7 +55,7 @@ class Bonus_Manager {
   vector<Bonus*> getBonuses() { return bonuses; };
   Field getField() { return field; };
   void destruct_bonus(int);
-  void bonus_manager(Space_Object, int);
+  void bonus_manager();
 };
 
 class Menu {
@@ -84,13 +84,13 @@ class Pause : virtual public Menu {
 class Settings_Menu : virtual public Menu {
  public:
   Settings_Menu(Field f) : Menu(f){};
-  void setting_menu(Settings, Field);
-  void print_settings(Settings, Field*);
-  void print_field(Settings, Field*);
-  int field_menu(Settings, Field*);
-  void print_rules(Settings, Field*);
+  void setting_menu(Field);
+  void print_settings(Field*);
+  void print_field(Field*);
+  int field_menu(Field*);
+  void print_rules(Field*);
   int processing(Settings, Field*);
-  int rules_processing(Settings, Field*);
+  int rules_processing(Field*);
 };
 class Finish : virtual public Menu {
   string filename;
@@ -100,8 +100,8 @@ class Finish : virtual public Menu {
  public:
   Finish(Field f, string n, Settings s, Game g)
       : Menu(f), filename(n), settings(s), game(g){};
-  void print_gameover(Settings, Field*);
-  void print_blackhole(Settings, Field*);
+  void print_gameover(Field*);
+  void print_blackhole(Field*);
   int processing(Settings, Field*);
 };
 #endif

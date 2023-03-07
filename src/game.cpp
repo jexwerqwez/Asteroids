@@ -29,7 +29,6 @@ void Game::play(int height, int width, Settings setts) {
   Space_Object bonuspos(0, 0);
   Bonus bonus(bonussprite, bonuspos);
   Asteroids* asts = new Asteroids(asteroid, astpos, 1 + rand() % 2);
-  Bonus* bonuses = new Bonus(bonussprite, bonuspos);
   Shot shot(shotsprite, shotpos);
   Field bord(height, width);
   Spaceship spaceship(setts.hithpoint, shipsprite, shippos);
@@ -38,7 +37,6 @@ void Game::play(int height, int width, Settings setts) {
   Bonus_Manager bonus_manage(bord);
   Gun gun(bord);
   mutex mtx;
-  clock_t t0 = clock();
   setstatus(0);
   bord.draw_field(0);
   timeout(3);
@@ -60,7 +58,7 @@ void Game::play(int height, int width, Settings setts) {
       break;
     }
     command = getch();
-    bonus_manage.bonus_manager(bonuspos, 1);
+    bonus_manage.bonus_manager();
     switch (command) {
       case 'r': {
         if (effect != 6) gun_mode = (gun_mode == 1) ? 0 : 1;
@@ -79,7 +77,7 @@ void Game::play(int height, int width, Settings setts) {
     vector<Asteroids*> all_asts = manage.getAsters();
     vector<Shot*> all_shots = gun.getShots();
     vector<Bonus*> all_bonuses = bonus_manage.getBonuses();
-    for (int i = 0; i < all_asts.size(); i++) {
+    for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
@@ -88,7 +86,7 @@ void Game::play(int height, int width, Settings setts) {
             manage.destruct_asteroid(i);
             spaceship.setHeath(spaceship.getHealt() - 1);
           }
-          for (int l = 0; l < all_shots.size(); l++) {
+          for (long unsigned int l = 0; l < all_shots.size(); l++) {
             if (all_asts.at(i)->getPos() + offset ==
                 all_shots.at(l)->getPos()) {
               all_asts.at(i)->setHeath(all_asts.at(i)->getHealt() - 1);
@@ -102,10 +100,10 @@ void Game::play(int height, int width, Settings setts) {
               }
             }
           }
-          for (int m = 0; m < all_bonuses.size(); m++) {
+          for (long unsigned int m = 0; m < all_bonuses.size(); m++) {
             if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
               effect = all_bonuses.at(m)->set_effect(
-                  &spaceship, &manage, &gun, this, sethard(&manage), gun_mode);
+                  &spaceship, &manage, &gun, this, sethard(&manage));
               move(height + 1, width / 2 - 10);
               printw("CATCH %s!", bonus_info[effect]);
               all_bonuses.at(m)->erase_bonus();
@@ -142,16 +140,17 @@ int Game::sethard(Asteroids_Manager* asters) {
   int luckybox = 0;
   switch (hard) {
     case 0:
+    case 1:
       asters->setVelocity(200);
       setVelocity(30);
       luckybox = rand() % 4;
       break;
-    case 1:
+    case 2:
       asters->setVelocity(130);
       setVelocity(35);
       luckybox = rand() % 8;
       break;
-    case 2:
+    case 3:
       asters->setVelocity(70);
       setVelocity(40);
       if (rand() % 4 == 0)
