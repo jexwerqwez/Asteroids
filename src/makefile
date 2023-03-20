@@ -3,9 +3,11 @@ CFLAGS=-c -Wall -Werror -Wextra
 
 all: asteroids
 
-asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o main.o
-	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o main.o -lncursesw -o ./asteroids
+asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o fuzzy.o main.o
+	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o fuzzy.o main.o -lncursesw -o ./asteroids
 
+fuzzy.o: fuzzy.cpp
+	$(CC) $(CFLAGS) fuzzy.cpp
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
 asteroids.o: asteroids.cpp

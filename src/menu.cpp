@@ -10,7 +10,7 @@
 
 const char* start_set[ITEMS] = {"Play", "Settings", "Rules", "Quit"};
 const char* setting_set[ITEMS] = {"Play", "Mode", "Field", "Quit"};
-const char* difficulty_set[ITEMS] = {"Fuzz", "Easy", "Norm", "Hard"};
+const char* difficulty_set[ITEMS] = {"Easy", "Norm", "Hard", "Fuzz"};
 const char* finish_set[ITEMS] = {"Replay", "Settings", "Rules", "Quit"};
 const char* field_set[ITEMS] = {"Height", "Width", "Back"};
 const char* mode_set[2] = {"On", "Off"};
@@ -23,7 +23,6 @@ int Menu::choices(Settings set, Field f, int mode) {
   int shift = 3, finflag = 4;
   const char** array;
   int height = f.getFieldHeight(), width = f.getFieldWidth();
-//  int newheight = f.getFieldHeight(), newwidth = f.getFieldWidth();
   Settings_Menu setts(f);
   keypad(stdscr, true);
   switch (mode) {

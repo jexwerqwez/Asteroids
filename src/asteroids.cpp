@@ -36,7 +36,7 @@ void Asteroids_Manager::asts_manage(int health) {
       {'*', ' '},
       {'*', '*'},
   };
-  Space_Object ast_pos(
+  Space_Object ast_pos( 
       field.getFieldWidth() - 2,
       1 + rand() % (field.getFieldHeight() - asteroid.size() - 1));
   asters.push_back(new Asteroids(asteroid, ast_pos, 1 + rand() % health));

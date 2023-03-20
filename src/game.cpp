@@ -41,6 +41,7 @@ void Game::play(int height, int width, Settings setts) {
   bord.draw_field(0);
   timeout(3);
   setScore(score);
+  hard = (hard == 3) ? 0 : hard;
   thread th([&]() {
     while (getstatus() != -1 && getstatus() != 1) {
       manage.asts_manage(1 + hard);
@@ -81,12 +82,17 @@ void Game::play(int height, int width, Settings setts) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
-          if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {
+          // затолкать помеченное в отдельные функции, возможно создрать класс Events
+          if(hard == 0) {
+            
+          }
+          if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {  // столкновение корабля с астероидом
             all_asts.at(i)->erase_asteroid();
             manage.destruct_asteroid(i);
             spaceship.setHeath(spaceship.getHealt() - 1);
           }
-          for (long unsigned int l = 0; l < all_shots.size(); l++) {
+
+          for (long unsigned int l = 0; l < all_shots.size(); l++) {  // выстрел
             if (all_asts.at(i)->getPos() + offset ==
                 all_shots.at(l)->getPos()) {
               all_asts.at(i)->setHeath(all_asts.at(i)->getHealt() - 1);
@@ -100,7 +106,8 @@ void Game::play(int height, int width, Settings setts) {
               }
             }
           }
-          for (long unsigned int m = 0; m < all_bonuses.size(); m++) {
+
+          for (long unsigned int m = 0; m < all_bonuses.size(); m++) {  // подбор бонуса
             if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
               effect = all_bonuses.at(m)->set_effect(
                   &spaceship, &manage, &gun, this, sethard(&manage));
@@ -110,6 +117,7 @@ void Game::play(int height, int width, Settings setts) {
               bonus_manage.destruct_bonus(m);
             }
           }
+
         }
       }
     }
@@ -140,17 +148,17 @@ int Game::sethard(Asteroids_Manager* asters) {
   int luckybox = 0;
   switch (hard) {
     case 0:
-    case 1:
+    case 3:
       asters->setVelocity(200);
       setVelocity(30);
       luckybox = rand() % 4;
       break;
-    case 2:
+    case 1:
       asters->setVelocity(130);
       setVelocity(35);
       luckybox = rand() % 8;
       break;
-    case 3:
+    case 2:
       asters->setVelocity(70);
       setVelocity(40);
       if (rand() % 4 == 0)

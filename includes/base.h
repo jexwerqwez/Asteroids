@@ -14,5 +14,6 @@
 #include <string>
 #include <thread>
 #include <vector>
+#include <cmath>
 using namespace std;
 #endif
