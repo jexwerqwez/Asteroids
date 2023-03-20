@@ -33,3 +33,47 @@ double Fuzzy_Controller::rules_processing(int e, int de) {
     }
     return num / den;
 }
+
+vector<Zone*> Fuzzy_Controller::calculate_optimal(Field* field, Asteroids_Manager* manager,
+                                           Spaceship* spaceship) {
+  vector<Zone*> all_zones;
+  int space_x = spaceship->getPos().getX(); // просмотр окружения корабля
+  int space_y = spaceship->getPos().getY();
+  int num_of_zones = ceil(field->getFieldHeight()/3.0) * ceil(field->getFieldWidth()/3.0);
+  float koef_diff = 1.0/(float)num_of_zones;
+  all_zones.push_back(new Zone(space_y, space_x + 1, 1)); // зона с кораблем
+  all_zones.push_back(new Zone(space_y - 2, space_x, 1 - koef_diff));
+  int i = 1;
+  // while (all_zones.at(i)->getHeight() > 1) {  // определяем положение зон сверху
+  //   all_zones.push_back(new Zone(all_zones.at(i)->getHeight() - 3, all_zones.at(i)->getWidth(), 1 - (i + 1) * koef_diff));
+  //   i++;
+  // }
+  all_zones.push_back(new Zone(space_y + 2, space_x, 1 - koef_diff));
+  int j = 1;
+  while (all_zones.at(i)->getHeight() < field->getFieldHeight() - 3) {  // определяем положение зон снизу
+    all_zones.push_back(new Zone(all_zones.at(i)->getHeight() + 3, all_zones.at(i)->getWidth(), 1 - (i + 1) * koef_diff));
+    i++;
+  }
+  for (int k = 0; k < all_zones.size(); k++) {
+    move(all_zones.at(k)->getHeight(), all_zones.at(k)->getWidth());
+    printw("%f" ,all_zones.at(k)->getCoefficient());
+  }
+
+  // move(all_zones.at(0)->getHeight(), all_zones.at(0)->getWidth());
+  // printw("%f" ,all_zones.at(0)->getCoefficient());
+
+  // for (int i = 1; i < 3; i++)
+  //   for (int j = -1; j < 2; j++)
+  //     mvaddch(all_zones.at(0)->getHeight() + j, all_zones.at(0)->getWidth() + i, ' ' | COLOR_PAIR(9));
+  // for (int i = 0; i < 3; i++)
+  //   for (int j = 3; j > 0; j--)
+  //     mvaddch(all_zones.at(1)->getHeight() - j, all_zones.at(1)->getWidth() + i, ' ' | COLOR_PAIR(8));
+  // for (int i = 0; i < 3; i++)
+  //   for (int j = 1; j < 4; j++)
+  //     mvaddch(all_zones.at(3)->getHeight() + j, all_zones.at(3)->getWidth() + i, ' ' | COLOR_PAIR(10));
+  // for (int i = 0; i < field->getFieldWidth(); i++) {    // цикл по всему полю
+  //   for (int j = 0; j < field->getFieldHeight(); j++) {
+  //   }
+  // }
+  return all_zones;
+}

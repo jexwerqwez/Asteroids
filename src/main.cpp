@@ -7,7 +7,7 @@ int main(int argc, char* argv[]) {
   noecho();
   start_color();
   clear();
-  // init_pair(6, )
+  init_pair(10, COLOR_WHITE, COLOR_RED);
   init_pair(9, COLOR_WHITE, COLOR_BLUE);
   init_pair(8, COLOR_WHITE, COLOR_WHITE);  // bord
   init_pair(7, COLOR_YELLOW, 0);

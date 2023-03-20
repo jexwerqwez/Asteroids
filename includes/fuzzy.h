@@ -1,7 +1,9 @@
 #ifndef FUZZY
 #define FUZZY
-#include "base.h"
-
+#include "field.h"
+#include "spaceship.h"
+#include "asteroids.h"
+#include "zone.h"
 #define NB -125
 #define NM -90
 #define NS -55
@@ -43,6 +45,7 @@ public:
   double membership_function(int x, int mu, int basis) {
       return exp(-pow(x - mu, 2) / (2 * pow(basis, 2)));
   }
+  vector<Zone*> calculate_optimal(Field*, Asteroids_Manager*, Spaceship*);
 };
 
 #endif

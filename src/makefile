@@ -7,7 +7,7 @@ asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.
 	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o fuzzy.o main.o -lncursesw -o ./asteroids
 
 fuzzy.o: fuzzy.cpp
-	$(CC) $(CFLAGS) fuzzy.cpp
+	$(CC) -c fuzzy.cpp
 main.o: main.cpp
 	$(CC) $(CFLAGS) main.cpp
 asteroids.o: asteroids.cpp

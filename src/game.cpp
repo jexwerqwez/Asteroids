@@ -1,5 +1,5 @@
 #include "../includes/game.h"
-
+#include "../includes/fuzzy.h"
 const char* bonus_info[7] = {"EXTRA LIFE",
                              "SPACESHIP&BONUSES ACCELERATION",
                              "SCORE MULTIPLIER",
@@ -84,7 +84,8 @@ void Game::play(int height, int width, Settings setts) {
           Space_Object offset(j, k);
           // затолкать помеченное в отдельные функции, возможно создрать класс Events
           if(hard == 0) {
-            
+            Fuzzy_Controller fuzzy(30);
+            fuzzy.calculate_optimal(&bord, &manage, &spaceship);
           }
           if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {  // столкновение корабля с астероидом
             all_asts.at(i)->erase_asteroid();
