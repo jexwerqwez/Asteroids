@@ -45,7 +45,8 @@ public:
   double membership_function(int x, int mu, int basis) {
       return exp(-pow(x - mu, 2) / (2 * pow(basis, 2)));
   }
-  vector<Zone*> optimal_position(Field*, Asteroids_Manager*, Spaceship*);
+  vector<Zone*> optimal_position(Field*, Spaceship*);
+  vector<Zone*> calculate_optimal(vector<Zone*>, Field*, vector<Asteroids*>, Space_Object*);
 };
 
 #endif

@@ -82,10 +82,11 @@ void Game::play(int height, int width, Settings setts) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
-          // затолкать помеченное в отдельные функции, возможно создрать класс Events
+          // затолкать помеченное в отдельные функции, возможно создать класс Events
           if(hard == 0) {
             Fuzzy_Controller fuzzy(30);
-            fuzzy.calculate_optimal(&bord, &manage, &spaceship);
+            fuzzy.calculate_optimal(fuzzy.optimal_position(&bord, &spaceship), &bord, all_asts, &offset);
+            // fuzzy.optimal_position(&bord, &manage, &spaceship);
           }
           if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {  // столкновение корабля с астероидом
             all_asts.at(i)->erase_asteroid();
