@@ -78,16 +78,17 @@ void Game::play(int height, int width, Settings setts) {
     vector<Asteroids*> all_asts = manage.getAsters();
     vector<Shot*> all_shots = gun.getShots();
     vector<Bonus*> all_bonuses = bonus_manage.getBonuses();
+    Fuzzy_Controller fuzzy(30);
+    vector<Zone*> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
-          // затолкать помеченное в отдельные функции, возможно создать класс Events
+          // затолкать помеченное в отдельные функции, возможно создрать класс Events
           if(hard == 0) {
-            Fuzzy_Controller fuzzy(30);
-            fuzzy.calculate_optimal(fuzzy.optimal_position(&bord, &spaceship), &bord, all_asts, &offset);
-            // fuzzy.optimal_position(&bord, &manage, &spaceship);
+            fuzzy.calculate_asteroids(all_zones, all_asts.at(i)->getPos() + offset);
           }
+        
           if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {  // столкновение корабля с астероидом
             all_asts.at(i)->erase_asteroid();
             manage.destruct_asteroid(i);
@@ -122,6 +123,14 @@ void Game::play(int height, int width, Settings setts) {
 
         }
       }
+    }
+    if (hard == 0) {
+      mtx.lock();
+      this_thread::sleep_for(chrono::milliseconds(main_velocity * 4));
+      spaceship.erase_spaceship();
+      fuzzy.rules_to_do(all_zones, &spaceship, bord);
+      spaceship.draw_spaceship(blink);
+      mtx.unlock();
     }
     if (effect == 4) blink = 1;
     if (getScore() - prev_score != 0 ||
