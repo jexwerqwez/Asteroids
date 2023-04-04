@@ -55,7 +55,7 @@ public:
   /**
    * @brief Функция, изменяющая коэффициент зоны при попадании в неё астероида
   */
-  void calculate_asteroids(vector<Zone*>, Space_Object);
+  void calculate_asteroids(vector<Zone*>*, Space_Object, Spaceship*, Field*);
   /**
    * @brief Функция, изменяющая коэффициент зоны в зависимости от удаленности от зоны с Spaceship
   */
@@ -63,20 +63,27 @@ public:
   /**
    * @brief Функция, ищущая индекс зоны в векторе зон, расстояние до которой по оси X минимальна
   */
-  int find_optimal_x(vector<Zone *>, Spaceship*);
+  int find_optimal_x(vector<Zone *>*, Spaceship*);
   /**
    * @brief Функция, ищущая индекс зоны в векторе зон, расстояние до которой по оси Y минимальна
   */
-  int find_optimal_y(vector<Zone *>, Spaceship*);
+  int find_optimal_y(vector<Zone *>*, Spaceship*);
   /**
    * @brief Функция, ищущая индекс зоны в векторе зон, имеющей максимальный коэффициент
   */
-  int find_optimal_coef(vector<Zone *>, Spaceship*);
+  int find_optimal_coef(vector<Zone *>*, Spaceship*);
   /**
    * @brief Функция, передающая действия Spaceship
   */
-  void rules_to_do(vector<Zone *>, Spaceship*, Field);
-
+  void rules_to_do(vector<Zone *>*, Spaceship*, Field*);
+  /**
+   * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
+  */
+  void asteroid_and_spaceship_in_zone(Zone *, Spaceship*, Space_Object*, Field*);
+  /**
+   * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
+  */
+  int return_zone_index(Space_Object*, vector<Zone *>*);
 };
 
 #endif

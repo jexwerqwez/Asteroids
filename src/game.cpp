@@ -1,6 +1,6 @@
 #include "../includes/game.h"
 #include "../includes/fuzzy.h"
-const char* bonus_info[7] = {"EXTRA LIFE",
+const char *bonus_info[7] = {"EXTRA LIFE",
                              "SPACESHIP&BONUSES ACCELERATION",
                              "SCORE MULTIPLIER",
                              "ASTEROIDS SLOWDOWN",
@@ -28,7 +28,7 @@ void Game::play(int height, int width, Settings setts) {
   Space_Object shotpos(5, height / 2);
   Space_Object bonuspos(0, 0);
   Bonus bonus(bonussprite, bonuspos);
-  Asteroids* asts = new Asteroids(asteroid, astpos, 1 + rand() % 2);
+  Asteroids *asts = new Asteroids(asteroid, astpos, 1 + rand() % 2);
   Shot shot(shotsprite, shotpos);
   Field bord(height, width);
   Spaceship spaceship(setts.hithpoint, shipsprite, shippos);
@@ -61,10 +61,11 @@ void Game::play(int height, int width, Settings setts) {
     command = getch();
     bonus_manage.bonus_manager();
     switch (command) {
-      case 'r': {
-        if (effect != 6) gun_mode = (gun_mode == 1) ? 0 : 1;
-        break;
-      }
+    case 'r': {
+      if (effect != 6)
+        gun_mode = (gun_mode == 1) ? 0 : 1;
+      break;
+    }
     }
     if (command) {
       mtx.lock();
@@ -75,27 +76,31 @@ void Game::play(int height, int width, Settings setts) {
       spaceship.draw_spaceship(blink);
       mtx.unlock();
     }
-    vector<Asteroids*> all_asts = manage.getAsters();
-    vector<Shot*> all_shots = gun.getShots();
-    vector<Bonus*> all_bonuses = bonus_manage.getBonuses();
+    vector<Asteroids *> all_asts = manage.getAsters();
+    vector<Shot *> all_shots = gun.getShots();
+    vector<Bonus *> all_bonuses = bonus_manage.getBonuses();
     Fuzzy_Controller fuzzy(30);
-    vector<Zone*> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
+    vector<Zone *> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
-          // затолкать помеченное в отдельные функции, возможно создрать класс Events
-          if(hard == 0) {
-            fuzzy.calculate_asteroids(all_zones, all_asts.at(i)->getPos() + offset);
+          // затолкать помеченное в отдельные функции, возможно создрать класс
+          // Events
+          if (hard == 0) {
+            fuzzy.calculate_asteroids(&all_zones,
+                                      all_asts.at(i)->getPos() + offset,
+                                      &spaceship, &bord);
           }
-        
-          if (all_asts.at(i)->getPos() + offset == spaceship.getPos()) {  // столкновение корабля с астероидом
+
+          if (all_asts.at(i)->getPos() + offset ==
+              spaceship.getPos()) { // столкновение корабля с астероидом
             all_asts.at(i)->erase_asteroid();
             manage.destruct_asteroid(i);
             spaceship.setHeath(spaceship.getHealt() - 1);
           }
 
-          for (long unsigned int l = 0; l < all_shots.size(); l++) {  // выстрел
+          for (long unsigned int l = 0; l < all_shots.size(); l++) { // выстрел
             if (all_asts.at(i)->getPos() + offset ==
                 all_shots.at(l)->getPos()) {
               all_asts.at(i)->setHeath(all_asts.at(i)->getHealt() - 1);
@@ -110,43 +115,42 @@ void Game::play(int height, int width, Settings setts) {
             }
           }
 
-          for (long unsigned int m = 0; m < all_bonuses.size(); m++) {  // подбор бонуса
+          for (long unsigned int m = 0; m < all_bonuses.size();
+               m++) { // подбор бонуса
             if (all_bonuses.at(m)->getPos() == spaceship.getPos()) {
-              effect = all_bonuses.at(m)->set_effect(
-                  &spaceship, &manage, &gun, this, sethard(&manage));
+              effect = all_bonuses.at(m)->set_effect(&spaceship, &manage, &gun,
+                                                     this, sethard(&manage));
               move(height + 1, width / 2 - 10);
               printw("CATCH %s!", bonus_info[effect]);
               all_bonuses.at(m)->erase_bonus();
               bonus_manage.destruct_bonus(m);
             }
           }
-
         }
       }
     }
     if (hard == 0) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity * 4));
-      // int ind = fuzzy.find_optimal_coef(all_zones, &spaceship);
       spaceship.erase_spaceship();
-      fuzzy.rules_to_do(all_zones, &spaceship, bord);
-      // all_zones.at(0)->setCoefficient(0);
-      // int ind = 40;
-      // mvaddstr(height + 1, width / 2 - 10, "       ");
-      // move(height + 1, width / 2 - 10);
-      // printw("%f", all_zones.at(ind)->getCoefficient());
+      fuzzy.rules_to_do(&all_zones, &spaceship, &bord);
+      // for (long unsigned int k = 0; k < all_zones.size(); k++) {
+      //   move(all_zones.at(k)->getPos().getY(),
+      //   all_zones.at(k)->getPos().getX()); printw("%.2f",
+      //   all_zones.at(k)->getCoefficient());
+      // }
+      // if (fuzz)
       spaceship.draw_spaceship(blink);
       mtx.unlock();
     }
-    if (effect == 4) blink = 1;
+    if (effect == 4)
+      blink = 1;
     if (getScore() - prev_score != 0 ||
         spaceship.getHealt() - prev_health != 0) {
       mtx.lock();
       move(height, width / 2 - 10);
-      // clock_t t1 = clock();
       printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
       mtx.unlock();
-      // move(height+1, width/2-10);
     }
     gun_mode = 0;
   }
@@ -161,30 +165,30 @@ void Game::play(int height, int width, Settings setts) {
   }
 }
 
-int Game::sethard(Asteroids_Manager* asters) {
+int Game::sethard(Asteroids_Manager *asters) {
   int luckybox = 0;
   switch (hard) {
-    case 0:
-    case 3:
-      asters->setVelocity(200);
-      setVelocity(30);
+  case 0:
+  case 3:
+    asters->setVelocity(200);
+    setVelocity(30);
+    luckybox = rand() % 4;
+    break;
+  case 1:
+    asters->setVelocity(130);
+    setVelocity(35);
+    luckybox = rand() % 8;
+    break;
+  case 2:
+    asters->setVelocity(70);
+    setVelocity(40);
+    if (rand() % 4 == 0)
       luckybox = rand() % 4;
-      break;
-    case 1:
-      asters->setVelocity(130);
-      setVelocity(35);
-      luckybox = rand() % 8;
-      break;
-    case 2:
-      asters->setVelocity(70);
-      setVelocity(40);
-      if (rand() % 4 == 0)
-        luckybox = rand() % 4;
-      else
-        luckybox = 3 + rand() % 8;
-      break;
-    default:
-      break;
+    else
+      luckybox = 3 + rand() % 8;
+    break;
+  default:
+    break;
   }
   return luckybox;
 }

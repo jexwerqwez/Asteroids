@@ -14,6 +14,9 @@ class Space_Object {
   int operator==(Space_Object pos) {
     return this->x == pos.getX() && this->y == pos.getY();
   }
+  int operator!=(Space_Object pos) {
+    return this->x != pos.getX() && this->y != pos.getY();
+  }
   Space_Object operator+(Space_Object pos) {
     return Space_Object(this->x + pos.getX(), this->y + pos.getY());
   }
