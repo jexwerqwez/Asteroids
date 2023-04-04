@@ -127,8 +127,14 @@ void Game::play(int height, int width, Settings setts) {
     if (hard == 0) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity * 4));
+      // int ind = fuzzy.find_optimal_coef(all_zones, &spaceship);
       spaceship.erase_spaceship();
       fuzzy.rules_to_do(all_zones, &spaceship, bord);
+      // all_zones.at(0)->setCoefficient(0);
+      // int ind = 40;
+      // mvaddstr(height + 1, width / 2 - 10, "       ");
+      // move(height + 1, width / 2 - 10);
+      // printw("%f", all_zones.at(ind)->getCoefficient());
       spaceship.draw_spaceship(blink);
       mtx.unlock();
     }

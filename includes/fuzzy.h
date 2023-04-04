@@ -34,7 +34,12 @@ public:
   int getDelta() {return delta_state;};
   int getPrev() {return previous_state;};
 };
-
+/**
+ * @brief
+ * Класс, отвечающий за реализацию нечёткого регулятора
+ * @param all_rules вектор, содержащий указатели на все правила
+ * @param basis среднеквадратичное отклонение, необходимое для нормального распределения
+*/
 class Fuzzy_Controller {
   vector<Rule*> all_rules;
   int basis;
@@ -47,11 +52,29 @@ public:
   double membership_function(int x, int mu, int basis) {
       return exp(-pow(x - mu, 2) / (2 * pow(basis, 2)));
   }
+  /**
+   * @brief Функция, изменяющая коэффициент зоны при попадании в неё астероида
+  */
   void calculate_asteroids(vector<Zone*>, Space_Object);
+  /**
+   * @brief Функция, изменяющая коэффициент зоны в зависимости от удаленности от зоны с Spaceship
+  */
   vector<Zone*> calculate_distance(Field*, Spaceship*);
-  int find_optimal_x(vector<Zone *>);
-  int find_optimal_y(vector<Zone *>);
+  /**
+   * @brief Функция, ищущая индекс зоны в векторе зон, расстояние до которой по оси X минимальна
+  */
+  int find_optimal_x(vector<Zone *>, Spaceship*);
+  /**
+   * @brief Функция, ищущая индекс зоны в векторе зон, расстояние до которой по оси Y минимальна
+  */
+  int find_optimal_y(vector<Zone *>, Spaceship*);
+  /**
+   * @brief Функция, ищущая индекс зоны в векторе зон, имеющей максимальный коэффициент
+  */
   int find_optimal_coef(vector<Zone *>, Spaceship*);
+  /**
+   * @brief Функция, передающая действия Spaceship
+  */
   void rules_to_do(vector<Zone *>, Spaceship*, Field);
 
 };
