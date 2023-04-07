@@ -5,7 +5,7 @@ class Space_Object {
   int x;
   int y;
 
- public:
+public:
   Space_Object(int x_ = 0, int y_ = 0) : x(x_), y(y_){};
   int getX() { return x; };
   int getY() { return y; };

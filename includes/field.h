@@ -8,7 +8,7 @@ class Field {
   int newheight = height;
   int newwidth = width;
 
- public:
+public:
   Field(int h, int w) : height(h), width(w){};
   int getFieldWidth() { return width; };
   void setFieldWidth(int w) { newwidth = w; };

@@ -7,10 +7,10 @@ class Spaceship : public Space_Object {
   int health;
   char spaceship;
 
- protected:
+protected:
   Space_Object position;
 
- public:
+public:
   Spaceship(int h, char ssp, Space_Object pos)
       : health(h), spaceship(ssp), position(pos){};
   void draw_spaceship(int);

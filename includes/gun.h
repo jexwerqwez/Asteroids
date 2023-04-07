@@ -7,10 +7,10 @@
 class Shot : public Space_Object {
   char shot;
 
- protected:
+protected:
   Space_Object position;
 
- public:
+public:
   Shot(char shsp, Space_Object pos) : shot(shsp), position(pos){};
   void draw_shot();
   void erase_shot();
@@ -21,12 +21,12 @@ class Shot : public Space_Object {
 };
 class Gun {
   Field field;
-  vector<Shot*> shots;
-  Spaceship* spaceship;
+  vector<Shot *> shots;
+  Spaceship *spaceship;
 
- public:
+public:
   Gun(Field f) : field(f){};
-  vector<Shot*> getShots() { return shots; };
+  vector<Shot *> getShots() { return shots; };
   Field getField() { return field; };
   void destruct_shot(int);
   int gun_manager(Space_Object, int, int);

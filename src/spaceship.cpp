@@ -19,6 +19,8 @@ void Spaceship::erase_spaceship() {
 }
 
 Space_Object Spaceship::change_position(int command, Field field) {
+  move(field.getFieldHeight() + 1, field.getFieldWidth() / 2 - 10);
+  printw("%c", command);
   switch (command) {
   case 'd': {
     if (field.object_inside(getPos()) &&

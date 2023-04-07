@@ -81,6 +81,7 @@ void Game::play(int height, int width, Settings setts) {
     vector<Bonus *> all_bonuses = bonus_manage.getBonuses();
     Fuzzy_Controller fuzzy(30);
     vector<Zone *> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
+    // char command = '0';
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
@@ -91,6 +92,16 @@ void Game::play(int height, int width, Settings setts) {
             fuzzy.calculate_asteroids(&all_zones,
                                       all_asts.at(i)->getPos() + offset,
                                       &spaceship, &bord);
+            // int index = fuzzy.return_zone_index(all_asts.at(i)->getPos(),
+            // &all_zones); if
+            // (all_zones.at(index)->inside_the_zone(spaceship.getPos())) {
+            //   command =
+            //   fuzzy.asteroid_and_spaceship_in_zone(all_zones.at(index),
+            //                                        spaceship.getPos(),
+            //                                        all_asts.at(i)->getPos() +
+            //                                        offset, &bord);
+            // spaceship.change_position(command, bord);
+            // }
           }
 
           if (all_asts.at(i)->getPos() + offset ==
@@ -133,12 +144,16 @@ void Game::play(int height, int width, Settings setts) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity * 4));
       spaceship.erase_spaceship();
-      fuzzy.rules_to_do(&all_zones, &spaceship, &bord);
-      // for (long unsigned int k = 0; k < all_zones.size(); k++) {
-      //   move(all_zones.at(k)->getPos().getY(),
-      //   all_zones.at(k)->getPos().getX()); printw("%.2f",
-      //   all_zones.at(k)->getCoefficient());
+      // if (command != '0') {
+      // spaceship.change_position(command, bord);
+      // } else {
+      // fuzzy.rules_to_do(&all_zones, &spaceship, &bord);
       // }
+      for (long unsigned int k = 0; k < all_zones.size(); k++) {
+        move(all_zones.at(k)->getPos().getY() + 4,
+             all_zones.at(k)->getPos().getX());
+        printw("%.2f", all_zones.at(k)->getCoefficient());
+      }
       // if (fuzz)
       spaceship.draw_spaceship(blink);
       mtx.unlock();

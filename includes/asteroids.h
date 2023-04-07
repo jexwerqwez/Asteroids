@@ -6,14 +6,18 @@
 #include "objects.h"
 class Asteroids : public Space_Object {
   vector<vector<char>> asteroid;
- protected:
+
+protected:
   Space_Object position;
+
 private:
   int health;
- public:
+
+public:
   Asteroids(vector<vector<char>> a, Space_Object pos, int h = 1)
       : asteroid(a), position(pos), health(h){};
-  Asteroids(Asteroids &ast, Space_Object &pos) : asteroid(ast.asteroid), position(pos){};
+  Asteroids(Asteroids &ast, Space_Object &pos)
+      : asteroid(ast.asteroid), position(pos){};
   int getWidth() { return asteroid.at(0).size(); };
   int getHeight() { return asteroid.size(); };
   int getHealt() { return health; };
@@ -28,7 +32,7 @@ class Asteroids_Manager {
   vector<Asteroids *> asters;
   double velocity;
 
- public:
+public:
   Asteroids_Manager(Field f, double v) : field(f), velocity(v){};
   vector<Asteroids *> getAsters() { return asters; };
   int getVelocity() { return velocity; };

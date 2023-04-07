@@ -13,12 +13,12 @@ class Game {
   int hard;
   int main_velocity;
 
- public:
+public:
   Game(int h) : hard(h){};
   friend Field;
   int getstatus() { return status; };
   void setstatus(int s) { status = s; };
-  int sethard(Asteroids_Manager*);
+  int sethard(Asteroids_Manager *);
   void play(int, int, Settings);
   int getScore() { return score; };
   void setScore(int s) { score = s; };
@@ -29,10 +29,10 @@ class Game {
 class Bonus : public Space_Object {
   char bonus;
 
- protected:
+protected:
   Space_Object position;
 
- public:
+public:
   Bonus(char bsp, Space_Object pos) : bonus(bsp), position(pos){};
   void draw_bonus(int);
   void erase_bonus();
@@ -41,67 +41,67 @@ class Bonus : public Space_Object {
   void move_bonus(int);
   char getSprite() { return bonus; };
   void generate_bonus(Space_Object);
-  int set_effect(Spaceship*, Asteroids_Manager*, Gun*, Game*, int);
+  int set_effect(Spaceship *, Asteroids_Manager *, Gun *, Game *, int);
   Space_Object getPos() { return position; };
 };
 
 class Bonus_Manager {
   Field field;
-  vector<Bonus*> bonuses;
+  vector<Bonus *> bonuses;
 
- public:
+public:
   friend Spaceship;
   Bonus_Manager(Field f) : field(f){};
-  vector<Bonus*> getBonuses() { return bonuses; };
+  vector<Bonus *> getBonuses() { return bonuses; };
   Field getField() { return field; };
   void destruct_bonus(int);
   void bonus_manager();
 };
 
 class Menu {
- protected:
+protected:
   Field field;
 
- public:
+public:
   Menu(Field f) : field(f){};
-  virtual int processing(Settings, Field*) = 0;
-  void print_info(Field*, int, int, const char*, int);
+  virtual int processing(Settings, Field *) = 0;
+  void print_info(Field *, int, int, const char *, int);
   int choices(Settings, Field, int);
 };
 class Start : virtual public Menu {
   string filename;
   Settings settings;
 
- public:
+public:
   Start(Field f, string n, Settings s) : Menu(f), filename(n), settings(s){};
-  int processing(Settings, Field*);
+  int processing(Settings, Field *);
 };
 class Pause : virtual public Menu {
- public:
+public:
   Pause(Field f) : Menu(f){};
-  int processing(Settings, Field*);
+  int processing(Settings, Field *);
 };
 class Settings_Menu : virtual public Menu {
- public:
+public:
   Settings_Menu(Field f) : Menu(f){};
   void setting_menu(Field);
-  void print_settings(Field*);
-  void print_field(Field*);
-  int field_menu(Field*);
-  void print_rules(Field*);
-  int processing(Settings, Field*);
-  int rules_processing(Field*);
+  void print_settings(Field *);
+  void print_field(Field *);
+  int field_menu(Field *);
+  void print_rules(Field *);
+  int processing(Settings, Field *);
+  int rules_processing(Field *);
 };
 class Finish : virtual public Menu {
   string filename;
   Settings settings;
   Game game;
 
- public:
+public:
   Finish(Field f, string n, Settings s, Game g)
       : Menu(f), filename(n), settings(s), game(g){};
-  void print_gameover(Field*);
-  void print_blackhole(Field*);
-  int processing(Settings, Field*);
+  void print_gameover(Field *);
+  void print_blackhole(Field *);
+  int processing(Settings, Field *);
 };
 #endif

@@ -1,19 +1,20 @@
 #ifndef BASE
 #define BASE
-#include <ncursesw/ncurses.h>
-#include <string.h>
-#include <sys/time.h>
-#include <unistd.h>
-#include <wchar.h>
-
 #include <chrono>
+#include <cmath>
 #include <ctime>
 #include <fstream>
 #include <iostream>
+#include <map>
 #include <mutex>
+#include <ncursesw/ncurses.h>
+#include <string.h>
 #include <string>
+#include <sys/time.h>
 #include <thread>
+#include <unistd.h>
 #include <vector>
-#include <cmath>
+#include <wchar.h>
 using namespace std;
+
 #endif
