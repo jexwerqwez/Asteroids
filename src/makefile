@@ -1,11 +1,13 @@
 CC=g++
 CFLAGS=-c -Wall -Werror -Wextra
 
-all: asteroids
+all: style asteroids
 
-asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o fuzzy.o main.o
-	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o fuzzy.o main.o -lncursesw -o ./asteroids
+asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o zone.o fuzzy.o main.o
+	$(CC) settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o zone.o fuzzy.o main.o -lncursesw -o ./asteroids
 
+zone.o: zone.cpp
+	$(CC) -c zone.cpp
 fuzzy.o: fuzzy.cpp
 	$(CC) -c fuzzy.cpp
 main.o: main.cpp
@@ -26,7 +28,8 @@ settings.o: settings.cpp
 	$(CC) $(CFLAGS) settings.cpp
 menu.o: menu.cpp
 	$(CC) $(CFLAGS) menu.cpp
-
+style:
+	clang-format -i *.cpp ../includes/*.h
 clean:
 	rm -rf *.o ./asteroids
 rebuild:
