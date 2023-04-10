@@ -1,7 +1,4 @@
 #include "../includes/fuzzy.h"
-#define ZONE_SIZE 6
-
-double pyth(int x, int y) { return sqrt(y * y + x * x); }
 
 int Fuzzy_Controller::return_zone_index(Space_Object object,
                                         vector<Zone *> *zones) {
@@ -24,35 +21,20 @@ void Rule::setRules(int cur_st, int delta_st, int prev_st) {
 }
 
 void Fuzzy_Controller::rules_manager() {
-  all_rules.push_back(new Rule(VLC, AND, VSD, VLP));
-  all_rules.push_back(new Rule(VLC, AND, SD, VLP));
-  all_rules.push_back(new Rule(VLC, AND, MD, MP));
-  all_rules.push_back(new Rule(VLC, AND, LD, SP));
-  all_rules.push_back(new Rule(VLC, AND, VLD, VSP));
+  all_rules.push_back(new Rule(Z, AND, Z, Z));
+  all_rules.push_back(new Rule(PB, OR, PB, NB));
+  all_rules.push_back(new Rule(NB, OR, NB, PB));
+  all_rules.push_back(new Rule(NM, AND, ZN, PB)); /* если текущее отклонение
+  среднее внизу и разница между положением корабля и зоной очень маленькое
+  снизу, то кораблю необходимо дать крен вверх  */
+  all_rules.push_back(new Rule(PM, AND, ZP, NB));
+  all_rules.push_back(new Rule(ZN, AND, ZN, ZP));
+  all_rules.push_back(new Rule(ZP, AND, ZP, ZN));
 
-  all_rules.push_back(new Rule(VLC, AND, VSD, VLP));
-  all_rules.push_back(new Rule(VLC, AND, SD, LP));
-  all_rules.push_back(new Rule(VLC, AND, MD, MP));
-  all_rules.push_back(new Rule(VLC, AND, LD, SP));
-  all_rules.push_back(new Rule(VLC, AND, VLD, VSP));
-
-  all_rules.push_back(new Rule(VLC, AND, VSD, LP));
-  all_rules.push_back(new Rule(VLC, AND, SD, MP));
-  all_rules.push_back(new Rule(VLC, AND, MD, MP));
-  all_rules.push_back(new Rule(VLC, AND, LD, SP));
-  all_rules.push_back(new Rule(VLC, AND, VLD, VSP));
-
-  all_rules.push_back(new Rule(VLC, AND, VSD, SP));
-  all_rules.push_back(new Rule(VLC, AND, SD, SP));
-  all_rules.push_back(new Rule(VLC, AND, MD, VSP));
-  all_rules.push_back(new Rule(VLC, AND, LD, VSP));
-  all_rules.push_back(new Rule(VLC, AND, VLD, VSP));
-
-  all_rules.push_back(new Rule(VLC, AND, VSD, SP));
-  all_rules.push_back(new Rule(VLC, AND, SD, VSP));
-  all_rules.push_back(new Rule(VLC, AND, MD, VSP));
-  all_rules.push_back(new Rule(VLC, AND, LD, VSP));
-  all_rules.push_back(new Rule(VLC, AND, VLD, VSP));
+  all_rules.push_back(new Rule(NS, AND, PS, ZP));
+  all_rules.push_back(new Rule(NS, AND, NS, PM));
+  all_rules.push_back(new Rule(PS, AND, NS, ZN));
+  all_rules.push_back(new Rule(PS, AND, PS, NM));
 }
 
 double Fuzzy_Controller::rules_processing(int e, int de) {
@@ -132,6 +114,7 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
     if (zone->inside_the_zone(offset)) {
       zone->setCoefficient(zone->getCoefficient() - koef_diff);
     }
+    zone->priority_processing(spaceship, zone);
   }
 }
 
@@ -163,38 +146,42 @@ int Fuzzy_Controller::find_optimal_y(vector<Zone *> *zones,
   return min_index;
 }
 
-int Fuzzy_Controller::find_optimal_coef(vector<Zone *> *zones,
-                                        Spaceship *spaceship) {
-  float max_coef = std::numeric_limits<float>::lowest();
+int Fuzzy_Controller::find_optimal_priority(vector<Zone *> *zones,
+                                            Spaceship *spaceship) {
+  float max_priority = std::numeric_limits<float>::lowest();
   int max_index = -1;
   for (int i = 0; i < zones->size();
        i++) { // поиск зоны с максимальным коэффициентом
     auto &zone = (*zones)[i];
-    if (zone->getCoefficient() > max_coef) {
-      max_coef = zone->getCoefficient();
+    if (zone->getPriority() > max_priority) {
+      max_priority = zone->getPriority();
       max_index = i;
     }
   }
+  move(zones->at(max_index)->getPos().getY(),
+       zones->at(max_index)->getPos().getX());
+  printw("%d", zones->at(max_index)->getPriority());
   return max_index;
 }
 
 void Fuzzy_Controller::rules_to_do(vector<Zone *> *zones, Spaceship *spaceship,
-                                   Field *field) {
-  int ind = find_optimal_coef(zones, spaceship);
-  int min_x = zones->at(ind)->getDistanceX(spaceship, zones->at(ind));
-  int min_y = zones->at(ind)->getDistanceY(spaceship, zones->at(ind));
-  while (spaceship->getPos() != zones->at(ind)->getPos()) {
-    if (min_x > 0)
-      spaceship->change_position('a', *field);
-    if (min_y > 0)
-      spaceship->change_position('w', *field);
-    if (min_y < 0)
-      spaceship->change_position('s', *field);
-    if (min_x < 0)
-      spaceship->change_position('d', *field);
-  }
+                                   Field *field, double z) {
+  if (z < 0)
+    spaceship->change_position('s', *field);
+  if (z > 0)
+    spaceship->change_position('w', *field);
+  // while (spaceship->getPos() != zones->at(ind)->getPos()) {
+  //   if (min_x > 0)
+  //     spaceship->change_position('a', *field);
+  //   if (min_y > 0)
+  //     spaceship->change_position('w', *field);
+  //   if (min_y < 0)
+  //     spaceship->change_position('s', *field);
+  //   if (min_x < 0)
+  //     spaceship->change_position('d', *field);
+  // }
   // move(zones->at(ind)->getPos().getY(), zones->at(ind)->getPos().getX());
-  // printw("%f", zones->at(ind)->getCoefficient());
+  // printw("%d", cur);
 }
 
 char Fuzzy_Controller::path_check(Zone *zone, Space_Object spaceship,

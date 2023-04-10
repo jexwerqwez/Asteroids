@@ -16,5 +16,5 @@
 #include <vector>
 #include <wchar.h>
 using namespace std;
-
+#define ZONE_SIZE 6
 #endif

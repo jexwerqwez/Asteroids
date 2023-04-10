@@ -2,8 +2,8 @@
 #define ZONE
 #include "base.h"
 #include "objects.h"
+#include "rules.h"
 #include "spaceship.h"
-
 /**
  * @brief Класс зон поля
  * @param height высота зоны
@@ -16,6 +16,7 @@ class Zone : public Space_Object {
   int width;
   float coefficient;
   int priority;
+
 protected:
   Space_Object position;
 
@@ -28,8 +29,12 @@ public:
   int getWidth() { return width; }
   /** @brief получение коэффициента зоны */
   float getCoefficient() { return coefficient; }
+  /** @brief получение приоритета зоны */
+  int getPriority() { return priority; }
   /** @brief установка коэффициента зоны */
   void setCoefficient(float c) { coefficient = c; }
+  /** @brief установка приоритета зоны */
+  void setPriority(int p) { priority = p; }
   /** @brief получение расстояния от Spaceship до зоны по оси X
    * @return возвращает значение > 0, если зона находится левее от
    * местоположения Spaceship и < 0, если правее
@@ -44,5 +49,9 @@ public:
   Space_Object getPos() { return position; };
   /** @brief проверка есть ли объект внутри зоны */
   bool inside_the_zone(Space_Object);
+  /** @brief установка приоритета зоны по входным данным*/
+  void priority_processing(Spaceship *, Zone *);
+  /** @brief вычисление отклонения от зоны в терминах НР*/
+  int rejection(int, Field *);
 };
 #endif

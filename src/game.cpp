@@ -31,7 +31,7 @@ void Game::play(int height, int width, Settings setts) {
   Asteroids *asts = new Asteroids(asteroid, astpos, 1 + rand() % 2);
   Shot shot(shotsprite, shotpos);
   Field bord(height, width);
-  Spaceship spaceship(setts.hithpoint, shipsprite, shippos);
+  Spaceship spaceship(setts.hithpoint, shipsprite, 1, shippos);
   Asteroids_Manager manage(bord, 200);
   sethard(&manage);
   Bonus_Manager bonus_manage(bord);
@@ -80,6 +80,7 @@ void Game::play(int height, int width, Settings setts) {
     vector<Shot *> all_shots = gun.getShots();
     vector<Bonus *> all_bonuses = bonus_manage.getBonuses();
     Fuzzy_Controller fuzzy(30);
+    fuzzy.rules_manager();
     vector<Zone *> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
     // char command = '0';
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
@@ -147,14 +148,17 @@ void Game::play(int height, int width, Settings setts) {
       // if (command != '0') {
       // spaceship.change_position(command, bord);
       // } else {
-      // fuzzy.rules_to_do(&all_zones, &spaceship, &bord);
-      // }
-      for (long unsigned int k = 0; k < all_zones.size(); k++) {
-        move(all_zones.at(k)->getPos().getY() + 4,
-             all_zones.at(k)->getPos().getX());
-        printw("%.2f", all_zones.at(k)->getCoefficient());
-      }
-      // if (fuzz)
+      int ind = fuzzy.find_optimal_priority(&all_zones, &spaceship);
+      int min_y =
+          all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
+      int cur = all_zones.at(ind)->rejection(
+          min_y, &bord); //посчитали отклонение корабля от зоны
+      double z = fuzzy.rules_processing(cur, cur - spaceship.getHeel());
+      // fuzzy.rules_to_do(&all_zones, &spaceship, &bord, z);
+
+      move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
+      printw("%d, %lf", cur - spaceship.getHeel(), z);
+      spaceship.setHeel(cur);
       spaceship.draw_spaceship(blink);
       mtx.unlock();
     }

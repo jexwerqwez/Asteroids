@@ -26,6 +26,7 @@ public:
   Fuzzy_Controller(int b) : basis(b){};
   int getBasis() { return basis; };
   vector<Rule *> getRules() { return all_rules; };
+  /** @brief Функция, добавляющая правила в вектор правил*/
   void rules_manager();
   double rules_processing(int e, int de);
   double membership_function(int x, int mu, int basis) {
@@ -55,11 +56,11 @@ public:
    * @brief Функция, ищущая индекс зоны в векторе зон, имеющей максимальный
    * коэффициент
    */
-  int find_optimal_coef(vector<Zone *> *, Spaceship *);
+  int find_optimal_priority(vector<Zone *> *, Spaceship *);
   /**
    * @brief Функция, передающая действия Spaceship
    */
-  void rules_to_do(vector<Zone *> *, Spaceship *, Field *);
+  void rules_to_do(vector<Zone *> *, Spaceship *, Field *, double);
   /**
    * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
    */
