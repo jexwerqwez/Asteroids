@@ -10,6 +10,7 @@
 #define MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define AND 1
 #define OR 2
+#define BASIS 50
 
 /**
  * @brief
@@ -56,15 +57,15 @@ public:
    * @brief Функция, ищущая индекс зоны в векторе зон, имеющей максимальный
    * коэффициент
    */
-  int find_optimal_priority(vector<Zone *> *, Spaceship *);
+  int find_optimal_priority(vector<Zone *> *);
   /**
    * @brief Функция, передающая действия Spaceship
    */
-  void rules_to_do(vector<Zone *> *, Spaceship *, Field *, double);
+  void rules_to_do(Spaceship *, Field *, double, double);
   /**
    * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
    */
-  char path_check(Zone *, Space_Object, Space_Object, Field *);
+  // char path_check(Zone *, Space_Object, Space_Object, Field *);
   /**
    * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
    */
