@@ -2,7 +2,7 @@
 
 int Fuzzy_Controller::return_zone_index(Space_Object object,
                                         vector<Zone *> *zones) {
-  for (int i = 0; i < zones->size(); i++) {
+  for (long unsigned int i = 0; i < zones->size(); i++) {
     for (int j = 0; j < zones->at(i)->getWidth(); j++) {
       for (int k = 0; k < zones->at(i)->getHeight(); k++) {
         Space_Object zone_offset(j, k);
@@ -61,24 +61,20 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
       Space_Object(space_x - 1,
                    space_y - (int)(ZONE_SIZE / 2)))); // зона с кораблем
   int i = 0;
-  // занесение зон в вектор
   all_zones.push_back(
       new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0,
                Space_Object(space_x - 1, space_y - ZONE_SIZE -
                                              (int)(ZONE_SIZE / 2)))); // вверх
-  for (i = 1; all_zones.at(i)->getPos().getY() > -1; i++) {
+  // занесение зон в вектор
+  for (i = 1; all_zones.at(i)->getPos().getY() > -1; i++) { // вверх
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
                               all_zones.at(i)->getPos().getY() - ZONE_SIZE)));
   }
-  all_zones.push_back(
-      new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0,
-               Space_Object(space_x - 1, space_y + ZONE_SIZE -
-                                             (int)(ZONE_SIZE / 2)))); // вниз
-  for (i += 1;
+  for (i = i;
        all_zones.at(i)->getPos().getY() < field->getFieldHeight() - ZONE_SIZE;
-       i++) {
+       i++) { // вниз
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
@@ -112,7 +108,10 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
       1.0 / (float)(max_num + ZONE_SIZE); // вычисление коэффициента
   for (auto &zone : *zones) { // наличие астероида в зоне
     if (zone->inside_the_zone(offset)) {
-      zone->setCoefficient(zone->getCoefficient() - koef_diff);
+      zone->setCoefficient(zone->getCoefficient() - koef_diff * 2);
+      if (zone->inside_the_zone(spaceship->getPos())) {
+        zone->setCoefficient(fuzzy_coef[4]);
+      }
     }
     zone->priority_processing(spaceship, zone);
   }
@@ -122,7 +121,7 @@ int Fuzzy_Controller::find_optimal_x(vector<Zone *> *zones,
                                      Spaceship *spaceship) {
   int min_x = std::numeric_limits<int>::max();
   int min_index = -1;
-  for (int i = 0; i < zones->size(); i++) {
+  for (long unsigned int i = 0; i < zones->size(); i++) {
     auto &zone = (*zones)[i];
     if (zone->getDistanceX(spaceship, zone) < min_x) {
       min_x = zone->getDistanceX(spaceship, zone);
@@ -136,7 +135,7 @@ int Fuzzy_Controller::find_optimal_y(vector<Zone *> *zones,
                                      Spaceship *spaceship) {
   int min_y = std::numeric_limits<int>::max();
   int min_index = -1;
-  for (int i = 0; i < zones->size(); i++) {
+  for (long unsigned int i = 0; i < zones->size(); i++) {
     auto &zone = (*zones)[i];
     if (zone->getDistanceY(spaceship, zone) < min_y) {
       min_y = zone->getDistanceY(spaceship, zone);
@@ -146,15 +145,14 @@ int Fuzzy_Controller::find_optimal_y(vector<Zone *> *zones,
   return min_index;
 }
 
-int Fuzzy_Controller::find_optimal_priority(vector<Zone *> *zones,
-                                            Spaceship *spaceship) {
+int Fuzzy_Controller::find_optimal_priority(vector<Zone *> *zones) {
   float max_priority = std::numeric_limits<float>::lowest();
   int max_index = -1;
-  for (int i = 0; i < zones->size();
+  for (long unsigned int i = 0; i < zones->size();
        i++) { // поиск зоны с максимальным коэффициентом
     auto &zone = (*zones)[i];
-    if (zone->getPriority() > max_priority) {
-      max_priority = zone->getPriority();
+    if (abs(zone->getPriority()) > max_priority) {
+      max_priority = abs(zone->getPriority());
       max_index = i;
     }
   }
@@ -164,39 +162,38 @@ int Fuzzy_Controller::find_optimal_priority(vector<Zone *> *zones,
   return max_index;
 }
 
-void Fuzzy_Controller::rules_to_do(vector<Zone *> *zones, Spaceship *spaceship,
-                                   Field *field, double z) {
-  if (z < 0)
-    spaceship->change_position('s', *field);
-  if (z > 0)
-    spaceship->change_position('w', *field);
-  // while (spaceship->getPos() != zones->at(ind)->getPos()) {
-  //   if (min_x > 0)
-  //     spaceship->change_position('a', *field);
-  //   if (min_y > 0)
-  //     spaceship->change_position('w', *field);
-  //   if (min_y < 0)
-  //     spaceship->change_position('s', *field);
-  //   if (min_x < 0)
-  //     spaceship->change_position('d', *field);
-  // }
-  // move(zones->at(ind)->getPos().getY(), zones->at(ind)->getPos().getX());
-  // printw("%d", cur);
-}
-
-char Fuzzy_Controller::path_check(Zone *zone, Space_Object spaceship,
-                                  Space_Object ast_point, Field *field) {
-  if (spaceship.getX() - 1 == ast_point.getX() &&
-      spaceship.getX() + 1 != ast_point.getX())
-    return 'd';
-  if (spaceship.getX() + 1 == ast_point.getX() &&
-      spaceship.getX() - 1 != ast_point.getX())
-    return 'a';
-  if (spaceship.getY() - 1 == ast_point.getY() &&
-      spaceship.getY() + 1 != ast_point.getY())
-    return 's';
-  if (spaceship.getY() + 1 == ast_point.getY() &&
-      spaceship.getY() - 1 != ast_point.getY())
-    return 'w';
-  return '0';
+void Fuzzy_Controller::rules_to_do(Spaceship *spaceship, Field *field,
+                                   double z_x, double z_y) {
+  // int no_effect = 6;
+  int small_effect = 12;
+  int medium_effect = 34;
+  int big_effect = 60;
+  if (z_y > 0) {
+    if (z_y > big_effect) {
+      spaceship->change_position('s', *field);
+      spaceship->change_position('s', *field);
+      spaceship->change_position('s', *field);
+    } else if (z_y > medium_effect) {
+      spaceship->change_position('s', *field);
+      spaceship->change_position('s', *field);
+    } else if (z_y > small_effect) {
+      spaceship->change_position('s', *field);
+    }
+  } else if (z_y < 0) {
+    if (abs(z_y) > big_effect) {
+      spaceship->change_position('w', *field);
+      spaceship->change_position('w', *field);
+      spaceship->change_position('w', *field);
+    } else if (abs(z_y) > medium_effect) {
+      spaceship->change_position('w', *field);
+      spaceship->change_position('w', *field);
+    } else if (abs(z_y) > small_effect) {
+      spaceship->change_position('w', *field);
+    }
+  }
+  if (z_x > 0 && spaceship->getPos().getX() < field->getFieldWidth() / 2) {
+    spaceship->change_position('d', *field);
+  } else if (z_x < 0) {
+    spaceship->change_position('a', *field);
+  }
 }
