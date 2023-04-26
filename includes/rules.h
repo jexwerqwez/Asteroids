@@ -27,7 +27,7 @@
  * @param previous_state предыдущее значение отклонения
  */
 class Rule {
-  int current_state;
+  float current_state;
   int operation;
   int delta_state;
   int previous_state;

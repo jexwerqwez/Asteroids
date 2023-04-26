@@ -10,7 +10,7 @@ const char *bonus_info[7] = {"EXTRA LIFE",
 
 void Game::play(int height, int width, Settings setts) {
   srand(time(NULL));
-  int command = 0, gun_mode = 0, effect = 0, blink = 0;
+  int command = 0, gun_mode = 0, effect = 0, blink = 0, fuzzy_signal = 0;
   char bonussprite = '0', shipsprite = '>', shotsprite = '-';
   int score = setts.score;
   vector<vector<char>> asteroid = {
@@ -35,9 +35,11 @@ void Game::play(int height, int width, Settings setts) {
   Asteroids_Manager manage(bord, 200);
   sethard(&manage);
   Bonus_Manager bonus_manage(bord);
+  auto start_time = std::chrono::high_resolution_clock::now();
   Gun gun(bord);
   Fuzzy_Controller fuzzy(30);
   fuzzy.rules_manager();
+  fuzzy.rules_prio_manager(fuzzy_coef, fuzzy_dist, fuzzy_prio);
   mutex mtx;
   setstatus(0);
   bord.draw_field(0);
@@ -69,7 +71,14 @@ void Game::play(int height, int width, Settings setts) {
       break;
     }
     }
-    if (command) {
+    switch (fuzzy_signal) {
+    case 1: {
+      if (effect != 6)
+        gun_mode = (gun_mode == 1) ? 0 : 1;
+      break;
+    }
+    }
+    if (command || fuzzy_signal) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity));
       spaceship.erase_spaceship();
@@ -93,16 +102,6 @@ void Game::play(int height, int width, Settings setts) {
             fuzzy.calculate_asteroids(&all_zones,
                                       all_asts.at(i)->getPos() + offset,
                                       &spaceship, &bord);
-            // int index = fuzzy.return_zone_index(all_asts.at(i)->getPos(),
-            // &all_zones); if
-            // (all_zones.at(index)->inside_the_zone(spaceship.getPos())) {
-            //   command =
-            //   fuzzy.asteroid_and_spaceship_in_zone(all_zones.at(index),
-            //                                        spaceship.getPos(),
-            //                                        all_asts.at(i)->getPos() +
-            //                                        offset, &bord);
-            // spaceship.change_position(command, bord);
-            // }
           }
 
           if (all_asts.at(i)->getPos() + offset ==
@@ -145,6 +144,10 @@ void Game::play(int height, int width, Settings setts) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity * 4));
       spaceship.erase_spaceship();
+      for (auto &zone : all_zones) {
+        zone->setPriority(fuzzy.rules_prio_processing(zone->getCoefficient(),
+                                                      zone->getDistance()));
+      }
       int ind = fuzzy.find_optimal_priority(&all_zones);
       int min_y =
           all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
@@ -155,18 +158,59 @@ void Game::play(int height, int width, Settings setts) {
       int cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
       double z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
       double z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
-      fuzzy.rules_to_do(&spaceship, &bord, z_x, z_y);
+      fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
 
-      move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
-      printw("%d, %lf", cur_y - spaceship.getHeelY(), z_y);
+      // move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
+      // printw("%d, %lf", cur_y - spaceship.getHeelY(), z_y);
       // for (long unsigned int i = 0; i < all_zones.size(); i++) {
       //   move(all_zones.at(i)->getPos().getY(),
       //        all_zones.at(i)->getPos().getX());
-      //   printw("%d", all_zones.at(i)->getPriority());
+      //   printw("%.3lf", all_zones.at(i)->getCoefficient());
       // }
       spaceship.setHeelX(cur_x);
       spaceship.setHeelY(cur_y);
       spaceship.draw_spaceship(blink);
+      switch (command) {
+      case 'f': {
+        FILE *file = fopen("info", "w");
+        double coefficients[bord.getFieldHeight()][bord.getFieldWidth()] = {
+            0.0};
+        for (long unsigned int i = 0; i < all_zones.size(); i++) {
+          int x = all_zones.at(i)->getPos().getX();
+          int y = all_zones.at(i)->getPos().getY();
+          coefficients[y][x] = all_zones.at(i)->getPriority();
+        }
+        fprintf(file, "Zones and their priorities:");
+        for (int i = 0; i < bord.getFieldHeight(); i++) {
+          for (int j = 0; j < bord.getFieldWidth(); j++) {
+            move(i, j);
+            // chtype ch = inch();
+            // fprintf(file, "%c", ch & A_CHARTEXT);
+            if (coefficients[i][j] == 0)
+              fprintf(file, "\t     ");
+            else
+              fprintf(file, "\t%.3lf", coefficients[i][j]);
+          }
+          fprintf(file, "\n\n\n\n");
+        }
+
+        fprintf(file, "Priority Zone: Priority = %lf\tCoordinates = (%d;%d)\n",
+                all_zones.at(ind)->getPriority(),
+                all_zones.at(ind)->getPos().getX(),
+                all_zones.at(ind)->getPos().getY());
+        fprintf(file, "Score = %d\n", score);
+        auto end_time = std::chrono::high_resolution_clock::now();
+        auto duration = std::chrono::duration_cast<std::chrono::seconds>(
+            end_time - start_time);
+        fprintf(file, "Time: %lld s\n",
+                static_cast<long long>(duration.count() % 60));
+        fprintf(file, "Fuzzy input:\t Error = (%d;%d), Delta = (%d;%d) \n",
+                cur_x, cur_y, cur_x - spaceship.getHeelX(),
+                cur_y - spaceship.getHeelY());
+        fprintf(file, "Fuzzy output: (%lf; %lf)", z_x, z_y);
+        fclose(file);
+      }
+      }
       mtx.unlock();
     }
     if (effect == 4)
@@ -176,14 +220,16 @@ void Game::play(int height, int width, Settings setts) {
       mtx.lock();
       move(height, width / 2 - 10);
       printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
+
       mtx.unlock();
     }
-    move(height + 2, 1);
-    printw("CHANGEABLE PARAMETERS & KEYS: ZN/ZP %d [1]   PS/NS %d [2]   PM/NM "
-           "%d [3]",
-           ZP, PS, PM);
-    move(height + 3, 1);
-    printw("\t\t\t       PB/NB %d [4]   BASIS %d [5]", PB, fuzzy.getBasis());
+    // move(height + 2, 1);
+    // printw("CHANGEABLE PARAMETERS & KEYS: ZN/ZP %d [1]   PS/NS %d [2]   PM/NM
+    // "
+    //        "%d [3]",
+    //        ZP, PS, PM);
+    // move(height + 3, 1);
+    // printw("\t\t\t       PB/NB %d [4]   BASIS %d [5]", PB, fuzzy.getBasis());
     gun_mode = 0;
   }
   if (getstatus() == -1) {

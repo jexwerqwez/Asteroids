@@ -15,21 +15,25 @@
 /**
  * @brief
  * Класс, отвечающий за реализацию нечёткого регулятора
- * @param all_rules вектор, содержащий указатели на все правила
+ * @param all_move_rules вектор, содержащий указатели на все правила
  * @param basis среднеквадратичное отклонение, необходимое для нормального
  * распределения
  */
 class Fuzzy_Controller {
-  vector<Rule *> all_rules;
+  vector<Rule *> all_move_rules;
+  vector<Rule *> all_prio_rules;
   int basis;
 
 public:
   Fuzzy_Controller(int b) : basis(b){};
   int getBasis() { return basis; };
-  vector<Rule *> getRules() { return all_rules; };
+  vector<Rule *> getMoveRules() { return all_move_rules; };
+  vector<Rule *> getPrioRules() { return all_prio_rules; };
   /** @brief Функция, добавляющая правила в вектор правил*/
   void rules_manager();
+  void rules_prio_manager(float *, int *, int *);
   double rules_processing(int e, int de);
+  double rules_prio_processing(int e, int de);
   double membership_function(int x, int mu, int basis) {
     return exp(-pow(x - mu, 2) / (2 * pow(basis, 2)));
   }
@@ -61,7 +65,7 @@ public:
   /**
    * @brief Функция, передающая действия Spaceship
    */
-  void rules_to_do(Spaceship *, Field *, double, double);
+  void rules_to_do(Spaceship *, Field *, vector<Asteroids *> *, double, double);
   /**
    * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
    */
