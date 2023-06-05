@@ -20,6 +20,8 @@ void Rule::setRules(int cur_st, int delta_st, int prev_st) {
   previous_state = prev_st;
 }
 
+// double activation(vector<Rule *>) {}
+
 void Fuzzy_Controller::rules_manager() {
   all_move_rules.push_back(new Rule(Z, AND, Z, Z));
   all_move_rules.push_back(new Rule(PB, OR, PB, NB));
@@ -65,16 +67,25 @@ double Fuzzy_Controller::rules_processing(int e, int de) {
 }
 
 double Fuzzy_Controller::rules_prio_processing(int e, int de) {
-  double num = 0, den = 0;
+  double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
-    double alpha = 0, mf_cur = 0, mf_delt = 0;
-    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(), getBasis());
+    double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
+    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
+                                 getBasis()); // фаззификация
     mf_delt =
         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-    alpha = (all_prio_rules[i]->getOper() == 1) ? MIN(mf_cur, mf_delt)
-                                                : MAX(mf_cur, mf_delt);
-    num += (alpha * all_prio_rules[i]->getPrev());
-    den += alpha;
+    mf_prev =
+        membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
+    alpha = (all_prio_rules[i]->getOper() == 1)
+                ? MIN(mf_cur, mf_delt)
+                : MAX(mf_cur, mf_delt); // агрегирование подусловий
+    di = (alpha * all_prio_rules[i]->getPrev()); // степень истинности правила
+    activated = MIN(di, mf_prev); // min-активация подзаключений
+    if (activated > cur_max) {
+      cur_max = activated;
+    }
+    num += all_prio_rules[i]->getPrev() * cur_max;
+    den += cur_max;
   }
   return num / den;
 }
