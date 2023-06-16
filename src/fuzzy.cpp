@@ -66,26 +66,41 @@ double Fuzzy_Controller::rules_processing(int e, int de) {
   return num / den;
 }
 
+// double Fuzzy_Controller::rules_prio_processing(int e, int de) {
+//   double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
+//   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
+//     double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
+//     mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
+//                                  getBasis()); // фаззификация
+//     mf_delt =
+//         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
+//     mf_prev =
+//         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
+//     alpha = (all_prio_rules[i]->getOper() == 1)
+//                 ? MIN(mf_cur, mf_delt)
+//                 : MAX(mf_cur, mf_delt); // агрегирование подусловий
+//     di = (alpha * all_prio_rules[i]->getPrev()); // степень истинности
+//     правила activated = MIN(di, mf_prev); // min-активация подзаключений if
+//     (activated > cur_max) {
+//       cur_max = activated;
+//     }
+//     num += all_prio_rules[i]->getPrev() * cur_max;
+//     den += cur_max;
+//   }
+//   return num / den;
+// }
+
 double Fuzzy_Controller::rules_prio_processing(int e, int de) {
-  double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
+  double num = 0, den = 0;
   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
-    double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
-    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
-                                 getBasis()); // фаззификация
+    double alpha = 0, mf_cur = 0, mf_delt = 0;
+    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(), getBasis());
     mf_delt =
         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-    mf_prev =
-        membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-    alpha = (all_prio_rules[i]->getOper() == 1)
-                ? MIN(mf_cur, mf_delt)
-                : MAX(mf_cur, mf_delt); // агрегирование подусловий
-    di = (alpha * all_prio_rules[i]->getPrev()); // степень истинности правила
-    activated = MIN(di, mf_prev); // min-активация подзаключений
-    if (activated > cur_max) {
-      cur_max = activated;
-    }
-    num += all_prio_rules[i]->getPrev() * cur_max;
-    den += cur_max;
+    alpha = (all_prio_rules[i]->getOper() == 1) ? MIN(mf_cur, mf_delt)
+                                                : MAX(mf_cur, mf_delt);
+    num += (alpha * all_prio_rules[i]->getPrev());
+    den += alpha;
   }
   return num / den;
 }
@@ -207,51 +222,28 @@ void Fuzzy_Controller::rules_to_do(Spaceship *spaceship, Field *field,
                                    double z_y) {
   int spaceship_x = spaceship->getPos().getX();
   int spaceship_y = spaceship->getPos().getY();
-  bool findflag = false;
-  if (z_y > 0) {
-    for (auto &aster : *all_asts) {
-      if (aster->getPos().getX() == spaceship_x &&
-          (aster->getPos().getY() == spaceship_y + 1 ||
-           aster->getPos().getY() == spaceship_y + 2)) {
-        findflag = true;
+  int offset = 2;
+  z_x++;
+  z_y++;
+  for (auto &aster : *all_asts) {
+    if (aster->getPos().compare_pos(spaceship->getPos(), offset)) {
+      for (int i = 0; i < aster->getWidth(); i++) {
+        for (int j = 0; j < aster->getHeight(); j++) {
+          Space_Object coodrinate(i, j);
+          int full_coordinate_x = aster->getPos().getX() + coodrinate.getX();
+          int full_coordinate_y = aster->getPos().getY() + coodrinate.getY();
+          if (spaceship_x + 1 == full_coordinate_x) {
+            if (spaceship_x - 1 != full_coordinate_x) {
+              spaceship->change_position('a', *field);
+            } else if (spaceship_y - 1 != full_coordinate_y) {
+              spaceship->change_position('w', *field);
+            } else if (spaceship_y + 1 != full_coordinate_y) {
+              spaceship->change_position('s', *field);
+            }
+          }
+        }
       }
     }
-    if (!findflag)
-      spaceship->change_position('s', *field);
-  } else if (z_y < 0) {
-    for (auto &aster : *all_asts) {
-      if (aster->getPos().getX() == spaceship_x &&
-          (aster->getPos().getY() == spaceship_y - 2 ||
-           aster->getPos().getY() == spaceship_y - 1 ||
-           aster->getPos().getY() == spaceship_y - 3)) {
-        findflag = true;
-      }
-    }
-    if (!findflag)
-      spaceship->change_position('w', *field);
-  }
-  findflag = false;
-  if (z_x > 0 && spaceship->getPos().getX() < field->getFieldWidth() / 2) {
-    for (auto &aster : *all_asts) {
-      if ((aster->getPos().getX() == spaceship_x + 1 ||
-           aster->getPos().getX() == spaceship_x + 2) &&
-          aster->getPos().getY() == spaceship_y - 1) {
-        findflag = true;
-      }
-    }
-    if (!findflag)
-      spaceship->change_position('d', *field);
-  } else if (z_x < 0) {
-    for (auto &aster : *all_asts) {
-      if ((aster->getPos().getX() == spaceship_x - 2 ||
-           aster->getPos().getX() == spaceship_x - 1 ||
-           aster->getPos().getX() == spaceship_x - 3) &&
-          aster->getPos().getY() == spaceship_y - 1) {
-        findflag = true;
-      }
-    }
-    if (!findflag)
-      spaceship->change_position('a', *field);
   }
 }
 
@@ -312,3 +304,7 @@ void Fuzzy_Controller::rules_prio_manager(float *fuzzy_coef, int *fuzzy_dist,
   all_prio_rules.push_back(
       new Rule(fuzzy_coef[4], AND, fuzzy_dist[0], fuzzy_prio[4]));
 }
+
+// void Fuzzy_Controller::rules_obst_manager(float * a, int * b, int *c){
+//   all_obst_rules.push_back(new Rule())
+// }
