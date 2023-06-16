@@ -22,6 +22,7 @@
 class Fuzzy_Controller {
   vector<Rule *> all_move_rules;
   vector<Rule *> all_prio_rules;
+  vector<Rule *> all_obst_rules;
   int basis;
 
 public:
@@ -32,6 +33,7 @@ public:
   /** @brief Функция, добавляющая правила в вектор правил*/
   void rules_manager();
   void rules_prio_manager(float *, int *, int *);
+  void rules_obst_manager(float *, int *, int *);
   double rules_processing(int e, int de);
   double rules_prio_processing(int e, int de);
   double membership_function(int x, int mu, int basis) {
@@ -74,6 +76,7 @@ public:
    * @brief Обработка случая, когда Asteroid и Spaceship оказались в одной зоне
    */
   int return_zone_index(Space_Object, vector<Zone *> *);
+  // double activation(vector<Rule *>);
 };
 
 #endif

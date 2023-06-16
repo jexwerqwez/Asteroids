@@ -23,5 +23,11 @@ public:
   Space_Object operator-(Space_Object pos) {
     return Space_Object(this->x - pos.getX(), this->y - pos.getY());
   }
+  bool compare_pos(Space_Object object2, int offset) {
+    return this->x >= object2.getX() - offset &&
+           this->x <= object2.getX() + offset &&
+           this->y >= object2.getY() - offset &&
+           this->y <= object2.getY() + offset;
+  }
 };
 #endif
