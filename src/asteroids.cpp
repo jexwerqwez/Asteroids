@@ -48,6 +48,7 @@ void Asteroids_Manager::asts_manage(int health) {
 }
 
 void Asteroids_Manager::destruct_asteroid(int i) {
-  delete asters.at(i);
+  Asteroids *asteroid = asters.at(i);
   asters.erase(asters.begin() + i);
+  delete asteroid;
 }

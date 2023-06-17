@@ -222,26 +222,26 @@ void Fuzzy_Controller::rules_to_do(Spaceship *spaceship, Field *field,
                                    double z_y) {
   int spaceship_x = spaceship->getPos().getX();
   int spaceship_y = spaceship->getPos().getY();
-  int offset = 2;
-  z_x++;
-  z_y++;
-  for (auto &aster : *all_asts) {
-    if (aster->getPos().compare_pos(spaceship->getPos(), offset)) {
-      for (int i = 0; i < aster->getWidth(); i++) {
-        for (int j = 0; j < aster->getHeight(); j++) {
-          Space_Object coodrinate(i, j);
-          int full_coordinate_x = aster->getPos().getX() + coodrinate.getX();
-          int full_coordinate_y = aster->getPos().getY() + coodrinate.getY();
-          if (spaceship_x + 1 == full_coordinate_x) {
-            if (spaceship_x - 1 != full_coordinate_x) {
-              spaceship->change_position('a', *field);
-            } else if (spaceship_y - 1 != full_coordinate_y) {
-              spaceship->change_position('w', *field);
-            } else if (spaceship_y + 1 != full_coordinate_y) {
-              spaceship->change_position('s', *field);
-            }
-          }
-        }
+  bool findflag = false;
+  std::vector<char> directions = {'w', 's', 'a', 'd'};
+  char safe_direction = ' ';
+  if (!findflag && z_y > 0) {
+    safe_direction = 's';
+  } else if (!findflag && z_y < 0) {
+    safe_direction = 'w';
+  } else if (!findflag && z_x > 0 &&
+             spaceship->getPos().getX() < field->getFieldWidth() / 2) {
+    safe_direction = 'd';
+  } else if (!findflag && z_x < 0) {
+    safe_direction = 'a';
+  }
+  if (isSafeToMove(spaceship, field, all_asts, safe_direction)) {
+    spaceship->change_position(safe_direction, *field);
+  } else {
+    for (char direction : directions) {
+      if (isSafeToMove(spaceship, field, all_asts, direction)) {
+        spaceship->change_position(direction, *field);
+        break;
       }
     }
   }
@@ -305,6 +305,43 @@ void Fuzzy_Controller::rules_prio_manager(float *fuzzy_coef, int *fuzzy_dist,
       new Rule(fuzzy_coef[4], AND, fuzzy_dist[0], fuzzy_prio[4]));
 }
 
-// void Fuzzy_Controller::rules_obst_manager(float * a, int * b, int *c){
-//   all_obst_rules.push_back(new Rule())
-// }
+bool Fuzzy_Controller::isSafeToMove(Spaceship *spaceship, Field *field,
+                                    vector<Asteroids *> *all_asts,
+                                    char direction) {
+  int spaceship_x = spaceship->getPos().getX();
+  int spaceship_y = spaceship->getPos().getY();
+  std::vector<std::pair<int, int>> cellsToCheck;
+
+  switch (direction) {
+  case 'w':
+    for (int i = 0; i < 2; i++) {
+      cellsToCheck.push_back({spaceship_x, spaceship_y - i - 1});
+    }
+    break;
+  case 's':
+    for (int i = 0; i < 2; i++) {
+      cellsToCheck.push_back({spaceship_x, spaceship_y + i + 1});
+    }
+    break;
+  case 'a':
+    for (int i = 0; i < 2; i++) {
+      cellsToCheck.push_back({spaceship_x - i - 1, spaceship_y});
+    }
+    break;
+  case 'd':
+    for (int i = 0; i < 2; i++) {
+      cellsToCheck.push_back({spaceship_x + i + 1, spaceship_y});
+    }
+    break;
+  }
+
+  for (auto &aster : *all_asts) {
+    for (auto &cell : cellsToCheck) {
+      if (aster->getPos().getX() == cell.first &&
+          aster->getPos().getY() == cell.second) {
+        return false;
+      }
+    }
+  }
+  return true;
+}

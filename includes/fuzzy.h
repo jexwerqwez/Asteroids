@@ -77,6 +77,8 @@ public:
    */
   int return_zone_index(Space_Object, vector<Zone *> *);
   // double activation(vector<Rule *>);
+
+  bool isSafeToMove(Spaceship *, Field *, vector<Asteroids *> *, char);
 };
 
 #endif

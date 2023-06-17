@@ -71,13 +71,13 @@ void Game::play(int height, int width, Settings setts) {
       break;
     }
     }
-    switch (fuzzy_signal) {
-    case 1: {
-      if (effect != 6)
-        gun_mode = (gun_mode == 1) ? 0 : 1;
-      break;
-    }
-    }
+    // switch (fuzzy_signal) {
+    // case 1: {
+    //   if (effect != 6)
+    //     gun_mode = (gun_mode == 1) ? 0 : 1;
+    //   break;
+    // }
+    // }
     if (command || fuzzy_signal) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity));
@@ -160,15 +160,15 @@ void Game::play(int height, int width, Settings setts) {
       double z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
       fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
 
-      // move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
-      // printw("%d, %lf", cur_y - spaceship.getHeelY(), z_y);
-      // for (long unsigned int i = 0; i < all_zones.size(); i++) {
-      //   move(all_zones.at(i)->getPos().getY(),
-      //        all_zones.at(i)->getPos().getX());
-      //   printw("%.3lf", all_zones.at(i)->getCoefficient());
-      // }
-      spaceship.setHeelX(cur_x);
-      spaceship.setHeelY(cur_y);
+      //   // move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
+      //   // printw("%d, %lf", cur_y - spaceship.getHeelY(), z_y);
+      //   // for (long unsigned int i = 0; i < all_zones.size(); i++) {
+      //   //   move(all_zones.at(i)->getPos().getY(),
+      //   //        all_zones.at(i)->getPos().getX());
+      //   //   printw("%.3lf", all_zones.at(i)->getCoefficient());
+      //   // }
+      //   spaceship.setHeelX(cur_x);
+      //   spaceship.setHeelY(cur_y);
       spaceship.draw_spaceship(blink);
       switch (command) {
       case 'f': {
