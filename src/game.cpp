@@ -39,7 +39,7 @@ void Game::play(int height, int width, Settings setts) {
   Gun gun(bord);
   Fuzzy_Controller fuzzy(30);
   fuzzy.rules_manager();
-  fuzzy.rules_prio_manager(fuzzy_coef, fuzzy_dist, fuzzy_prio);
+  fuzzy.rules_prio_manager(&setts);
   mutex mtx;
   setstatus(0);
   bord.draw_field(0);
@@ -90,7 +90,8 @@ void Game::play(int height, int width, Settings setts) {
     vector<Asteroids *> all_asts = manage.getAsters();
     vector<Shot *> all_shots = gun.getShots();
     vector<Bonus *> all_bonuses = bonus_manage.getBonuses();
-    vector<Zone *> all_zones = fuzzy.calculate_distance(&bord, &spaceship);
+    vector<Zone *> all_zones =
+        fuzzy.calculate_distance(&bord, &spaceship, &setts);
     // char command = '0';
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
@@ -194,7 +195,8 @@ void Game::play(int height, int width, Settings setts) {
           fprintf(file, "\n\n\n\n");
         }
 
-        fprintf(file, "Priority Zone: Priority = %lf\tCoordinates = (%d;%d)\n",
+        fprintf(file,
+                "Priority Zone: Priority = %lf\tCoordinates = (% d; % d)\n ",
                 all_zones.at(ind)->getPriority(),
                 all_zones.at(ind)->getPos().getX(),
                 all_zones.at(ind)->getPos().getY());

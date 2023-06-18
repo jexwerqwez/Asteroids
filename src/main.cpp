@@ -26,6 +26,7 @@ int main(int argc, char *argv[]) {
   else
     filename = argv[1];
   settings.parser(settings, filename);
+  // settings.outputZoneSettings("zone_settings.txt");
   Field field(settings.height, settings.width);
   Start start(field, filename, settings);
   start.processing(settings, &field);

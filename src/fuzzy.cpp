@@ -106,26 +106,28 @@ double Fuzzy_Controller::rules_prio_processing(int e, int de) {
 }
 
 vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
-                                                    Spaceship *spaceship) {
+                                                    Spaceship *spaceship,
+                                                    Settings *settings) {
   vector<Zone *> all_zones;
   int space_x = spaceship->getPos().getY(); // просмотр окружения корабля
   int space_y = spaceship->getPos().getY();
-  all_zones.push_back(new Zone(
-      ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
-      Space_Object(space_x - 1,
-                   space_y - (int)(ZONE_SIZE / 2)))); // зона с кораблем
-
-  int i = 0;
   all_zones.push_back(
       new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
-               Space_Object(space_x - 1, space_y - ZONE_SIZE -
-                                             (int)(ZONE_SIZE / 2)))); // вверх
+               Space_Object(space_x - 1, space_y - (int)(ZONE_SIZE / 2)),
+               settings)); // зона с кораблем
+
+  int i = 0;
+  all_zones.push_back(new Zone(
+      ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+      Space_Object(space_x - 1, space_y - ZONE_SIZE - (int)(ZONE_SIZE / 2)),
+      settings)); // вверх
   // занесение зон в вектор
   for (i = 1; all_zones.at(i)->getPos().getY() > -1; i++) { // вверх
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
-                              all_zones.at(i)->getPos().getY() - ZONE_SIZE)));
+                              all_zones.at(i)->getPos().getY() - ZONE_SIZE),
+                 settings));
   }
   for (i = i;
        all_zones.at(i)->getPos().getY() < field->getFieldHeight() - ZONE_SIZE;
@@ -133,7 +135,8 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
-                              all_zones.at(i)->getPos().getY() + ZONE_SIZE)));
+                              all_zones.at(i)->getPos().getY() + ZONE_SIZE),
+                 settings));
   }
   for (i = 0;
        all_zones.at(i)->getPos().getX() < field->getFieldWidth() - ZONE_SIZE;
@@ -141,14 +144,20 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX() + ZONE_SIZE,
-                              all_zones.at(i)->getPos().getY())));
+                              all_zones.at(i)->getPos().getY()),
+                 settings));
   }
   for (i = 0; all_zones.at(i)->getPos().getX() > ZONE_SIZE; i++) {
     all_zones.push_back(
         new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX() - ZONE_SIZE,
-                              all_zones.at(i)->getPos().getY())));
+                              all_zones.at(i)->getPos().getY()),
+                 settings));
   }
+  // for (int i = 0; i < all_zones.size(); i++) {
+  //   move(all_zones.at(i)->getPos().getY(), all_zones.at(i)->getPos().getX());
+  //   printw("%lf", all_zones.at(i)->getZoneSettings().fuzzy_coef);
+  // }
   return all_zones;
 }
 
@@ -165,7 +174,7 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
     if (zone->inside_the_zone(offset)) {
       zone->setCoefficient(zone->getCoefficient() - koef_diff * ZONE_SIZE);
       if (zone->inside_the_zone(spaceship->getPos())) {
-        zone->setCoefficient(fuzzy_coef[4]);
+        zone->setCoefficient(0);
       }
     }
     zone->priority_processing(spaceship, zone);
@@ -247,62 +256,118 @@ void Fuzzy_Controller::rules_to_do(Spaceship *spaceship, Field *field,
   }
 }
 
-void Fuzzy_Controller::rules_prio_manager(float *fuzzy_coef, int *fuzzy_dist,
-                                          int *fuzzy_prio) {
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[0], AND, fuzzy_dist[4], fuzzy_prio[0]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[0], AND, fuzzy_dist[3], fuzzy_prio[0]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[0], AND, fuzzy_dist[2], fuzzy_prio[0]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[0], AND, fuzzy_dist[1], fuzzy_prio[1]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[0], AND, fuzzy_dist[0], fuzzy_prio[1]));
+void Fuzzy_Controller::rules_prio_manager(Settings *settings) {
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[0],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[4],
+                                    settings->getZoneSettings().fuzzy_prio[0]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[0],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[3],
+                                    settings->getZoneSettings().fuzzy_prio[0]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[0],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[2],
+                                    settings->getZoneSettings().fuzzy_prio[0]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[0],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[1],
+                                    settings->getZoneSettings().fuzzy_prio[1]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[0],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[0],
+                                    settings->getZoneSettings().fuzzy_prio[1]));
 
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[1], AND, fuzzy_dist[4], fuzzy_prio[0]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[1], AND, fuzzy_dist[3], fuzzy_prio[0]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[1], AND, fuzzy_dist[2], fuzzy_prio[1]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[1], AND, fuzzy_dist[1], fuzzy_prio[1]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[1], AND, fuzzy_dist[0], fuzzy_prio[2]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[1],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[4],
+                                    settings->getZoneSettings().fuzzy_prio[0]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[1],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[3],
+                                    settings->getZoneSettings().fuzzy_prio[0]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[1],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[2],
+                                    settings->getZoneSettings().fuzzy_prio[1]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[1],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[1],
+                                    settings->getZoneSettings().fuzzy_prio[1]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[1],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[0],
+                                    settings->getZoneSettings().fuzzy_prio[2]));
 
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[2], AND, fuzzy_dist[4], fuzzy_prio[2]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[2], AND, fuzzy_dist[3], fuzzy_prio[3]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[2], AND, fuzzy_dist[2], fuzzy_prio[3]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[2], AND, fuzzy_dist[1], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[2], AND, fuzzy_dist[0], fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[2],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[4],
+                                    settings->getZoneSettings().fuzzy_prio[2]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[2],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[3],
+                                    settings->getZoneSettings().fuzzy_prio[3]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[2],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[2],
+                                    settings->getZoneSettings().fuzzy_prio[3]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[2],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[1],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[2],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[0],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
 
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[3], AND, fuzzy_dist[4], fuzzy_prio[3]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[3], AND, fuzzy_dist[3], fuzzy_prio[3]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[3], AND, fuzzy_dist[2], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[3], AND, fuzzy_dist[1], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[3], AND, fuzzy_dist[0], fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[3],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[4],
+                                    settings->getZoneSettings().fuzzy_prio[3]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[3],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[3],
+                                    settings->getZoneSettings().fuzzy_prio[3]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[3],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[2],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[3],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[1],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[3],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[0],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
 
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[4], AND, fuzzy_dist[4], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[4], AND, fuzzy_dist[3], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[4], AND, fuzzy_dist[2], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[4], AND, fuzzy_dist[1], fuzzy_prio[4]));
-  all_prio_rules.push_back(
-      new Rule(fuzzy_coef[4], AND, fuzzy_dist[0], fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[4],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[4],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[4],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[3],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[4],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[2],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[4],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[1],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  all_prio_rules.push_back(new Rule(settings->getZoneSettings().fuzzy_coef[4],
+                                    AND,
+                                    settings->getZoneSettings().fuzzy_dist[0],
+                                    settings->getZoneSettings().fuzzy_prio[4]));
+  std::ofstream outfile;
+  outfile.open("rules.txt");
+
+  for (const auto &rule : all_prio_rules) {
+    outfile << rule->ruleToString(rule) << std::endl;
+  }
+  outfile.close();
 }
 
 bool Fuzzy_Controller::isSafeToMove(Spaceship *spaceship, Field *field,

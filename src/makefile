@@ -1,6 +1,5 @@
 CC=g++
-CFLAGS=-c -Wall -Werror -Wextra
-
+CFLAGS=-c -g
 all: style asteroids
 
 asteroids: settings.o gun.o asteroids.o spaceship.o bonus.o game.o field.o menu.o zone.o fuzzy.o main.o

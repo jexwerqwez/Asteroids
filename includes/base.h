@@ -8,6 +8,7 @@
 #include <map>
 #include <mutex>
 #include <ncursesw/ncurses.h>
+#include <sstream>
 #include <string.h>
 #include <string>
 #include <sys/time.h>

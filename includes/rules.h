@@ -41,5 +41,11 @@ public:
   int getOper() { return operation; };
   int getDelta() { return delta_state; };
   int getPrev() { return previous_state; };
+  std::string ruleToString(const Rule *rule) {
+    std::ostringstream oss;
+    oss << "Rule: Coef=" << rule->current_state << ", Oper=" << rule->operation
+        << ", Dist=" << rule->delta_state << ", Prio=" << rule->previous_state;
+    return oss.str();
+  }
 };
 #endif

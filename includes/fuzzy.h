@@ -32,7 +32,7 @@ public:
   vector<Rule *> getPrioRules() { return all_prio_rules; };
   /** @brief Функция, добавляющая правила в вектор правил*/
   void rules_manager();
-  void rules_prio_manager(float *, int *, int *);
+  void rules_prio_manager(Settings *);
   void rules_obst_manager(float *, int *, int *);
   double rules_processing(int e, int de);
   double rules_prio_processing(int e, int de);
@@ -48,7 +48,7 @@ public:
    * @brief Функция, изменяющая коэффициент зоны в зависимости от удаленности от
    * зоны с Spaceship
    */
-  vector<Zone *> calculate_distance(Field *, Spaceship *);
+  vector<Zone *> calculate_distance(Field *, Spaceship *, Settings *);
   /**
    * @brief Функция, ищущая индекс зоны в векторе зон, расстояние до которой по
    * оси X минимальна
