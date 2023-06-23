@@ -29,7 +29,7 @@ int main(int argc, char *argv[]) {
   // settings.outputZoneSettings("zone_settings.txt");
   Field field(settings.height, settings.width);
   Start start(field, filename, settings);
-  start.processing(settings, &field);
+  start.processing(&settings, &field);
   curs_set(1);
   nocbreak();
   endwin();

@@ -8,11 +8,13 @@ const char *bonus_info[7] = {"EXTRA LIFE",
                              "ASTEROIDS ACCELERATION",
                              "DISABLED GUN"};
 
-void Game::play(int height, int width, Settings setts) {
+void Game::play(int height, int width, Settings *setts) {
   srand(time(NULL));
-  int command = 0, gun_mode = 0, effect = 0, blink = 0, fuzzy_signal = 0;
+  int command = 0, gun_mode = 0, effect = 0, blink = 0, fuzzy_signal = 0,
+      ind = 0, cur_x = 0, cur_y = 0;
+  double z_x = 0, z_y = 0;
   char bonussprite = '0', shipsprite = '>', shotsprite = '-';
-  int score = setts.score;
+  int score = setts->score;
   vector<vector<char>> asteroid = {
       {
           '*',
@@ -31,15 +33,17 @@ void Game::play(int height, int width, Settings setts) {
   Asteroids *asts = new Asteroids(asteroid, astpos, 1 + rand() % 2);
   Shot shot(shotsprite, shotpos);
   Field bord(height, width);
-  Spaceship spaceship(setts.hithpoint, shipsprite, 1, 1, shippos);
+  Spaceship spaceship(setts->hithpoint, shipsprite, 1, 1, shippos);
   Asteroids_Manager manage(bord, 200);
+  vector<Zone *> all_zones = {0};
   sethard(&manage);
   Bonus_Manager bonus_manage(bord);
   auto start_time = std::chrono::high_resolution_clock::now();
   Gun gun(bord);
-  Fuzzy_Controller fuzzy(30);
+  Fuzzy_Controller fuzzy(100);
+  Space_Object check_field(3, 0);
   fuzzy.rules_manager();
-  fuzzy.rules_prio_manager(&setts);
+  fuzzy.rules_prio_manager(setts);
   mutex mtx;
   setstatus(0);
   bord.draw_field(0);
@@ -55,6 +59,7 @@ void Game::play(int height, int width, Settings setts) {
   });
   move(height, width / 2 - 10);
   printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
+
   while (1) {
     int prev_score = getScore();
     int prev_health = spaceship.getHealt();
@@ -71,13 +76,7 @@ void Game::play(int height, int width, Settings setts) {
       break;
     }
     }
-    // switch (fuzzy_signal) {
-    // case 1: {
-    //   if (effect != 6)
-    //     gun_mode = (gun_mode == 1) ? 0 : 1;
-    //   break;
-    // }
-    // }
+
     if (command || fuzzy_signal) {
       mtx.lock();
       this_thread::sleep_for(chrono::milliseconds(main_velocity));
@@ -90,8 +89,7 @@ void Game::play(int height, int width, Settings setts) {
     vector<Asteroids *> all_asts = manage.getAsters();
     vector<Shot *> all_shots = gun.getShots();
     vector<Bonus *> all_bonuses = bonus_manage.getBonuses();
-    vector<Zone *> all_zones =
-        fuzzy.calculate_distance(&bord, &spaceship, &setts);
+    all_zones = fuzzy.calculate_distance(&bord, &spaceship, setts);
     // char command = '0';
     for (long unsigned int i = 0; i < all_asts.size(); i++) {
       for (int j = 0; j < asts->getWidth(); j++) {
@@ -111,6 +109,11 @@ void Game::play(int height, int width, Settings setts) {
             manage.destruct_asteroid(i);
             spaceship.setHeath(spaceship.getHealt() - 1);
           }
+
+          // if (all_asts.at(i)->getPos() + offset ==
+          //     spaceship.getPos() + check_field) {
+          //   gun_mode = 1;
+          // }
 
           for (long unsigned int l = 0; l < all_shots.size(); l++) { // выстрел
             if (all_asts.at(i)->getPos() + offset ==
@@ -154,63 +157,20 @@ void Game::play(int height, int width, Settings setts) {
           all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
       int min_x =
           all_zones.at(ind)->getDistanceX(&spaceship, all_zones.at(ind));
-      int cur_y = all_zones.at(ind)->rejection(
+      cur_y = all_zones.at(ind)->rejection(
           min_y, &bord, 'Y'); //посчитали отклонение корабля от зоны
-      int cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
-      double z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
-      double z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
+      cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
+      z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
+      z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
       fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
 
-      //   // move(spaceship.getPos().getY(), spaceship.getPos().getX() + 1);
-      //   // printw("%d, %lf", cur_y - spaceship.getHeelY(), z_y);
-      //   // for (long unsigned int i = 0; i < all_zones.size(); i++) {
-      //   //   move(all_zones.at(i)->getPos().getY(),
-      //   //        all_zones.at(i)->getPos().getX());
-      //   //   printw("%.3lf", all_zones.at(i)->getCoefficient());
-      //   // }
-      //   spaceship.setHeelX(cur_x);
-      //   spaceship.setHeelY(cur_y);
+      spaceship.setHeelX(cur_x);
+      spaceship.setHeelY(cur_y);
       spaceship.draw_spaceship(blink);
       switch (command) {
       case 'f': {
-        FILE *file = fopen("info", "w");
-        double coefficients[bord.getFieldHeight()][bord.getFieldWidth()] = {
-            0.0};
-        for (long unsigned int i = 0; i < all_zones.size(); i++) {
-          int x = all_zones.at(i)->getPos().getX();
-          int y = all_zones.at(i)->getPos().getY();
-          coefficients[y][x] = all_zones.at(i)->getPriority();
-        }
-        fprintf(file, "Zones and their priorities:");
-        for (int i = 0; i < bord.getFieldHeight(); i++) {
-          for (int j = 0; j < bord.getFieldWidth(); j++) {
-            move(i, j);
-            // chtype ch = inch();
-            // fprintf(file, "%c", ch & A_CHARTEXT);
-            if (coefficients[i][j] == 0)
-              fprintf(file, "\t     ");
-            else
-              fprintf(file, "\t%.3lf", coefficients[i][j]);
-          }
-          fprintf(file, "\n\n\n\n");
-        }
-
-        fprintf(file,
-                "Priority Zone: Priority = %lf\tCoordinates = (% d; % d)\n ",
-                all_zones.at(ind)->getPriority(),
-                all_zones.at(ind)->getPos().getX(),
-                all_zones.at(ind)->getPos().getY());
-        fprintf(file, "Score = %d\n", score);
-        auto end_time = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::seconds>(
-            end_time - start_time);
-        fprintf(file, "Time: %lld s\n",
-                static_cast<long long>(duration.count() % 60));
-        fprintf(file, "Fuzzy input:\t Error = (%d;%d), Delta = (%d;%d) \n",
-                cur_x, cur_y, cur_x - spaceship.getHeelX(),
-                cur_y - spaceship.getHeelY());
-        fprintf(file, "Fuzzy output: (%lf; %lf)", z_x, z_y);
-        fclose(file);
+        create_file(&bord, &all_zones, ind, start_time, cur_x, cur_y,
+                    &spaceship, z_x, z_y, setts);
       }
       }
       mtx.unlock();
@@ -225,13 +185,6 @@ void Game::play(int height, int width, Settings setts) {
 
       mtx.unlock();
     }
-    // move(height + 2, 1);
-    // printw("CHANGEABLE PARAMETERS & KEYS: ZN/ZP %d [1]   PS/NS %d [2]   PM/NM
-    // "
-    //        "%d [3]",
-    //        ZP, PS, PM);
-    // move(height + 3, 1);
-    // printw("\t\t\t       PB/NB %d [4]   BASIS %d [5]", PB, fuzzy.getBasis());
     gun_mode = 0;
   }
   if (getstatus() == -1) {
@@ -240,7 +193,11 @@ void Game::play(int height, int width, Settings setts) {
       setstatus(1);
       bord.draw_field(1);
     }
-    Finish finish(bord, filename, setts, *this);
+    if (hard == 0) {
+      create_file(&bord, &all_zones, ind, start_time, cur_x, cur_y, &spaceship,
+                  z_x, z_y, setts);
+    }
+    Finish finish(bord, filename, *setts, *this);
     finish.processing(setts, &bord);
   }
 }
@@ -271,4 +228,43 @@ int Game::sethard(Asteroids_Manager *asters) {
     break;
   }
   return luckybox;
+}
+
+void Game::create_file(Field *bord, vector<Zone *> *all_zones, int ind,
+                       auto start_time, int cur_x, int cur_y,
+                       Spaceship *spaceship, double z_x, double z_y,
+                       Settings *settings) {
+  FILE *file = fopen("info", "w");
+  double coefficients[bord->getFieldHeight()][bord->getFieldWidth()] = {0.0};
+  for (long unsigned int i = 0; i < all_zones->size(); i++) {
+    int x = all_zones->at(i)->getPos().getX();
+    int y = all_zones->at(i)->getPos().getY();
+    coefficients[y][x] = all_zones->at(i)->getPriority();
+  }
+  fprintf(file, "Zones and their priorities:");
+  for (int i = 0; i < bord->getFieldHeight(); i++) {
+    for (int j = 0; j < bord->getFieldWidth(); j++) {
+      move(i, j);
+      if (coefficients[i][j] == 0)
+        fprintf(file, "\t     ");
+      else
+        fprintf(file, "\t%.3lf", coefficients[i][j]);
+    }
+    fprintf(file, "\n\n\n\n");
+  }
+
+  fprintf(file, "Priority Zone: Priority = %lf\tCoordinates = (% d; % d)\n ",
+          all_zones->at(ind)->getPriority(),
+          all_zones->at(ind)->getPos().getX(),
+          all_zones->at(ind)->getPos().getY());
+  fprintf(file, "Score = %d\n", score);
+  auto end_time = std::chrono::high_resolution_clock::now();
+  auto duration =
+      std::chrono::duration_cast<std::chrono::seconds>(end_time - start_time);
+  fprintf(file, "Time: %lld s\n",
+          static_cast<long long>(duration.count() % 60));
+  fprintf(file, "Fuzzy input:\t Error = (%d;%d), Delta = (%d;%d) \n", cur_x,
+          cur_y, cur_x - spaceship->getHeelX(), cur_y - spaceship->getHeelY());
+  settings->outputZoneSettings("zone_settings.txt");
+  fclose(file);
 }

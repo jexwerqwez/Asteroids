@@ -1,4 +1,5 @@
 #include "../includes/fuzzy.h"
+#define COEF 1.0
 
 int Fuzzy_Controller::return_zone_index(Space_Object object,
                                         vector<Zone *> *zones) {
@@ -66,44 +67,44 @@ double Fuzzy_Controller::rules_processing(int e, int de) {
   return num / den;
 }
 
-// double Fuzzy_Controller::rules_prio_processing(int e, int de) {
-//   double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
-//   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
-//     double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
-//     mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
-//                                  getBasis()); // фаззификация
-//     mf_delt =
-//         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-//     mf_prev =
-//         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-//     alpha = (all_prio_rules[i]->getOper() == 1)
-//                 ? MIN(mf_cur, mf_delt)
-//                 : MAX(mf_cur, mf_delt); // агрегирование подусловий
-//     di = (alpha * all_prio_rules[i]->getPrev()); // степень истинности
-//     правила activated = MIN(di, mf_prev); // min-активация подзаключений if
-//     (activated > cur_max) {
-//       cur_max = activated;
-//     }
-//     num += all_prio_rules[i]->getPrev() * cur_max;
-//     den += cur_max;
-//   }
-//   return num / den;
-// }
-
 double Fuzzy_Controller::rules_prio_processing(int e, int de) {
-  double num = 0, den = 0;
+  double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
-    double alpha = 0, mf_cur = 0, mf_delt = 0;
-    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(), getBasis());
+    double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
+    mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
+                                 getBasis()); // фаззификация
     mf_delt =
         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
-    alpha = (all_prio_rules[i]->getOper() == 1) ? MIN(mf_cur, mf_delt)
-                                                : MAX(mf_cur, mf_delt);
-    num += (alpha * all_prio_rules[i]->getPrev());
-    den += alpha;
+    mf_prev =
+        membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
+    alpha = (all_prio_rules[i]->getOper() == 1)
+                ? MIN(mf_cur, mf_delt)
+                : MAX(mf_cur, mf_delt); // агрегирование подусловий
+    di = (alpha * all_prio_rules[i]->getPrev()); // степень истинности правила
+    activated = MIN(di, mf_prev); // min-активация подзаключений
+    if (activated > cur_max) {
+      cur_max = activated;
+    }
+    num += all_prio_rules[i]->getPrev() * cur_max;
+    den += cur_max;
   }
   return num / den;
 }
+
+// double Fuzzy_Controller::rules_prio_processing(int e, int de) {
+//   double num = 0, den = 0;
+//   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
+//     double alpha = 0, mf_cur = 0, mf_delt = 0;
+//     mf_cur = membership_function(e, all_prio_rules[i]->getCurr(),
+//     getBasis()); mf_delt =
+//         membership_function(de, all_prio_rules[i]->getDelta(), getBasis());
+//     alpha = (all_prio_rules[i]->getOper() == 1) ? MIN(mf_cur, mf_delt)
+//                                                 : MAX(mf_cur, mf_delt);
+//     num += (alpha * all_prio_rules[i]->getPrev());
+//     den += alpha;
+//   }
+//   return num / den;
+// }
 
 vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
                                                     Spaceship *spaceship,
@@ -169,7 +170,7 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
                     : ceil(field->getFieldWidth() /
                            (double)ZONE_SIZE); // находим число зон
   float koef_diff =
-      1.0 / (float)(max_num + ZONE_SIZE); // вычисление коэффициента
+      COEF / (float)(max_num + ZONE_SIZE); // вычисление коэффициента
   for (auto &zone : *zones) { // наличие астероида в зоне
     if (zone->inside_the_zone(offset)) {
       zone->setCoefficient(zone->getCoefficient() - koef_diff * ZONE_SIZE);

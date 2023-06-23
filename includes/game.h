@@ -6,6 +6,7 @@
 #include "gun.h"
 #include "settings.h"
 #include "spaceship.h"
+#include "zone.h"
 class Game {
   int status;
   string filename;
@@ -19,11 +20,13 @@ public:
   int getstatus() { return status; };
   void setstatus(int s) { status = s; };
   int sethard(Asteroids_Manager *);
-  void play(int, int, Settings);
+  void play(int, int, Settings *);
   int getScore() { return score; };
   void setScore(int s) { score = s; };
   int getVelocity() { return main_velocity; };
   void setVelocity(int v) { main_velocity = v; };
+  void create_file(Field *, vector<Zone *> *, int, auto, int, int, Spaceship *,
+                   double, double, Settings *);
   ~Game() { endwin(); }
 };
 class Bonus : public Space_Object {
@@ -64,9 +67,9 @@ protected:
 
 public:
   Menu(Field f) : field(f){};
-  virtual int processing(Settings, Field *) = 0;
+  virtual int processing(Settings *, Field *) = 0;
   void print_info(Field *, int, int, const char *, int);
-  int choices(Settings, Field, int);
+  int choices(Settings *, Field, int);
 };
 class Start : virtual public Menu {
   string filename;
@@ -74,12 +77,12 @@ class Start : virtual public Menu {
 
 public:
   Start(Field f, string n, Settings s) : Menu(f), filename(n), settings(s){};
-  int processing(Settings, Field *);
+  int processing(Settings *, Field *);
 };
 class Pause : virtual public Menu {
 public:
   Pause(Field f) : Menu(f){};
-  int processing(Settings, Field *);
+  int processing(Settings *, Field *);
 };
 class Settings_Menu : virtual public Menu {
 public:
@@ -89,7 +92,7 @@ public:
   void print_field(Field *);
   int field_menu(Field *);
   void print_rules(Field *);
-  int processing(Settings, Field *);
+  int processing(Settings *, Field *);
   int rules_processing(Field *);
 };
 class Finish : virtual public Menu {
@@ -102,6 +105,6 @@ public:
       : Menu(f), filename(n), settings(s), game(g){};
   void print_gameover(Field *);
   void print_blackhole(Field *);
-  int processing(Settings, Field *);
+  int processing(Settings *, Field *);
 };
 #endif

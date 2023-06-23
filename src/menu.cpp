@@ -17,7 +17,7 @@ const char *mode_set[2] = {"On", "Off"};
 void print_asteroids(Field *f);
 void print_background(Field *);
 
-int Menu::choices(Settings set, Field f, int mode) {
+int Menu::choices(Settings *set, Field f, int mode) {
   unsigned choice = 0, gamemode = 0;
   int start = 0, settings = 0, quit = 0;
   int shift = 3, finflag = 4;
@@ -108,10 +108,11 @@ int Menu::choices(Settings set, Field f, int mode) {
   return 0;
 }
 
-int Start::processing(Settings set, Field *f) {
+int Start::processing(Settings *set, Field *f) {
   clear();
   COLOR_PAIR(3);
   //  int height = f->getFieldHeight(), width = f->getFieldWidth();
+
   f->draw_field(0);
   print_asteroids(f);
   print_background(f);
@@ -270,7 +271,7 @@ void Settings_Menu::print_rules(Field *f) {
   COLOR_PAIR(3);
 }
 
-int Finish::processing(Settings set, Field *f) {
+int Finish::processing(Settings *set, Field *f) {
   int height = f->getFieldHeight(), width = f->getFieldWidth();
   while (!(getch() == 10)) {
     attroff(A_BLINK);
@@ -316,7 +317,7 @@ int Settings_Menu::rules_processing(Field *f) {
   return 0;
 }
 
-int Settings_Menu::processing(Settings set, Field *f) {
+int Settings_Menu::processing(Settings *set, Field *f) {
   clear();
   f->draw_field(0);
   print_settings(f);

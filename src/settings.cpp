@@ -61,25 +61,25 @@ int Settings::parser(Settings &set, string &filename) {
   return 0;
 }
 
-// void Settings::outputZoneSettings(std::string filename) {
-//   std::ofstream file(filename);
-//   if (file.is_open()) {
-//     file << "fuzzy_coef=";
-//     for (int i = 0; i < ELEMENTS; i++) {
-//       file << fuzzy_coef[i] << " ";
-//     }
-//     file << endl;
-//     file << "fuzzy_dist=";
-//     for (int i = 0; i < ELEMENTS; i++) {
-//       file << fuzzy_dist[i] << " ";
-//     }
-//     file << endl;
-//     file << "fuzzy_prio=";
-//     for (int i = 0; i < ELEMENTS; i++) {
-//       file << fuzzy_prio[i] << " ";
-//     }
-//     file.close();
-//   } else {
-//     std::cout << "Ошибка открытия файла!" << std::endl;
-//   }
-// }
+void Settings::outputZoneSettings(std::string filename) {
+  std::ofstream file(filename);
+  if (file.is_open()) {
+    file << "fuzzy_coef=";
+    for (int i = 0; i < ELEMENTS; i++) {
+      file << fuzzy_coef[i] << " ";
+    }
+    file << endl;
+    file << "fuzzy_dist=";
+    for (int i = 0; i < ELEMENTS; i++) {
+      file << fuzzy_dist[i] << " ";
+    }
+    file << endl;
+    file << "fuzzy_prio=";
+    for (int i = 0; i < ELEMENTS; i++) {
+      file << fuzzy_prio[i] << " ";
+    }
+    file.close();
+  } else {
+    std::cout << "Ошибка открытия файла!" << std::endl;
+  }
+}
