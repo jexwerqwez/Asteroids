@@ -33,11 +33,11 @@ class Rule {
   int previous_state;
 
 public:
-  Rule(int cur, int op, int del, int prev)
+  Rule(float cur, int op, int del, int prev)
       : current_state(cur), operation(op), delta_state(del),
         previous_state(prev){};
-  void setRules(int cur_st, int delta_st, int prev_st);
-  int getCurr() { return current_state; };
+  void setRules(float cur_st, int delta_st, int prev_st);
+  float getCurr() { return current_state; };
   int getOper() { return operation; };
   int getDelta() { return delta_state; };
   int getPrev() { return previous_state; };

@@ -95,7 +95,7 @@ void Game::play(int height, int width, Settings *setts) {
       for (int j = 0; j < asts->getWidth(); j++) {
         for (int k = 0; k < asts->getHeight(); k++) {
           Space_Object offset(j, k);
-          // затолкать помеченное в отдельные функции, возможно создрать класс
+          // затолкать помеченное в отдельные функции, возможно создать класс
           // Events
           if (hard == 0) {
             fuzzy.calculate_asteroids(&all_zones,

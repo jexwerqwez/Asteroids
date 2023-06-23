@@ -1,7 +1,7 @@
 #include "../includes/settings.h"
 #define ELEMENTS 5
 
-int Settings::parser(Settings &set, string &filename) {
+int Settings::parser(string &filename) {
   ifstream file(filename);
   string str;
   if (!file.is_open()) {
@@ -12,19 +12,19 @@ int Settings::parser(Settings &set, string &filename) {
       getline(file, str, '=');
       if (str == "height") {
         getline(file, str);
-        set.height = stoi(str);
+        height = stoi(str);
       }
       if (str == "width") {
         getline(file, str);
-        set.width = stoi(str);
+        width = stoi(str);
       }
       if (str == "score") {
         getline(file, str);
-        set.score = stoi(str);
+        score = stoi(str);
       }
       if (str == "hp") {
         getline(file, str);
-        set.hithpoint = stoi(str);
+        hithpoint = stoi(str);
       }
       if (str == "fuzzy_coef") {
         getline(file, str);
@@ -32,7 +32,7 @@ int Settings::parser(Settings &set, string &filename) {
         string number;
         int i = 0;
         while (getline(iss, number, ',')) {
-          set.fuzzy_coef[i] = stof(number);
+          fuzzy_coef[i] = stof(number);
           i++;
         }
       }
@@ -42,7 +42,7 @@ int Settings::parser(Settings &set, string &filename) {
         string number;
         int i = 0;
         while (getline(iss, number, ',')) {
-          set.fuzzy_dist[i] = stoi(number);
+          fuzzy_dist[i] = stoi(number);
           i++;
         }
       }
@@ -52,7 +52,7 @@ int Settings::parser(Settings &set, string &filename) {
         string number;
         int i = 0;
         while (getline(iss, number, ',')) {
-          set.fuzzy_prio[i] = stoi(number);
+          fuzzy_prio[i] = stoi(number);
           i++;
         }
       }
