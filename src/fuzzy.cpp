@@ -157,7 +157,7 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
   }
   // for (int i = 0; i < all_zones.size(); i++) {
   //   move(all_zones.at(i)->getPos().getY(), all_zones.at(i)->getPos().getX());
-  //   printw("%lf", all_zones.at(i)->getZoneSettings().fuzzy_coef);
+  //   printw("%d", all_zones.at(i)->getFuzzyDist());
   // }
   return all_zones;
 }
@@ -173,7 +173,7 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
       COEF / (float)(max_num + ZONE_SIZE); // вычисление коэффициента
   for (auto &zone : *zones) { // наличие астероида в зоне
     if (zone->inside_the_zone(offset)) {
-      zone->setCoefficient(zone->getCoefficient() - koef_diff * ZONE_SIZE);
+      zone->setCoefficient(/* zone->getCoefficient()- */ koef_diff);
       if (zone->inside_the_zone(spaceship->getPos())) {
         zone->setCoefficient(0);
       }
@@ -258,7 +258,6 @@ void Fuzzy_Controller::rules_to_do(Spaceship *spaceship, Field *field,
 }
 
 void Fuzzy_Controller::rules_prio_manager(Settings *settings) {
-  settings->outputZoneSettings("zone_settings.txt");
   all_prio_rules.push_back(new Rule(settings->getFuzzyCoef()[0], AND,
                                     settings->getFuzzyDist()[4],
                                     settings->getFuzzyPrio()[0]));

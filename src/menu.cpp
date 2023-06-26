@@ -23,7 +23,7 @@ int Menu::choices(Settings *set, Field f, int mode) {
   int shift = 3, finflag = 4;
   const char **array;
   int height = f.getFieldHeight(), width = f.getFieldWidth();
-  Settings_Menu setts(f);
+  Settings_Menu setts(f, set);
   keypad(stdscr, true);
   switch (mode) {
   case 1:
@@ -101,22 +101,23 @@ int Menu::choices(Settings *set, Field f, int mode) {
       break;
     } else if (settings) {
       clear();
-      setts.processing(set, &f);
+      setts.processing(&f);
       break;
     }
   }
   return 0;
 }
 
-int Start::processing(Settings *set, Field *f) {
+int Start::processing(Field *f) {
   clear();
   COLOR_PAIR(3);
+  // set->outputZoneSettings("zone_settings.txt");
   //  int height = f->getFieldHeight(), width = f->getFieldWidth();
 
   f->draw_field(0);
   print_asteroids(f);
   print_background(f);
-  choices(set, *f, 1);
+  choices(settings, *f, 1);
   return 0;
 }
 
@@ -271,7 +272,7 @@ void Settings_Menu::print_rules(Field *f) {
   COLOR_PAIR(3);
 }
 
-int Finish::processing(Settings *set, Field *f) {
+int Finish::processing(Field *f) {
   int height = f->getFieldHeight(), width = f->getFieldWidth();
   while (!(getch() == 10)) {
     attroff(A_BLINK);
@@ -284,7 +285,7 @@ int Finish::processing(Settings *set, Field *f) {
   }
   attrset(COLOR_PAIR(3));
   print_gameover(f);
-  choices(set, *f, 3);
+  choices(settings, *f, 3);
   return 0;
 }
 
@@ -317,11 +318,11 @@ int Settings_Menu::rules_processing(Field *f) {
   return 0;
 }
 
-int Settings_Menu::processing(Settings *set, Field *f) {
+int Settings_Menu::processing(Field *f) {
   clear();
   f->draw_field(0);
   print_settings(f);
-  choices(set, *f, 2);
+  choices(settings, *f, 2);
   return 0;
 }
 

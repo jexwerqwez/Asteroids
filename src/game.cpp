@@ -152,17 +152,17 @@ void Game::play(int height, int width, Settings *setts) {
         zone->setPriority(fuzzy.rules_prio_processing(zone->getCoefficient(),
                                                       zone->getDistance()));
       }
-      int ind = fuzzy.find_optimal_priority(&all_zones);
-      int min_y =
-          all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
-      int min_x =
-          all_zones.at(ind)->getDistanceX(&spaceship, all_zones.at(ind));
-      cur_y = all_zones.at(ind)->rejection(
-          min_y, &bord, 'Y'); //посчитали отклонение корабля от зоны
-      cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
-      z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
-      z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
-      fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
+      // int ind = fuzzy.find_optimal_priority(&all_zones);
+      // int min_y =
+      //     all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
+      // int min_x =
+      //     all_zones.at(ind)->getDistanceX(&spaceship, all_zones.at(ind));
+      // cur_y = all_zones.at(ind)->rejection(
+      //     min_y, &bord, 'Y'); //посчитали отклонение корабля от зоны
+      // cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
+      // z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
+      // z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
+      // fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
 
       spaceship.setHeelX(cur_x);
       spaceship.setHeelY(cur_y);
@@ -197,8 +197,8 @@ void Game::play(int height, int width, Settings *setts) {
       create_file(&bord, &all_zones, ind, start_time, cur_x, cur_y, &spaceship,
                   z_x, z_y, setts);
     }
-    Finish finish(bord, filename, *setts, *this);
-    finish.processing(setts, &bord);
+    Finish finish(bord, filename, setts, *this);
+    finish.processing(&bord);
   }
 }
 
@@ -239,7 +239,7 @@ void Game::create_file(Field *bord, vector<Zone *> *all_zones, int ind,
   for (long unsigned int i = 0; i < all_zones->size(); i++) {
     int x = all_zones->at(i)->getPos().getX();
     int y = all_zones->at(i)->getPos().getY();
-    coefficients[y][x] = all_zones->at(i)->getPriority();
+    coefficients[y][x] = all_zones->at(i)->getCoefficient();
   }
   fprintf(file, "Zones and their priorities:");
   for (int i = 0; i < bord->getFieldHeight(); i++) {

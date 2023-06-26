@@ -26,10 +26,10 @@ int main(int argc, char *argv[]) {
   else
     filename = argv[1];
   settings.parser(filename);
-  // settings.outputZoneSettings("zone_settings.txt");
   Field field(settings.height, settings.width);
-  Start start(field, filename, settings);
-  start.processing(&settings, &field);
+  Start start(field, filename, &settings);
+  start.processing(&field);
+  // settings.outputZoneSettings("zone_settings.txt");
   curs_set(1);
   nocbreak();
   endwin();

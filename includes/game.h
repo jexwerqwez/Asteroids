@@ -67,44 +67,43 @@ protected:
 
 public:
   Menu(Field f) : field(f){};
-  virtual int processing(Settings *, Field *) = 0;
+  virtual int processing(Field *) = 0;
   void print_info(Field *, int, int, const char *, int);
   int choices(Settings *, Field, int);
 };
+
 class Start : virtual public Menu {
   string filename;
-  Settings settings;
+  Settings *settings;
 
 public:
-  Start(Field f, string n, Settings s) : Menu(f), filename(n), settings(s){};
-  int processing(Settings *, Field *);
+  Start(Field f, string n, Settings *s) : Menu(f), filename(n), settings(s){};
+  int processing(Field *);
 };
-class Pause : virtual public Menu {
-public:
-  Pause(Field f) : Menu(f){};
-  int processing(Settings *, Field *);
-};
+
 class Settings_Menu : virtual public Menu {
+  Settings *settings;
+
 public:
-  Settings_Menu(Field f) : Menu(f){};
+  Settings_Menu(Field f, Settings *s) : Menu(f), settings(s){};
   void setting_menu(Field);
   void print_settings(Field *);
   void print_field(Field *);
   int field_menu(Field *);
   void print_rules(Field *);
-  int processing(Settings *, Field *);
+  int processing(Field *);
   int rules_processing(Field *);
 };
 class Finish : virtual public Menu {
   string filename;
-  Settings settings;
+  Settings *settings;
   Game game;
 
 public:
-  Finish(Field f, string n, Settings s, Game g)
+  Finish(Field f, string n, Settings *s, Game g)
       : Menu(f), filename(n), settings(s), game(g){};
   void print_gameover(Field *);
   void print_blackhole(Field *);
-  int processing(Settings *, Field *);
+  int processing(Field *);
 };
 #endif

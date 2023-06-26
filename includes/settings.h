@@ -2,12 +2,6 @@
 #define SETTINGS
 #include "base.h"
 
-struct Zone_Settings {
-  std::vector<float> fuzzy_coef;
-  std::vector<int> fuzzy_dist;
-  std::vector<int> fuzzy_prio;
-};
-
 struct Settings {
   unsigned height;
   unsigned width;
@@ -28,9 +22,11 @@ struct Settings {
   float *getFuzzyCoef() { return fuzzy_coef; }
   int *getFuzzyDist() { return fuzzy_dist; }
   int *getFuzzyPrio() { return fuzzy_prio; }
-  // Zone_Settings getZoneSettings() {
-  //   return {fuzzy_coef, fuzzy_dist, fuzzy_prio};
-  // };
   void outputZoneSettings(std::string filename);
+  ~Settings() {
+    delete[] fuzzy_coef;
+    delete[] fuzzy_dist;
+    delete[] fuzzy_prio;
+  }
 };
 #endif
