@@ -21,8 +21,6 @@ void Rule::setRules(float cur_st, int delta_st, int prev_st) {
   previous_state = prev_st;
 }
 
-// double activation(vector<Rule *>) {}
-
 void Fuzzy_Controller::rules_manager() {
   all_move_rules.push_back(new Rule(Z, AND, Z, Z));
   all_move_rules.push_back(new Rule(PB, OR, PB, NB));
@@ -51,7 +49,7 @@ void Fuzzy_Controller::rules_manager() {
   all_move_rules.push_back(new Rule(NM, AND, ZP, PM));
 }
 
-double Fuzzy_Controller::rules_processing(int e, int de) {
+double Fuzzy_Controller::rules_processing(double e, double de) {
   double num = 0, den = 0;
   for (long unsigned int i = 0; i < all_move_rules.size(); i++) {
     double alpha = 0, mf_cur = 0, mf_delt = 0;
@@ -67,7 +65,7 @@ double Fuzzy_Controller::rules_processing(int e, int de) {
   return num / den;
 }
 
-double Fuzzy_Controller::rules_prio_processing(int e, int de) {
+double Fuzzy_Controller::rules_prio_processing(double e, double de) {
   double di = 0, num = 0, den = 0, activated = 0, cur_max = -1;
   for (long unsigned int i = 0; i < all_prio_rules.size(); i++) {
     double alpha = 0, mf_cur = 0, mf_delt = 0, mf_prev;
@@ -113,19 +111,19 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
   int space_x = spaceship->getPos().getY(); // просмотр окружения корабля
   int space_y = spaceship->getPos().getY();
   all_zones.push_back(
-      new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+      new Zone(ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
                Space_Object(space_x - 1, space_y - (int)(ZONE_SIZE / 2)),
                settings)); // зона с кораблем
 
   int i = 0;
   all_zones.push_back(new Zone(
-      ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+      ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
       Space_Object(space_x - 1, space_y - ZONE_SIZE - (int)(ZONE_SIZE / 2)),
       settings)); // вверх
   // занесение зон в вектор
   for (i = 1; all_zones.at(i)->getPos().getY() > -1; i++) { // вверх
     all_zones.push_back(
-        new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+        new Zone(ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
                               all_zones.at(i)->getPos().getY() - ZONE_SIZE),
                  settings));
@@ -134,7 +132,7 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
        all_zones.at(i)->getPos().getY() < field->getFieldHeight() - ZONE_SIZE;
        i++) { // вниз
     all_zones.push_back(
-        new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+        new Zone(ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX(),
                               all_zones.at(i)->getPos().getY() + ZONE_SIZE),
                  settings));
@@ -143,21 +141,21 @@ vector<Zone *> Fuzzy_Controller::calculate_distance(Field *field,
        all_zones.at(i)->getPos().getX() < field->getFieldWidth() - ZONE_SIZE;
        i++) {
     all_zones.push_back(
-        new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+        new Zone(ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX() + ZONE_SIZE,
                               all_zones.at(i)->getPos().getY()),
                  settings));
   }
   for (i = 0; all_zones.at(i)->getPos().getX() > ZONE_SIZE; i++) {
     all_zones.push_back(
-        new Zone(ZONE_SIZE, ZONE_SIZE, 1, 0, 0,
+        new Zone(ZONE_SIZE, ZONE_SIZE, COEF, 0, 0,
                  Space_Object(all_zones.at(i)->getPos().getX() - ZONE_SIZE,
                               all_zones.at(i)->getPos().getY()),
                  settings));
   }
   // for (int i = 0; i < all_zones.size(); i++) {
   //   move(all_zones.at(i)->getPos().getY(), all_zones.at(i)->getPos().getX());
-  //   printw("%d", all_zones.at(i)->getFuzzyDist());
+  //   printw("%d", all_zones.at(i)->getDistance());
   // }
   return all_zones;
 }
@@ -169,13 +167,13 @@ void Fuzzy_Controller::calculate_asteroids(vector<Zone *> *zones,
                     ? ceil(field->getFieldHeight() / (double)ZONE_SIZE)
                     : ceil(field->getFieldWidth() /
                            (double)ZONE_SIZE); // находим число зон
-  float koef_diff =
-      COEF / (float)(max_num + ZONE_SIZE); // вычисление коэффициента
+  float koef_diff = COEF * (COEF / 10) /
+                    (float)(max_num + ZONE_SIZE); // вычисление коэффициента
   for (auto &zone : *zones) { // наличие астероида в зоне
     if (zone->inside_the_zone(offset)) {
-      zone->setCoefficient(/* zone->getCoefficient()- */ koef_diff);
+      zone->setCoefficient(zone->getCoefficient() - koef_diff);
       if (zone->inside_the_zone(spaceship->getPos())) {
-        zone->setCoefficient(0);
+        zone->setCoefficient(-COEF);
       }
     }
     zone->priority_processing(spaceship, zone);

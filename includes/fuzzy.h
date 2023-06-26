@@ -10,7 +10,7 @@
 #define MAX(A, B) (((A) > (B)) ? (A) : (B))
 #define AND 1
 #define OR 2
-#define BASIS 50
+#define BASIS 30
 
 /**
  * @brief
@@ -34,9 +34,9 @@ public:
   void rules_manager();
   void rules_prio_manager(Settings *);
   void rules_obst_manager(float *, int *, int *);
-  double rules_processing(int e, int de);
-  double rules_prio_processing(int e, int de);
-  double membership_function(int x, int mu, int basis) {
+  double rules_processing(double e, double de);
+  double rules_prio_processing(double e, double de);
+  double membership_function(double x, double mu, double basis) {
     return exp(-pow(x - mu, 2) / (2 * pow(basis, 2)));
   }
   /**

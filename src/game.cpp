@@ -40,8 +40,9 @@ void Game::play(int height, int width, Settings *setts) {
   Bonus_Manager bonus_manage(bord);
   auto start_time = std::chrono::high_resolution_clock::now();
   Gun gun(bord);
-  Fuzzy_Controller fuzzy(100);
-  Space_Object check_field(3, 0);
+  Fuzzy_Controller fuzzy(BASIS);
+  Space_Object check_field_one(3, 0);
+  Space_Object check_field_two(3, 1);
   fuzzy.rules_manager();
   fuzzy.rules_prio_manager(setts);
   mutex mtx;
@@ -53,14 +54,15 @@ void Game::play(int height, int width, Settings *setts) {
   thread th([&]() {
     while (getstatus() != -1 && getstatus() != 1) {
       manage.asts_manage(1 + hard);
-      this_thread::sleep_for(chrono::milliseconds(manage.getVelocity()));
+      this_thread::sleep_for(chrono::milliseconds(manage.getVelocity() * 2));
       bord.draw_field(0);
     }
   });
   move(height, width / 2 - 10);
   printw("SCORE: %d\tHP: %d", getScore(), spaceship.getHealt());
-
+  int fire = 0;
   while (1) {
+    fire = 0;
     int prev_score = getScore();
     int prev_health = spaceship.getHealt();
     if (spaceship.getHealt() <= 0) {
@@ -110,10 +112,14 @@ void Game::play(int height, int width, Settings *setts) {
             spaceship.setHeath(spaceship.getHealt() - 1);
           }
 
-          // if (all_asts.at(i)->getPos() + offset ==
-          //     spaceship.getPos() + check_field) {
-          //   gun_mode = 1;
-          // }
+          if ((all_asts.at(i)->getPos() ==
+               spaceship.getPos() + check_field_one) ||
+              (all_asts.at(i)->getPos() ==
+               spaceship.getPos() + check_field_two) ||
+              (all_asts.at(i)->getPos() ==
+               spaceship.getPos() - check_field_two)) {
+            fire = 1;
+          }
 
           for (long unsigned int l = 0; l < all_shots.size(); l++) { // выстрел
             if (all_asts.at(i)->getPos() + offset ==
@@ -152,18 +158,18 @@ void Game::play(int height, int width, Settings *setts) {
         zone->setPriority(fuzzy.rules_prio_processing(zone->getCoefficient(),
                                                       zone->getDistance()));
       }
-      // int ind = fuzzy.find_optimal_priority(&all_zones);
-      // int min_y =
-      //     all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
-      // int min_x =
-      //     all_zones.at(ind)->getDistanceX(&spaceship, all_zones.at(ind));
-      // cur_y = all_zones.at(ind)->rejection(
-      //     min_y, &bord, 'Y'); //посчитали отклонение корабля от зоны
-      // cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
-      // z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
-      // z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
-      // fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
-
+      int ind = fuzzy.find_optimal_priority(&all_zones);
+      int min_y =
+          all_zones.at(ind)->getDistanceY(&spaceship, all_zones.at(ind));
+      int min_x =
+          all_zones.at(ind)->getDistanceX(&spaceship, all_zones.at(ind));
+      cur_y = all_zones.at(ind)->rejection(
+          min_y, &bord, 'Y'); //посчитали отклонение корабля от зоны
+      cur_x = all_zones.at(ind)->rejection(min_x, &bord, 'X');
+      z_x = fuzzy.rules_processing(cur_x, cur_x - spaceship.getHeelX());
+      z_y = fuzzy.rules_processing(cur_y, cur_y - spaceship.getHeelY());
+      fuzzy.rules_to_do(&spaceship, &bord, &all_asts, z_x, z_y);
+      gun_mode = (fire) ? 1 : 0;
       spaceship.setHeelX(cur_x);
       spaceship.setHeelY(cur_y);
       spaceship.draw_spaceship(blink);
@@ -185,7 +191,6 @@ void Game::play(int height, int width, Settings *setts) {
 
       mtx.unlock();
     }
-    gun_mode = 0;
   }
   if (getstatus() == -1) {
     th.detach();
@@ -239,7 +244,7 @@ void Game::create_file(Field *bord, vector<Zone *> *all_zones, int ind,
   for (long unsigned int i = 0; i < all_zones->size(); i++) {
     int x = all_zones->at(i)->getPos().getX();
     int y = all_zones->at(i)->getPos().getY();
-    coefficients[y][x] = all_zones->at(i)->getCoefficient();
+    coefficients[y][x] = all_zones->at(i)->getPriority();
   }
   fprintf(file, "Zones and their priorities:");
   for (int i = 0; i < bord->getFieldHeight(); i++) {

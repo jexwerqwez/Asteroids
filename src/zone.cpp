@@ -144,4 +144,8 @@ void Zone::priority_processing(Spaceship *spaceship, Zone *zone) {
   }
   if (zone->getPos().getY() < 0 || zone->getPos().getX() < 0)
     zone->setPriority(zone->getSettings()->fuzzy_prio[4]);
+  // for (int i = 0; i < all_zones.size(); i++) {
+  //   move(all_zones.at(i)->getPos().getY(), all_zones.at(i)->getPos().getX());
+  //   printw("%d", all_zones.at(i)->getDistance());
+  // }
 }
