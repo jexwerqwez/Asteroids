@@ -25,3 +25,5 @@ make all
 * Linux
 * Ncurses
 * Git
+
+![:name](https://count.getloli.com/get/@:name)
