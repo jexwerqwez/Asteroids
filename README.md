@@ -26,4 +26,4 @@ make all
 * Ncurses
 * Git
 
-![:name](https://count.getloli.com/get/@:name)
+![:name](https://count.getloli.com/get/@:jexwerquez?theme=gelbooru)
